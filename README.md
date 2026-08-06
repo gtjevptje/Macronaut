@@ -8,14 +8,14 @@
 Automate repetitive tasks in any Windows app — draw the flow, press play.</p>
 
 <p align="center">
-  <a href="https://github.com/gtjevptje/macronaut-releases/releases/latest"><img alt="latest release" src="https://img.shields.io/github/v/release/gtjevptje/macronaut-releases?label=latest&color=7c5cff"></a>
-  <a href="https://github.com/gtjevptje/macronaut-releases/releases/latest"><img alt="release date" src="https://img.shields.io/github/release-date/gtjevptje/macronaut-releases?label=released&color=7c5cff"></a>
-  <a href="https://github.com/gtjevptje/macronaut-releases/releases"><img alt="downloads" src="https://img.shields.io/github/downloads/gtjevptje/macronaut-releases/total?label=downloads&color=7c5cff"></a>
+  <a href="https://github.com/gtjevptje/Macronaut/releases/latest"><img alt="latest release" src="https://img.shields.io/github/v/release/gtjevptje/Macronaut?label=latest&color=7c5cff"></a>
+  <a href="https://github.com/gtjevptje/Macronaut/releases/latest"><img alt="release date" src="https://img.shields.io/github/release-date/gtjevptje/Macronaut?label=released&color=7c5cff"></a>
+  <a href="https://github.com/gtjevptje/Macronaut/releases"><img alt="downloads" src="https://img.shields.io/github/downloads/gtjevptje/Macronaut/total?label=downloads&color=7c5cff"></a>
   <img alt="platform" src="https://img.shields.io/badge/Windows-10%20%7C%2011-7c5cff">
 </p>
 
 <h3 align="center">
-  <a href="https://github.com/gtjevptje/macronaut-releases/releases/latest/download/Macronaut.exe">⬇&nbsp;&nbsp;Download Macronaut for Windows</a>
+  <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">⬇&nbsp;&nbsp;Download Macronaut for Windows</a>
 </h3>
 
 <p align="center"><i>One file. No installer. It updates itself.</i></p>
@@ -64,7 +64,7 @@ your PC"** the first time you open it. Click **More info → Run anyway**.
 
 If you'd rather verify the file first, every release publishes its exact size and
 SHA-256 in
-[`update.json`](https://github.com/gtjevptje/macronaut-releases/releases/latest/download/update.json):
+[`update.json`](https://github.com/gtjevptje/Macronaut/releases/latest/download/update.json):
 
 ```powershell
 Get-FileHash .\Macronaut.exe -Algorithm SHA256
@@ -76,13 +76,13 @@ Macronaut checks this repository for new releases and can update itself — it
 downloads the new build, verifies its hash, and swaps itself on the next restart.
 You can also just download the latest .exe again over the old one.
 
-[**All releases and what changed in each →**](https://github.com/gtjevptje/macronaut-releases/releases)
+[**All releases and what changed in each →**](https://github.com/gtjevptje/Macronaut/releases)
 
 ---
 
 <sub>This repository hosts published builds and update manifests only; Macronaut's
 source is not public. See the
-[licence](https://github.com/gtjevptje/macronaut-releases/releases/latest/download/LICENSE)
+[licence](https://github.com/gtjevptje/Macronaut/releases/latest/download/LICENSE)
 and the
-[third-party notices](https://github.com/gtjevptje/macronaut-releases/releases/latest/download/THIRD-PARTY-NOTICES.md).
+[third-party notices](https://github.com/gtjevptje/Macronaut/releases/latest/download/THIRD-PARTY-NOTICES.md).
 © Gerben van Poucke.</sub>
