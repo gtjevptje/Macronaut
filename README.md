@@ -16,6 +16,8 @@ Automate repetitive tasks in any Windows app — draw the flow, press play.</p>
 
 <p align="center"><i>One file. No installer. It updates itself.</i></p>
 
+<p align="center"><img alt="A Macronaut flow on the canvas" src="assets/hero.png" width="100%"></p>
+
 ---
 
 ## What it is
@@ -103,5 +105,3 @@ for the open-source components it is built on.
 <p align="center">
   <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe"><b>⬇&nbsp;&nbsp;Download Macronaut for Windows</b></a>
 </p>
-
-<p align="center"><img alt="A Macronaut flow on the canvas" src="assets/hero.png" width="100%"></p>
