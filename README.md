@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="assets/banner.png" alt="Macronaut — if it's repetitive, it's a flow" width="100%">
-</p>
-
 <h1 align="center">Macronaut</h1>
 
 <p align="center"><b>The AutoHotkey alternative without the code.</b><br>
