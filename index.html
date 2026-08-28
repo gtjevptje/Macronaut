@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Macronaut — Auto Clicker &amp; Macro Recorder for Windows</title>
+<meta name="description" content="Free auto clicker and visual macro recorder for Windows 10 and 11. Record clicks and keystrokes, or build a flow that watches the screen and decides what to do. The AutoHotkey alternative without the code.">
+<link rel="canonical" href="https://gtjevptje.github.io/Macronaut/">
+<meta name="theme-color" content="#070b16">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Macronaut">
+<meta property="og:title" content="Macronaut — automate anything on Windows, no code">
+<meta property="og:description" content="Record your clicks and keystrokes, or draw the flow yourself. Then it does the work — in any Windows app, including ones with no API.">
+<meta property="og:url" content="https://gtjevptje.github.io/Macronaut/">
+<meta property="og:image" content="https://gtjevptje.github.io/Macronaut/assets/hero.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Macronaut",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Windows 10, Windows 11",
+  "softwareVersion": "2.1.1",
+  "url": "https://gtjevptje.github.io/Macronaut/",
+  "downloadUrl": "https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe",
+  "description": "Auto clicker and visual macro recorder for Windows. Records clicks and keystrokes into an editable flow, and can watch the screen to decide what to do next.",
+  "offers": [
+    {"@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "EUR"},
+    {"@type": "Offer", "name": "Pro", "price": "29", "priceCurrency": "EUR"}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [{"@type": "Question", "name": "Is the free version a trial?", "acceptedAnswer": {"@type": "Answer", "text": "No. It does not expire, it has no watermark, and it does not nag you. Clicking, typing, dragging, scrolling and recording are free permanently, in flows of up to 20 steps. Pro adds the steps that watch the screen and branch on what they find."}},{"@type": "Question", "name": "How is this different from AutoHotkey?", "acceptedAnswer": {"@type": "Answer", "text": "AutoHotkey is a scripting language, and a good one — if you are willing to learn it. Macronaut is the same idea without the code: you record what you do, or drag steps onto a canvas and wire them together. The trade is real. AutoHotkey will do things Macronaut cannot; Macronaut you can use this afternoon."}},{"@type": "Question", "name": "Will it work in a game?", "acceptedAnswer": {"@type": "Answer", "text": "Often, yes — but read the warning further down this page first, because many online games ban automation and can ban your account for it. Technically: some games ignore ordinary injected input, so Macronaut has three input backends, the lowest of which is a kernel driver that looks like a real keyboard. If one does not work, switch to the next."}},{"@type": "Question", "name": "Does it need an internet connection?", "acceptedAnswer": {"@type": "Answer", "text": "Only to check for updates, which you can turn off. Automations run entirely on your machine. Your licence key is verified offline — activating does not tell us anything, because there is nothing for it to tell."}},{"@type": "Question", "name": "What do you collect?", "acceptedAnswer": {"@type": "Answer", "text": "Nothing, unless you opt in to crash reports — and those contain the error, the version, your Windows version and which step was running. Never your scripts, your keystrokes, anything on your screen, or your name. Windows account names are stripped out of file paths before anything is even written to disk."}},{"@type": "Question", "name": "Can I use my licence on more than one computer?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, on every computer you own. There is no activation limit and no machine fingerprinting — those mostly succeed at punishing the honest customer who bought a new laptop. Your e-mail address is inside the key, so please do not post it publicly."}},{"@type": "Question", "name": "Is it a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. One payment, and that version and every future update are yours. If that ever changes it will change for new customers, not for you."}},{"@type": "Question", "name": "Why does Windows say it is unsafe?", "acceptedAnswer": {"@type": "Answer", "text": "Because it is not code-signed yet. SmartScreen warns about any new executable it has not seen before, signed or not, and a signing certificate has both a real cost and a procurement lead time. Click “More info” then “Run anyway”. Antivirus software is also occasionally suspicious of anything that sends keystrokes, which is unavoidable for a tool whose entire job is sending keystrokes."}},{"@type": "Question", "name": "What happens to my flows if I do not buy Pro?", "acceptedAnswer": {"@type": "Answer", "text": "Nothing. They stay on your disk, they open, they edit and they save. A flow that uses Pro steps simply will not run until it is licensed — you never lose work, and you can always take the Pro steps out and run the rest."}},{"@type": "Question", "name": "Is there a refund?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. If it does not do what this page says it does, e-mail me and I will refund you. It is a one-person operation, so you will be talking to the person who wrote it."}},{"@type": "Question", "name": "What are the system requirements?", "acceptedAnswer": {"@type": "Answer", "text": "Windows 10 or 11, 64-bit. Nothing else — no Python, no .NET, no runtime, no installer. It is a single 78 MB file that you can put anywhere and delete when you are done."}}]
+}
+</script>
+
+<style>
+:root{
+  --bg:#070b16; --panel:#0f1830; --panel2:#152144; --hover:#1c2950;
+  --border:#26345a; --text:#e8edf8; --muted:#8694b8;
+  --accent:#6c7cff; --accent-hover:#8a96ff; --green:#2fd3a4; --amber:#f5b14b;
+  --max:1080px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font:16px/1.65 "Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+/* A very faint starfield, the same idea as the app's top bar. Pure CSS so the
+   page stays one file and one request. */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
+  background:
+    radial-gradient(1px 1px at 12% 18%, #c9d6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 68% 9%,  #c9d6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 34% 42%, #9fb2e8 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 33%, #c9d6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 52% 66%, #8fa3dd 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 78%, #c9d6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 88%, #9fb2e8 50%, transparent 51%);
+}
+main,header,footer{position:relative; z-index:1}
+.wrap{max-width:var(--max); margin:0 auto; padding:0 24px}
+a{color:var(--accent-hover); text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3{line-height:1.2; margin:0 0 .5em}
+h1{font-size:clamp(34px,5.2vw,56px); font-weight:800; letter-spacing:-.02em}
+h2{font-size:clamp(25px,3.2vw,34px); font-weight:800; letter-spacing:-.01em}
+h3{font-size:19px; font-weight:700}
+p{margin:0 0 1em}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+
+/* ── Nav ─────────────────────────────────────────────────────────── */
+header{border-bottom:1px solid var(--border); background:rgba(7,11,22,.85);
+  backdrop-filter:blur(10px); position:sticky; top:0; z-index:20}
+.nav{display:flex; align-items:center; gap:24px; height:62px}
+.brand{font-weight:800; font-size:18px; letter-spacing:-.01em; color:var(--text)}
+.brand:hover{text-decoration:none}
+.tag{background:var(--accent); color:#fff; border-radius:7px; padding:2px 8px;
+  font-size:11px; font-weight:800; margin-left:8px; vertical-align:2px}
+.nav nav{display:flex; gap:22px; margin-left:auto; font-size:15px}
+.nav nav a{color:var(--muted)}
+.nav nav a:hover{color:var(--text); text-decoration:none}
+@media(max-width:720px){.nav nav{display:none}}
+
+/* ── Buttons ─────────────────────────────────────────────────────── */
+.btn{display:inline-block; padding:13px 22px; border-radius:12px; font-weight:700;
+  font-size:16px; border:1px solid var(--border); background:var(--panel2);
+  color:var(--text); cursor:pointer; transition:.15s}
+.btn:hover{background:var(--hover); text-decoration:none}
+.btn-primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn-primary:hover{background:var(--accent-hover); border-color:var(--accent-hover)}
+.btn-lg{padding:16px 30px; font-size:17px}
+.btn[aria-disabled="true"]{opacity:.55; cursor:not-allowed}
+.cta{display:flex; gap:14px; flex-wrap:wrap; align-items:center}
+
+/* ── Hero ────────────────────────────────────────────────────────── */
+.hero{padding:76px 0 56px; text-align:center}
+.hero p.lead{font-size:clamp(17px,2.1vw,21px); color:var(--muted);
+  max-width:640px; margin:0 auto 30px}
+.hero .cta{justify-content:center}
+.under{margin-top:18px; font-size:14px; color:var(--muted)}
+/* ⚠ `height:auto` is load-bearing, not tidiness. The width/height attributes
+   on the <img> are there to reserve the right space before the image arrives
+   (no layout shift) — but with `max-width:100%` and no `height:auto` the
+   browser honours the height attribute literally, so on any viewport narrower
+   than the image the picture is squashed to a fixed 1000px box. Caught by
+   previewing the page, which nothing about the markup would have shown. */
+.shot{margin:52px auto 0; max-width:100%; height:auto; border:1px solid var(--border);
+  border-radius:16px; display:block; box-shadow:0 24px 70px rgba(0,0,0,.55);
+  background:var(--panel)}
+
+/* ── Sections ────────────────────────────────────────────────────── */
+section{padding:66px 0; border-top:1px solid var(--border)}
+section > .wrap > h2{text-align:center}
+.sub{text-align:center; color:var(--muted); max-width:620px; margin:0 auto 42px}
+
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:18px}
+.card{background:var(--panel); border:1px solid var(--border); border-radius:16px;
+  padding:24px}
+.card h3{margin-bottom:.35em}
+.card p{margin:0; color:var(--muted); font-size:15px}
+.card .ico{font-size:22px; display:block; margin-bottom:12px}
+
+/* ── Pricing ─────────────────────────────────────────────────────── */
+.plans{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px; max-width:800px; margin:0 auto; align-items:start}
+.plan{background:var(--panel); border:1px solid var(--border); border-radius:18px;
+  padding:30px}
+.plan.best{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent),
+  0 20px 60px rgba(108,124,255,.14)}
+.plan .name{font-size:14px; font-weight:800; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted)}
+.plan.best .name{color:var(--accent-hover)}
+.price{font-size:42px; font-weight:800; letter-spacing:-.02em; margin:10px 0 2px}
+.price span{font-size:15px; font-weight:600; color:var(--muted); letter-spacing:0}
+.plan ul{list-style:none; padding:0; margin:22px 0 26px}
+.plan li{padding:7px 0 7px 28px; position:relative; font-size:15px; color:var(--muted)}
+.plan li::before{content:"✓"; position:absolute; left:0; top:7px;
+  color:var(--green); font-weight:800}
+.plan li.no::before{content:"—"; color:var(--border)}
+.plan .btn{width:100%; text-align:center}
+.pending{margin-top:14px; font-size:13px; color:var(--amber)}
+
+/* ── FAQ ─────────────────────────────────────────────────────────── */
+.faq{max-width:760px; margin:0 auto}
+details{background:var(--panel); border:1px solid var(--border);
+  border-radius:14px; padding:0 22px; margin-bottom:12px}
+details[open]{background:var(--panel2)}
+summary{cursor:pointer; font-weight:700; padding:18px 0; list-style:none;
+  display:flex; justify-content:space-between; gap:16px; align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+"; color:var(--muted); font-weight:800; font-size:20px}
+details[open] summary::after{content:"−"}
+details .body{padding:0 0 20px; color:var(--muted); font-size:15px}
+details .body p:last-child{margin-bottom:0}
+
+/* ── Warning + footer ────────────────────────────────────────────── */
+.warn{background:var(--panel); border:1px solid var(--border);
+  border-left:3px solid var(--amber); border-radius:14px; padding:22px 24px;
+  max-width:760px; margin:0 auto; color:var(--muted); font-size:15px}
+.warn b{color:var(--text)}
+footer{border-top:1px solid var(--border); padding:38px 0 52px;
+  color:var(--muted); font-size:14px}
+footer .row{display:flex; gap:22px; flex-wrap:wrap; align-items:center}
+footer .row nav{margin-left:auto; display:flex; gap:20px; flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top">Macronaut</a>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#buy">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<div class="hero wrap">
+  <h1>Automate anything on Windows.<br>No code.</h1>
+  <p class="lead">Macronaut records your clicks and keystrokes — or you draw the
+  flow yourself — and then it does the work. In any Windows app, including the
+  ones with no API, no scripting and no plugins.</p>
+  <div class="cta">
+    <a class="btn btn-primary btn-lg" href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">Download free for Windows</a>
+    <a class="btn btn-lg" href="#buy">See what Pro adds</a>
+  </div>
+  <p class="under">Windows 10 &amp; 11 · one 78 MB file · no installer ·
+  no account · the free tier does not expire</p>
+  <img class="shot" src="assets/hero.png" width="2546" height="1350"
+       alt="A Macronaut automation flow on the canvas: click, wait and detect steps wired together">
+</div>
+
+<section id="what">
+  <div class="wrap">
+    <h2>If you do the same clicks twenty times a day</h2>
+    <p class="sub">That is the thing this is for. You build the automation as a
+    <b>flow</b> — boxes for the things it does, wires for the order they happen
+    in. There is no scripting language to learn, and nothing to install.</p>
+    <div class="grid">
+      <div class="card"><span class="ico">⏺</span>
+        <h3>Record it once</h3>
+        <p>Press record and work normally. Clicks, keystrokes, chords, scroll
+        flicks and click-and-drag gestures all land on the canvas as editable
+        steps. A swipe is recorded as a swipe, not as a click.</p></div>
+      <div class="card"><span class="ico">▶</span>
+        <h3>Watch it run</h3>
+        <p>The running step lights up as it goes, with timings measured on your
+        machine rather than guessed. Stop it from anywhere with a global hotkey,
+        even while another window has focus.</p></div>
+      <div class="card"><span class="ico">🔍</span>
+        <h3>Let it look at the screen</h3>
+        <p>Wait until a button appears and then click it. Wait for words to show
+        up, using Windows' own OCR. Every detection gets a <b>found</b> and a
+        <b>not found</b> branch, so a flow can cope when things go wrong.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <h2>What it does</h2>
+    <p class="sub">Everything here is in the app today — this is a description,
+    not a roadmap.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>A canvas, not a script</h3>
+        <p>Click, Move, Drag, Scroll, Type text, Key press, Wait, Detect,
+        If&nbsp;/&nbsp;Else, Loop, Go to and Comment. Wire them up, colour-code
+        them, group a region in a box and drag the whole thing at once.</p></div>
+      <div class="card">
+        <h3>Hold keys down</h3>
+        <p>Press and release are separate steps, so a flow can hold <b>W</b> to
+        keep moving while it clicks with the mouse. Anything still held is
+        always released when the run ends, stops, or crashes.</p></div>
+      <div class="card">
+        <h3>Reaches apps that ignore input</h3>
+        <p>Three selectable input backends, including SendInput scancodes and
+        the Interception kernel driver — for programs that discard ordinary
+        injected input and only believe a real keyboard.</p></div>
+      <div class="card">
+        <h3>One key per script</h3>
+        <p>Bind different flows to different keys and launch any of them with a
+        single press, without opening the window or touching what is on the
+        canvas.</p></div>
+      <div class="card">
+        <h3>No installer, no Python</h3>
+        <p>A single 78 MB <code>.exe</code>. It updates itself on
+        restart, verified by SHA-256, and needs no administrator rights to
+        run.</p></div>
+      <div class="card">
+        <h3>Stays out of the way</h3>
+        <p>Always-on-top when you want it, a tray icon when you don't, dark and
+        light themes, and a layout that works from a small window to
+        fullscreen.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="buy">
+  <div class="wrap">
+    <h2>Pricing</h2>
+    <p class="sub">The free tier is a complete auto-clicker, not a trial. It has
+    no timer, no watermark and no expiry, and it never will.</p>
+    <div class="plans">
+      <div class="plan">
+        <div class="name">Free</div>
+        <div class="price">€0<span> · forever</span></div>
+        <ul>
+          <li>Click, move, drag and scroll</li>
+          <li>Type text and press keys, including chords</li>
+          <li>Record what you do into an editable flow</li>
+          <li>Waits, delays, loop counts and playback speed</li>
+          <li>Global start/stop hotkey and script launcher keys</li>
+          <li>All three input backends</li>
+          <li>Flows of up to 20 steps</li>
+          <li class="no">Cannot watch the screen or branch</li>
+        </ul>
+        <a class="btn" href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">Download free</a>
+      </div>
+      <div class="plan best">
+        <div class="name">Pro</div>
+        <div class="price">€29<span> · once</span></div>
+        <ul>
+          <li><b>Everything in Free</b>, with no step limit</li>
+          <li>Wait for an image to appear, then click it</li>
+          <li>Wait for text, read with Windows OCR</li>
+          <li>Wait for a pixel to change colour</li>
+          <li>If&nbsp;/&nbsp;Else branching on what it found</li>
+          <li>Loops, variables and Go to</li>
+          <li>Every future update, at no extra cost</li>
+          <li>Use it on every computer you own</li>
+        </ul>
+        <span class="btn btn-primary" aria-disabled="true">Get Pro — €29</span><p class="pending">Checkout is not connected yet — see site/config.json.</p>
+      </div>
+    </div>
+    <p class="sub small" style="margin-top:34px;margin-bottom:0">
+      One payment. Yours forever, on every computer you own. Not a subscription. If it does not do what this page says it
+      does, e-mail me and I will refund you.</p>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2>Questions</h2>
+    <div class="faq"><details><summary>Is the free version a trial?</summary><div class="body"><p>No. It does not expire, it has no watermark, and it does not nag you. Clicking, typing, dragging, scrolling and recording are free permanently, in flows of up to 20 steps. Pro adds the steps that watch the screen and branch on what they find.</p></div></details>
+<details><summary>How is this different from AutoHotkey?</summary><div class="body"><p>AutoHotkey is a scripting language, and a good one — if you are willing to learn it. Macronaut is the same idea without the code: you record what you do, or drag steps onto a canvas and wire them together. The trade is real. AutoHotkey will do things Macronaut cannot; Macronaut you can use this afternoon.</p></div></details>
+<details><summary>Will it work in a game?</summary><div class="body"><p>Often, yes — but read the warning further down this page first, because many online games ban automation and can ban your account for it. Technically: some games ignore ordinary injected input, so Macronaut has three input backends, the lowest of which is a kernel driver that looks like a real keyboard. If one does not work, switch to the next.</p></div></details>
+<details><summary>Does it need an internet connection?</summary><div class="body"><p>Only to check for updates, which you can turn off. Automations run entirely on your machine. Your licence key is verified offline — activating does not tell us anything, because there is nothing for it to tell.</p></div></details>
+<details><summary>What do you collect?</summary><div class="body"><p>Nothing, unless you opt in to crash reports — and those contain the error, the version, your Windows version and which step was running. Never your scripts, your keystrokes, anything on your screen, or your name. Windows account names are stripped out of file paths before anything is even written to disk.</p></div></details>
+<details><summary>Can I use my licence on more than one computer?</summary><div class="body"><p>Yes, on every computer you own. There is no activation limit and no machine fingerprinting — those mostly succeed at punishing the honest customer who bought a new laptop. Your e-mail address is inside the key, so please do not post it publicly.</p></div></details>
+<details><summary>Is it a subscription?</summary><div class="body"><p>No. One payment, and that version and every future update are yours. If that ever changes it will change for new customers, not for you.</p></div></details>
+<details><summary>Why does Windows say it is unsafe?</summary><div class="body"><p>Because it is not code-signed yet. SmartScreen warns about any new executable it has not seen before, signed or not, and a signing certificate has both a real cost and a procurement lead time. Click “More info” then “Run anyway”. Antivirus software is also occasionally suspicious of anything that sends keystrokes, which is unavoidable for a tool whose entire job is sending keystrokes.</p></div></details>
+<details><summary>What happens to my flows if I do not buy Pro?</summary><div class="body"><p>Nothing. They stay on your disk, they open, they edit and they save. A flow that uses Pro steps simply will not run until it is licensed — you never lose work, and you can always take the Pro steps out and run the rest.</p></div></details>
+<details><summary>Is there a refund?</summary><div class="body"><p>Yes. If it does not do what this page says it does, e-mail me and I will refund you. It is a one-person operation, so you will be talking to the person who wrote it.</p></div></details>
+<details><summary>What are the system requirements?</summary><div class="body"><p>Windows 10 or 11, 64-bit. Nothing else — no Python, no .NET, no runtime, no installer. It is a single 78 MB file that you can put anywhere and delete when you are done.</p></div></details></div>
+  </div>
+</section>
+
+<section id="warning">
+  <div class="wrap">
+    <div class="warn">
+      <p><b>Before you automate a game.</b> Macronaut sends real keyboard and
+      mouse input. Many online games and services forbid automation in their
+      terms of service, and using it against them can cost you your account.
+      That is your call to make — please read their rules first.</p>
+      <p style="margin-bottom:0"><b>Windows will warn you on first run.</b>
+      Macronaut is not code-signed yet, so SmartScreen shows <i>"Windows
+      protected your PC"</i> for new downloads. Click <b>More info → Run
+      anyway</b>. Signing is on the roadmap.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap row">
+    <div>Macronaut 2.1.1 · © 2026 Gerben van Poucke</div>
+    <nav>
+      <a href="https://github.com/gtjevptje/Macronaut">GitHub</a>
+      <a href="https://github.com/gtjevptje/Macronaut/releases">Release notes</a>
+      <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/LICENSE">Licence</a>
+      <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/THIRD-PARTY-NOTICES.md">Third-party notices</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

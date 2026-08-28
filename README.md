@@ -16,6 +16,8 @@ Automate repetitive tasks in any Windows app — draw the flow, press play.</p>
 
 <p align="center"><i>One file. No installer. It updates itself.</i></p>
 
+<p align="center"><a href="https://gtjevptje.github.io/Macronaut/"><b>macronaut website →</b></a></p>
+
 <p align="center"><img alt="A Macronaut flow on the canvas" src="assets/hero.png" width="100%"></p>
 
 ---
@@ -30,17 +32,48 @@ happen in. No scripting language to learn.
 If you have ever thought *"I do this exact sequence twenty times a day"*, that
 is the thing Macronaut is for.
 
+## Free or Pro
+
+**The free tier is a complete auto-clicker, not a trial.** No timer, no
+watermark, no expiry, no account, no nagging. Clicking, typing, dragging,
+scrolling and recording are free permanently, in flows of up to
+20 steps.
+
+**Pro** — €29, once — adds the half that makes it an automation tool
+rather than a clicker: the steps that **look at the screen** and the steps that
+**decide what to do about it**.
+
+| | Free | Pro |
+|---|:---:|:---:|
+| Click, move, drag, scroll | ✅ | ✅ |
+| Type text, press keys and chords | ✅ | ✅ |
+| Record what you do into an editable flow | ✅ | ✅ |
+| Waits, delays, loop counts, playback speed | ✅ | ✅ |
+| Global hotkey and per-script launcher keys | ✅ | ✅ |
+| All three input backends | ✅ | ✅ |
+| Steps per flow | 20 | unlimited |
+| Wait for an image, then click it | — | ✅ |
+| Wait for text (Windows OCR) | — | ✅ |
+| Wait for a pixel to change | — | ✅ |
+| If / Else, Loop, variables, Go to | — | ✅ |
+
+One payment. Yours forever, on every computer you own. Not a subscription, and every future update is included.
+[See the pricing page →](https://gtjevptje.github.io/Macronaut/#buy)
+
+A flow that uses Pro steps still opens, edits and saves on the free tier — it
+just will not *run* until it is licensed. You never lose work.
+
 ## What it can do
 
 **Build a flow visually**
 - Drop in **Click**, **Move**, **Drag**, **Scroll**, **Type text**, **Key press**,
-  **Wait**, **Detect**, **If / Else**, **Loop**, **Go to** and **Comment** nodes
+  **Wait**, **Comment** — and, with Pro, **Detect**, **If / Else**, **Loop** and **Go to**
 - Wire them together and press ▶ — the running step lights up as it goes
 - Group a region with a **comment box**; drag the box and everything on it moves
 - Colour-code nodes, bend wires around each other, jump between sections
 - Copy, paste, duplicate and bulk-edit across the whole flow or just a selection
 
-**React to what's on screen**
+**React to what's on screen** *(Pro)*
 - **Find an image** — wait for a button, a dialog or an icon to appear, then click it
 - **Read text** — wait until specific words show up, using Windows' built-in OCR
 - **Check a pixel** — the cheapest possible "is the panel open yet?"
@@ -70,9 +103,18 @@ is the thing Macronaut is for.
   backends look like a real keyboard to them.
 
 **Stays out of the way**
-- Single 77 MB `.exe`, no installer, no Python, no admin needed to run
+- Single 78 MB `.exe`, no installer, no Python, no admin needed to run
 - Checks for updates and applies them on restart, verified by SHA-256
 - Always-on-top mode, system tray icon, dark and light themes
+
+## Privacy
+
+Macronaut has no accounts and no telemetry. Automations run entirely on your
+machine, and a Pro licence is verified **offline** — activating tells us
+nothing, because there is nothing for it to tell. The one thing that ever leaves
+your computer is a crash report, and only if you opt in; those carry the error,
+the version, your Windows version and which step was running, never your
+scripts, your keystrokes, anything on screen, or your name.
 
 ## Requirements
 
@@ -104,4 +146,6 @@ for the open-source components it is built on.
 
 <p align="center">
   <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe"><b>⬇&nbsp;&nbsp;Download Macronaut for Windows</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://gtjevptje.github.io/Macronaut/#buy"><b>Get Pro — €29</b></a>
 </p>
