@@ -117,6 +117,22 @@ li.later em{font-style:normal; opacity:.8}
 .shot{margin:52px auto 0; max-width:100%; height:auto; border:1px solid var(--border);
   border-radius:16px; display:block; box-shadow:0 24px 70px rgba(0,0,0,.55);
   background:var(--panel)}
+/* A shot sitting inside a card rather than under the hero: it is illustrating
+   the paragraph beside it, so it wants a shadow that does not fight the card's
+   own edge. Capped in height because the Basic face is a tall, narrow window
+   and at full width it would tower over everything around it. */
+.shot-inline{margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.35);
+  max-height:340px; width:auto}
+/* The one card carrying a screenshot spans the grid. Left in a normal cell it
+   made its own row twice as tall as the card beside it, which then sat mostly
+   empty — grid rows match heights, so a tall cell is paid for by its
+   neighbour. */
+.card-wide{grid-column:1/-1; display:flex; gap:26px; align-items:center}
+.card-wide > div{flex:1 1 340px; min-width:0}
+@media (max-width:700px){
+  .card-wide{flex-direction:column; align-items:stretch}
+  .shot-inline{max-height:none; width:100%}
+}
 
 /* ── Sections ────────────────────────────────────────────────────── */
 section{padding:66px 0; border-top:1px solid var(--border)}
@@ -214,8 +230,9 @@ article p, article li{max-width:70ch}
     <h1>An AutoHotkey alternative you don&rsquo;t have to write code in</h1>
     <p class="lead">AutoHotkey is a programming language. That is its strength
     and it is also the reason most people who need it never end up using it.
-    Macronaut does the common half of the same job by recording what you do,
-    or by letting you drag the steps onto a canvas and wire them together.</p>
+    Macronaut does the common half of the same job with a screen of numbers you
+    fill in — or, when a job needs more than that, by recording what you do and
+    letting you wire the steps together on a canvas.</p>
 
     <div class="verdict">
       <b>The short version.</b> If you are comfortable writing code, AutoHotkey
@@ -249,12 +266,14 @@ DoClick() {
       </div>
       <div>
         <h3>Macronaut</h3>
-        <p style="margin-top:0">Open the library, pick <b>Auto-clicker</b>,
-        press&nbsp;Play. F8 already starts and stops it.</p>
-        <p>To change the speed, double-click the node and type a number. To
-        make it stop after 100 clicks, fill in one more box.</p>
-        <p class="sub" style="margin-bottom:0">It arrives with that flow
-        already built, along with four others.</p>
+        <p style="margin-top:0">Open it. That screen <em>is</em> an
+        auto-clicker — type <b>100</b> in the ms box and press
+        <b>Start</b>. F8 starts and stops it too.</p>
+        <p>To make it stop after 100 clicks, tick <b>Repeat</b> and type 100.
+        There is no file to save and nothing to run.</p>
+        <p class="sub" style="margin-bottom:0">The node canvas on the left of
+        this comparison is the <em>other</em> half of Macronaut, one click away
+        under <b>Advanced</b>, for when a job needs more than a timer.</p>
       </div>
     </div>
 
@@ -282,8 +301,10 @@ DoClick() {
 
     <h2>What Macronaut does better</h2>
     <ul>
-      <li><b>Nothing to learn first.</b> Press Record, do the thing once, press
-      stop. What you did is now a flow you can edit, reorder and re-run.</li>
+      <li><b>Nothing to learn first.</b> The window it opens on is an
+      auto-clicker with the numbers already on it. Or press Record, do the
+      thing once, press stop — what you did is now a flow you can edit,
+      reorder and re-run.</li>
       <li><b>You can see it.</b> A flow is a diagram, so a colleague can read
       it, and so can you in six months. Debugging is watching which node
       lights up.</li>
@@ -330,7 +351,7 @@ DoClick() {
 
 <footer>
   <div class="wrap row">
-    <div>Macronaut 2.2.0 · © 2026 Gerben van Poucke ·
+    <div>Macronaut 2.3.0 · © 2026 Gerben van Poucke ·
       <a href="mailto:gerbenvanpoucke0@gmail.com">gerbenvanpoucke0@gmail.com</a></div>
     <nav>
       <a href="https://gtjevptje.github.io/Macronaut/">Home</a>

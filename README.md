@@ -27,9 +27,26 @@ Automate repetitive tasks in any Windows app — draw the flow, press play.</p>
 ## What it is
 
 Macronaut automates clicking, typing and waiting in **any** Windows program —
-including ones with no API, no scripting support and no plugins. You build the
-automation as a **flow**: boxes for the things it does, wires for the order they
-happen in. No scripting language to learn.
+including ones with no API, no scripting support and no plugins.
+
+It has **two faces, and you pick which one you get.**
+
+**Basic** is a plain auto-clicker. Click interval, which button, how many times,
+where — set the numbers, press Start. It is the layout anyone who has used an
+auto-clicker already knows, and nothing about it involves a node, a flow or a
+diagram. If that is all you came for, you are done on this screen.
+
+**Advanced** is the node canvas, one click away: boxes for the things it does,
+wires for the order they happen in. Record yourself once and it lands there as
+editable steps, or draw it yourself. No scripting language to learn.
+
+Macronaut opens on whichever one you closed it on, and each remembers its own
+size and position — Basic parked in a corner beside the window it is clicking,
+Advanced as big as you like.
+
+<p align="center"><img alt="Macronaut's Basic face — an auto-clicker with click
+interval, mouse button, repeat count, cursor position and a Start button"
+src="assets/basic.png" width="440"></p>
 
 If you have ever thought *"I do this exact sequence twenty times a day"*, that
 is the thing Macronaut is for.
@@ -47,9 +64,10 @@ library and press Play.
 ## Free or Pro
 
 **The free tier is a complete auto-clicker, not a trial.** No timer, no
-watermark, no expiry, no account, no nagging. Clicking, typing, dragging,
-scrolling and recording are free permanently, in flows of up to
-20 steps.
+watermark, no expiry, no account, no nagging. **The whole Basic face is free
+and always will be** — that is the tier's reason to exist, not a sample of it.
+Clicking, typing, dragging, scrolling and recording are free permanently too,
+in flows of up to 20 steps.
 
 **Pro** — €9.99, once — adds the half that makes it an automation tool
 rather than a clicker: the steps that **look at the screen** and the steps that
@@ -57,6 +75,7 @@ rather than a clicker: the steps that **look at the screen** and the steps that
 
 | | Free | Pro |
 |---|:---:|:---:|
+| **Basic — the plain auto-clicker** | ✅ | ✅ |
 | Click, move, drag, scroll | ✅ | ✅ |
 | Type text, press keys and chords | ✅ | ✅ |
 | Record what you do into an editable flow | ✅ | ✅ |
@@ -77,7 +96,16 @@ just will not *run* until it is licensed. You never lose work.
 
 ## What it can do
 
-**Build a flow visually**
+**Just click something, over and over** *(the Basic face)*
+- Interval in hours / minutes / seconds / milliseconds, or **Max** for as fast
+  as the machine will go
+- Left or right button, at the cursor or at a fixed X·Y you can pick off screen
+- Repeat a set number of times, until you stop it, or until a stop-after timer
+  runs out
+- Human mode jitters the cursor so the movement is not machine-perfect
+- Start and Stop, plus the same global hotkey the rest of the app uses
+
+**Build a flow visually** *(the Advanced face)*
 - Drop in **Click**, **Move**, **Drag**, **Scroll**, **Type text**, **Key press**,
   **Wait**, **Comment** — and, with Pro, **Detect**, **If / Else**, **Loop** and **Go to**
 - Wire them together and press ▶ — the running step lights up as it goes
