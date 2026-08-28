@@ -34,6 +34,10 @@ happen in. No scripting language to learn.
 If you have ever thought *"I do this exact sequence twenty times a day"*, that
 is the thing Macronaut is for.
 
+Coming from AutoHotkey, or been meaning to learn it? There is a
+[side-by-side comparison](https://gtjevptje.github.io/Macronaut/autohotkey-alternative.html) — including
+the things AutoHotkey still does better, of which there are several.
+
 It arrives with **5 automations already built** — an auto-clicker, a
 clicker that stops after a set number of clicks, one that clicks once every 30
 seconds to keep a session awake, one that types a block of text, and one that
