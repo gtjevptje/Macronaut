@@ -12,6 +12,8 @@ Automate repetitive tasks in any Windows app — draw the flow, press play.</p>
 
 <h3 align="center">
   <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">⬇&nbsp;&nbsp;Download Macronaut for Windows</a>
+  <br><sub>Windows shows <b>“Windows protected your PC”</b> on first run —
+  click <b>More info → Run anyway</b>. It does that for any unsigned app.</sub>
 </h3>
 
 <p align="center"><i>One file. No installer. It updates itself.</i></p>
@@ -32,6 +34,12 @@ happen in. No scripting language to learn.
 If you have ever thought *"I do this exact sequence twenty times a day"*, that
 is the thing Macronaut is for.
 
+It arrives with **5 automations already built** — an auto-clicker, a
+clicker that stops after a set number of clicks, one that clicks once every 30
+seconds to keep a session awake, one that types a block of text, and one that
+presses a key over and over. None of them need setting up: open one from the
+library and press Play.
+
 ## Free or Pro
 
 **The free tier is a complete auto-clicker, not a trial.** No timer, no
@@ -39,7 +47,7 @@ watermark, no expiry, no account, no nagging. Clicking, typing, dragging,
 scrolling and recording are free permanently, in flows of up to
 20 steps.
 
-**Pro** — €29, once — adds the half that makes it an automation tool
+**Pro** — €9.99, once — adds the half that makes it an automation tool
 rather than a clicker: the steps that **look at the screen** and the steps that
 **decide what to do about it**.
 
@@ -142,10 +150,15 @@ source is not published. Full terms ship inside the app under
 [third-party notices](https://github.com/gtjevptje/Macronaut/releases/latest/download/THIRD-PARTY-NOTICES.md)
 for the open-source components it is built on.
 
+## Getting in touch
+
+**[gerbenvanpoucke0@gmail.com](mailto:gerbenvanpoucke0@gmail.com)** — bug reports, a lost licence key, or a
+refund. It is one person, not a ticket queue.
+
 ---
 
 <p align="center">
   <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe"><b>⬇&nbsp;&nbsp;Download Macronaut for Windows</b></a>
   &nbsp;·&nbsp;
-  <a href="https://gtjevptje.github.io/Macronaut/#buy"><b>Get Pro — €29</b></a>
+  <a href="https://gtjevptje.github.io/Macronaut/#buy"><b>Get Pro — €9.99</b></a>
 </p>
