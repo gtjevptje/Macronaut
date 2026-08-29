@@ -51,9 +51,19 @@ src="assets/basic.png" width="440"></p>
 If you have ever thought *"I do this exact sequence twenty times a day"*, that
 is the thing Macronaut is for.
 
-Coming from AutoHotkey, or been meaning to learn it? There is a
-[side-by-side comparison](https://gtjevptje.github.io/Macronaut/autohotkey-alternative.html) — including
-the things AutoHotkey still does better, of which there are several.
+Coming from another tool? There are honest comparisons — each one saying what
+the other still does better, because there is always something:
+[**vs AutoHotkey**](https://gtjevptje.github.io/Macronaut/autohotkey-alternative.html) if you have been
+meaning to learn it for a year, and
+[**vs TinyTask**](https://gtjevptje.github.io/Macronaut/tinytask-alternative.html) if you have re-recorded
+the same macro three times because a window moved.
+
+Just want the clicker? [**The auto clicker page**](https://gtjevptje.github.io/Macronaut/auto-clicker.html)
+covers setting one up, choosing an interval, and the two things nobody explains:
+why antivirus complains about every tool in this category, and how you stop the
+thing once it is running. There is also a
+[**click speed test**](https://gtjevptje.github.io/Macronaut/click-speed-test.html) — no ads, no sign-up,
+runs in the page.
 
 It arrives with **5 automations already built** — an auto-clicker, a
 clicker that stops after a set number of clicks, one that clicks once every 30
