@@ -6,7 +6,7 @@
 <title>An AutoHotkey alternative you don't have to write code in — Macronaut</title>
 <meta name="description" content="AutoHotkey is a scripting language. Macronaut does the same job by recording what you do, or by letting you draw the flow. An honest comparison, including what AutoHotkey still does better.">
 <link rel="canonical" href="https://gtjevptje.github.io/Macronaut/autohotkey-alternative.html">
-<meta name="theme-color" content="#070b16">
+<meta name="theme-color" content="#0a0818">
 
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Macronaut">
@@ -18,9 +18,9 @@
 
 <style>
 :root{
-  --bg:#070b16; --panel:#0f1830; --panel2:#152144; --hover:#1c2950;
-  --border:#26345a; --text:#e8edf8; --muted:#8694b8;
-  --accent:#6c7cff; --accent-hover:#8a96ff; --green:#2fd3a4; --amber:#f5b14b;
+  --bg:#0a0818; --panel:#15122c; --panel2:#1d1840; --hover:#272052;
+  --border:#3a2f7a; --text:#ece9fb; --muted:#a79fd4;
+  --accent:#8b5cf6; --accent-hover:#a279f8; --green:#2fd3a4; --amber:#f5b14b;
   --max:1080px;
 }
 *{box-sizing:border-box}
@@ -35,13 +35,13 @@ body{
 body::before{
   content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
   background:
-    radial-gradient(1px 1px at 12% 18%, #c9d6ff 50%, transparent 51%),
-    radial-gradient(1px 1px at 68% 9%,  #c9d6ff 50%, transparent 51%),
-    radial-gradient(1px 1px at 34% 42%, #9fb2e8 50%, transparent 51%),
-    radial-gradient(1px 1px at 88% 33%, #c9d6ff 50%, transparent 51%),
-    radial-gradient(1px 1px at 52% 66%, #8fa3dd 50%, transparent 51%),
-    radial-gradient(1px 1px at 22% 78%, #c9d6ff 50%, transparent 51%),
-    radial-gradient(1px 1px at 78% 88%, #9fb2e8 50%, transparent 51%);
+    radial-gradient(1px 1px at 12% 18%, #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 68% 9%,  #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 34% 42%, #bfa9f0 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 33%, #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 52% 66%, #a98fe0 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 78%, #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 88%, #bfa9f0 50%, transparent 51%);
 }
 main,header,footer{position:relative; z-index:1}
 .wrap{max-width:var(--max); margin:0 auto; padding:0 24px}
@@ -56,7 +56,7 @@ p{margin:0 0 1em}
 .small{font-size:14px}
 
 /* ── Nav ─────────────────────────────────────────────────────────── */
-header{border-bottom:1px solid var(--border); background:rgba(7,11,22,.85);
+header{border-bottom:1px solid var(--border); background:rgba(10,8,24,.85);
   backdrop-filter:blur(10px); position:sticky; top:0; z-index:20}
 .nav{display:flex; align-items:center; gap:24px; height:62px}
 .brand{font-weight:800; font-size:18px; letter-spacing:-.01em; color:var(--text)}
@@ -152,7 +152,7 @@ section > .wrap > h2{text-align:center}
 .plan{background:var(--panel); border:1px solid var(--border); border-radius:18px;
   padding:30px}
 .plan.best{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent),
-  0 20px 60px rgba(108,124,255,.14)}
+  0 20px 60px rgba(139,92,246,.16)}
 .plan .name{font-size:14px; font-weight:800; letter-spacing:.08em;
   text-transform:uppercase; color:var(--muted)}
 .plan.best .name{color:var(--accent-hover)}
@@ -351,7 +351,7 @@ DoClick() {
 
 <footer>
   <div class="wrap row">
-    <div>Macronaut 2.3.1 · © 2026 Gerben van Poucke ·
+    <div>Macronaut 2.3.2 · © 2026 Gerben van Poucke ·
       <a href="mailto:gerbenvanpoucke0@gmail.com">gerbenvanpoucke0@gmail.com</a></div>
     <nav>
       <a href="https://gtjevptje.github.io/Macronaut/">Home</a>
