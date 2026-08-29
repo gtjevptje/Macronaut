@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Auto Clicker for Windows 10 &amp; 11 — no ads, no installer</title>
+<meta name="description" content="A free auto clicker for Windows 10 and 11. Set the interval, pick the button, choose how many clicks, press Start. One file, no installer, no account, no ads. Includes the honest answers about antivirus warnings and game bans.">
+<link rel="canonical" href="https://gtjevptje.github.io/Macronaut/auto-clicker.html">
+<meta name="theme-color" content="#0a0818">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Macronaut">
+<meta property="og:title" content="A free auto clicker for Windows that is one file and no ads">
+<meta property="og:description" content="Interval, button, how many times, Start. Plus the two things every auto clicker page skips: why antivirus complains, and how to stop it once it is running.">
+<meta property="og:url" content="https://gtjevptje.github.io/Macronaut/auto-clicker.html">
+<meta property="og:image" content="https://gtjevptje.github.io/Macronaut/assets/basic.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to set up an auto clicker on Windows",
+  "description": "Set a clicking interval, choose a mouse button and a number of repeats, and start and stop it with a hotkey.",
+  "totalTime": "PT2M",
+  "tool": [{"@type": "HowToTool", "name": "Macronaut for Windows"}],
+  "step": [
+    {"@type": "HowToStep", "position": 1, "name": "Download and run it",
+     "text": "Download the single executable and run it. There is no installer and no account, and Windows will warn about an unsigned program the first time — choose More info, then Run anyway."},
+    {"@type": "HowToStep", "position": 2, "name": "Set the interval",
+     "text": "Type how long to wait between clicks in milliseconds. 1000 is one click a second; 100 is ten clicks a second."},
+    {"@type": "HowToStep", "position": 3, "name": "Choose the button and the count",
+     "text": "Pick left, right or middle, and either let it run until you stop it or set a fixed number of clicks."},
+    {"@type": "HowToStep", "position": 4, "name": "Start and stop it",
+     "text": "Press Start, or the F8 hotkey. F8 also stops it from anywhere, including from inside a full-screen program that has taken over the mouse."}
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is this auto clicker a virus?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. Windows SmartScreen warns about it because the file is not code-signed yet, which it does for any new program without a certificate, signed malware included. Antivirus tools are also sometimes suspicious of any program that sends keystrokes and mouse clicks, because that is a capability malware also uses. The source of the warning is the missing certificate, not anything found in the file."}},
+    {"@type": "Question", "name": "How do I stop an auto clicker once it is running?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Press F8. The hotkey is registered globally, so it works even when another program is full-screen and the clicking is making it hard to reach the window. Setting a repeat count instead of letting it run indefinitely is the other safeguard."}},
+    {"@type": "Question", "name": "Is it really free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "The auto clicker is free permanently. It does not expire, it has no watermark, there is no advertising and no account. A paid tier exists for the screen-reading and branching features of the wider tool, and it is not switched on yet."}},
+    {"@type": "Question", "name": "Can an auto clicker get me banned from a game?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Many online games forbid automation in their terms of service and enforce it with suspensions and bans. That applies to every auto clicker. Check the rules of the game before using one."}},
+    {"@type": "Question", "name": "What is the fastest interval that is actually useful?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Somewhere around 10 to 50 milliseconds for most programs. Below that the target application usually stops keeping up and silently drops the extra clicks, so a smaller number produces no additional effect while making the machine work harder."}}
+  ]
+}
+</script>
+<style>
+:root{
+  --bg:#0a0818; --panel:#15122c; --panel2:#1d1840; --hover:#272052;
+  --border:#3a2f7a; --text:#ece9fb; --muted:#a79fd4;
+  --accent:#8b5cf6; --accent-hover:#a279f8; --green:#2fd3a4; --amber:#f5b14b;
+  --max:1080px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font:16px/1.65 "Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+/* A very faint starfield, the same idea as the app's top bar. Pure CSS so the
+   page stays one file and one request. */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
+  background:
+    radial-gradient(1px 1px at 12% 18%, #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 68% 9%,  #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 34% 42%, #bfa9f0 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 33%, #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 52% 66%, #a98fe0 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 78%, #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 88%, #bfa9f0 50%, transparent 51%);
+}
+main,header,footer{position:relative; z-index:1}
+.wrap{max-width:var(--max); margin:0 auto; padding:0 24px}
+a{color:var(--accent-hover); text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3{line-height:1.2; margin:0 0 .5em}
+h1{font-size:clamp(34px,5.2vw,56px); font-weight:800; letter-spacing:-.02em}
+h2{font-size:clamp(25px,3.2vw,34px); font-weight:800; letter-spacing:-.01em}
+h3{font-size:19px; font-weight:700}
+p{margin:0 0 1em}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+
+/* ── Nav ─────────────────────────────────────────────────────────── */
+header{border-bottom:1px solid var(--border); background:rgba(10,8,24,.85);
+  backdrop-filter:blur(10px); position:sticky; top:0; z-index:20}
+.nav{display:flex; align-items:center; gap:24px; height:62px}
+.brand{font-weight:800; font-size:18px; letter-spacing:-.01em; color:var(--text)}
+.brand:hover{text-decoration:none}
+.tag{background:var(--accent); color:#fff; border-radius:7px; padding:2px 8px;
+  font-size:11px; font-weight:800; margin-left:8px; vertical-align:2px}
+.nav nav{display:flex; gap:22px; margin-left:auto; font-size:15px}
+.nav nav a{color:var(--muted)}
+.nav nav a:hover{color:var(--text); text-decoration:none}
+@media(max-width:720px){.nav nav{display:none}}
+
+/* ── Buttons ─────────────────────────────────────────────────────── */
+.btn{display:inline-block; padding:13px 22px; border-radius:12px; font-weight:700;
+  font-size:16px; border:1px solid var(--border); background:var(--panel2);
+  color:var(--text); cursor:pointer; transition:.15s}
+.btn:hover{background:var(--hover); text-decoration:none}
+.btn-primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn-primary:hover{background:var(--accent-hover); border-color:var(--accent-hover)}
+.btn-lg{padding:16px 30px; font-size:17px}
+.btn[aria-disabled="true"]{opacity:.55; cursor:not-allowed}
+.cta{display:flex; gap:14px; flex-wrap:wrap; align-items:center}
+
+/* ── Hero ────────────────────────────────────────────────────────── */
+.hero{padding:76px 0 56px; text-align:center}
+.hero p.lead{font-size:clamp(17px,2.1vw,21px); color:var(--muted);
+  max-width:640px; margin:0 auto 30px}
+.hero .cta{justify-content:center}
+.under{margin-top:18px; font-size:14px; color:var(--muted)}
+/* Quieter and narrower than the spec line above it: this is a thing to know
+   before leaving, not a second sales point, and a scare-sized paragraph under
+   a Download button argues against the button. */
+.heads-up{margin-top:10px; font-size:13px; max-width:52ch;
+          margin-left:auto; margin-right:auto; line-height:1.5;
+          opacity:.85}
+.heads-up b{color:var(--text); font-weight:600}
+
+/* ── "free for now" ──────────────────────────────────────────────── */
+/* The price is struck through rather than removed: what Pro will cost is
+   the anchor that makes "free right now" mean anything, and a number that
+   quietly vanishes and reappears later reads as a bait-and-switch. */
+.freenow{border:1px solid var(--accent); border-radius:14px;
+         padding:16px 20px; margin:0 0 26px; text-align:center;
+         background:color-mix(in srgb, var(--accent) 8%, transparent)}
+.freenow b{color:var(--text)}
+.freenow .lead2{font-size:17px; font-weight:600; color:var(--text);
+                display:block; margin-bottom:4px}
+.was{text-decoration:line-through; opacity:.5; font-weight:600}
+.price .now{color:var(--accent)}
+.price .was{font-size:.62em; margin-right:10px}
+li.later{opacity:.65}
+li.later em{font-style:normal; opacity:.8}
+/* ⚠ `height:auto` is load-bearing, not tidiness. The width/height attributes
+   on the <img> are there to reserve the right space before the image arrives
+   (no layout shift) — but with `max-width:100%` and no `height:auto` the
+   browser honours the height attribute literally, so on any viewport narrower
+   than the image the picture is squashed to a fixed 1000px box. Caught by
+   previewing the page, which nothing about the markup would have shown. */
+.shot{margin:52px auto 0; max-width:100%; height:auto; border:1px solid var(--border);
+  border-radius:16px; display:block; box-shadow:0 24px 70px rgba(0,0,0,.55);
+  background:var(--panel)}
+/* A shot sitting inside a card rather than under the hero: it is illustrating
+   the paragraph beside it, so it wants a shadow that does not fight the card's
+   own edge. Capped in height because the Basic face is a tall, narrow window
+   and at full width it would tower over everything around it. */
+.shot-inline{margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.35);
+  max-height:340px; width:auto}
+/* The one card carrying a screenshot spans the grid. Left in a normal cell it
+   made its own row twice as tall as the card beside it, which then sat mostly
+   empty — grid rows match heights, so a tall cell is paid for by its
+   neighbour. */
+.card-wide{grid-column:1/-1; display:flex; gap:26px; align-items:center}
+.card-wide > div{flex:1 1 340px; min-width:0}
+@media (max-width:700px){
+  .card-wide{flex-direction:column; align-items:stretch}
+  .shot-inline{max-height:none; width:100%}
+}
+
+/* ── Sections ────────────────────────────────────────────────────── */
+section{padding:66px 0; border-top:1px solid var(--border)}
+section > .wrap > h2{text-align:center}
+.sub{text-align:center; color:var(--muted); max-width:620px; margin:0 auto 42px}
+
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:18px}
+.card{background:var(--panel); border:1px solid var(--border); border-radius:16px;
+  padding:24px}
+.card h3{margin-bottom:.35em}
+.card p{margin:0; color:var(--muted); font-size:15px}
+.card .ico{font-size:22px; display:block; margin-bottom:12px}
+
+/* ── Pricing ─────────────────────────────────────────────────────── */
+.plans{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px; max-width:800px; margin:0 auto; align-items:start}
+.plan{background:var(--panel); border:1px solid var(--border); border-radius:18px;
+  padding:30px}
+.plan.best{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent),
+  0 20px 60px rgba(139,92,246,.16)}
+.plan .name{font-size:14px; font-weight:800; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted)}
+.plan.best .name{color:var(--accent-hover)}
+.price{font-size:42px; font-weight:800; letter-spacing:-.02em; margin:10px 0 2px}
+.price span{font-size:15px; font-weight:600; color:var(--muted); letter-spacing:0}
+.plan ul{list-style:none; padding:0; margin:22px 0 26px}
+.plan li{padding:7px 0 7px 28px; position:relative; font-size:15px; color:var(--muted)}
+.plan li::before{content:"✓"; position:absolute; left:0; top:7px;
+  color:var(--green); font-weight:800}
+.plan li.no::before{content:"—"; color:var(--border)}
+.plan .btn{width:100%; text-align:center}
+.pending{margin-top:14px; font-size:13px; color:var(--amber)}
+
+/* ── FAQ ─────────────────────────────────────────────────────────── */
+.faq{max-width:760px; margin:0 auto}
+details{background:var(--panel); border:1px solid var(--border);
+  border-radius:14px; padding:0 22px; margin-bottom:12px}
+details[open]{background:var(--panel2)}
+summary{cursor:pointer; font-weight:700; padding:18px 0; list-style:none;
+  display:flex; justify-content:space-between; gap:16px; align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+"; color:var(--muted); font-weight:800; font-size:20px}
+details[open] summary::after{content:"−"}
+details .body{padding:0 0 20px; color:var(--muted); font-size:15px}
+details .body p:last-child{margin-bottom:0}
+
+/* ── Warning + footer ────────────────────────────────────────────── */
+.warn{background:var(--panel); border:1px solid var(--border);
+  border-left:3px solid var(--amber); border-radius:14px; padding:22px 24px;
+  max-width:760px; margin:0 auto; color:var(--muted); font-size:15px}
+.warn b{color:var(--text)}
+footer{border-top:1px solid var(--border); padding:38px 0 52px;
+  color:var(--muted); font-size:14px}
+footer .row{display:flex; gap:22px; flex-wrap:wrap; align-items:center}
+footer .row nav{margin-left:auto; display:flex; gap:20px; flex-wrap:wrap}
+</style>
+<style>
+.crumb{font-size:14px; color:var(--muted); margin-bottom:8px}
+.crumb a{color:var(--muted)}
+article p, article li{max-width:70ch}
+article h2{margin-top:44px}
+.steps{counter-reset:s; list-style:none; padding:0; margin:22px 0}
+.steps li{counter-increment:s; position:relative; padding:0 0 18px 46px;
+          max-width:70ch}
+.steps li::before{content:counter(s); position:absolute; left:0; top:-2px;
+                  width:30px; height:30px; border-radius:50%;
+                  background:var(--accent); color:#fff; font-weight:700;
+                  font-size:15px; display:flex; align-items:center;
+                  justify-content:center}
+.steps li b{display:block; margin-bottom:2px}
+.callout{background:var(--panel); border:1px solid var(--border);
+         border-left:3px solid var(--amber); border-radius:12px;
+         padding:16px 18px; margin:24px 0}
+.callout p:last-child{margin-bottom:0}
+table.cps{width:100%; border-collapse:collapse; margin:20px 0; font-size:15px}
+table.cps th, table.cps td{text-align:left; padding:9px 12px;
+                           border-bottom:1px solid var(--border)}
+table.cps th{font-size:12px; letter-spacing:.06em; text-transform:uppercase;
+             color:var(--muted); font-weight:600}
+table.cps td:first-child{font-variant-numeric:tabular-nums; white-space:nowrap;
+                         font-weight:600}
+table.cps tr:last-child td{border-bottom:none}
+.shot-p{max-width:100%; height:auto; border:1px solid var(--border);
+        border-radius:14px; display:block; margin:24px auto}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="https://gtjevptje.github.io/Macronaut/">Macronaut</a>
+    <nav>
+      <a href="https://gtjevptje.github.io/Macronaut/#features">Features</a>
+      <a href="https://gtjevptje.github.io/Macronaut/click-speed-test.html">Click speed test</a>
+      <a href="https://gtjevptje.github.io/Macronaut/#faq">FAQ</a>
+      <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section>
+  <div class="wrap">
+    <article>
+    <p class="crumb"><a href="https://gtjevptje.github.io/Macronaut/">Macronaut</a> &rarr; Auto clicker</p>
+    <h1>A free auto clicker for Windows</h1>
+    <p class="lead">Set how often to click, pick a button, say how many times,
+    press Start. That is the whole thing. It is a single 78 MB file for
+    Windows 10 and 11 — no installer, no account, no advertising, and the auto
+    clicker is free permanently rather than for a trial period.</p>
+
+    <div class="cta" style="margin:22px 0">
+      <a class="btn btn-primary btn-lg" href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">Download free for Windows</a>
+      <a class="btn btn-lg" href="https://gtjevptje.github.io/Macronaut/click-speed-test.html">Test your click speed</a>
+    </div>
+    <p class="under heads-up" style="margin-left:0;text-align:left">Windows will
+    say <b>&ldquo;Windows protected your PC&rdquo;</b> on first run — click
+    <b>More info</b>, then <b>Run anyway</b>. There is a straight answer about
+    why, <a href="#virus">further down</a>.</p>
+
+    <img class="shot-p" src="assets/basic.png" width="1000" height="1054"
+         alt="The Macronaut auto clicker window: a click interval in milliseconds, a mouse button chooser, a repeat count, and a Start button."
+         loading="lazy">
+
+    <h2>Setting it up</h2>
+    <ol class="steps">
+      <li><b>Run the file.</b> Nothing is installed. It goes wherever you put
+      it, it does not need admin rights, and deleting the file removes it
+      completely.</li>
+      <li><b>Type an interval.</b> That is the wait <em>between</em> clicks, in
+      milliseconds. 1000 is one click a second. 100 is ten a second — already
+      faster than almost anyone clicks by hand.</li>
+      <li><b>Pick the button and how many.</b> Left, right or middle; then
+      either leave it running until you stop it, or tick the repeat box and
+      give it a number so it stops on its own.</li>
+      <li><b>Start it.</b> The Start button, or <b>F8</b>. F8 stops it too, and
+      that matters more than it sounds — see below.</li>
+    </ol>
+
+    <h2 id="stop">Stopping it, which is the part that catches people</h2>
+    <p>An auto clicker clicking ten times a second is genuinely difficult to
+    switch off with the mouse, because every attempt to click a Stop button is
+    racing the clicker for the same cursor. In a full-screen game it is worse:
+    the window you need is behind the one that has taken the screen.</p>
+    <p>So the stop is a <b>global hotkey</b>. <b>F8</b> is registered with
+    Windows itself rather than with the window, which means it works whatever
+    is in front and whatever the mouse is doing. If you take one thing from
+    this page, take that: <b>know the stop key before you press start</b>. The
+    other safeguard is the repeat count — an auto clicker that stops itself
+    after 500 clicks cannot run away with your afternoon.</p>
+
+    <h2 id="virus">&ldquo;Windows says it is unsafe&rdquo;</h2>
+    <p>Two different warnings get confused here, and both have honest answers.</p>
+    <p><b>SmartScreen</b> — the blue &ldquo;Windows protected your PC&rdquo;
+    box — appears because this file is <b>not code-signed</b>. A signing
+    certificate costs a few hundred euros a year and requires identity
+    verification, and this is a one-person project that has not bought one yet.
+    SmartScreen shows that box for any program it has not seen before and
+    cannot attribute to a known publisher. It is a statement about the
+    paperwork, not about the contents.</p>
+    <p><b>Antivirus software</b> sometimes flags auto clickers generally,
+    because sending synthetic mouse and keyboard input is a capability that
+    malware also uses. There is no way to write an auto clicker that does not
+    do this — it is the entire job. What you can do is check: the file
+    published on the
+    <a href="https://github.com/gtjevptje/Macronaut/releases">releases page</a> carries a SHA-256 hash in
+    its update manifest, so you can confirm the file you downloaded is the file
+    that was published, and upload it to a multi-engine scanner yourself if you
+    want a second opinion.</p>
+    <div class="callout">
+      <p><b>The general rule, which applies to every tool in this category and
+      not only this one:</b> auto clickers are a favourite wrapper for
+      adware, because people download them in a hurry and click through
+      installers. Prefer a single executable over an installer, prefer a
+      download that comes from a page you can trace to a person, and be
+      suspicious of any &ldquo;free auto clicker&rdquo; that arrives as a setup
+      wizard with optional extras.</p>
+    </div>
+
+    <h2>Choosing an interval</h2>
+    <table class="cps">
+      <thead><tr><th>Interval</th><th>Rate</th><th>What it suits</th></tr></thead>
+      <tbody>
+        <tr><td>1000 ms</td><td>1 / second</td><td>Keeping a session or a screen awake.</td></tr>
+        <tr><td>500 ms</td><td>2 / second</td><td>Steady, unmistakably deliberate work.</td></tr>
+        <tr><td>200 ms</td><td>5 / second</td><td>About as fast as an unhurried person clicks.</td></tr>
+        <tr><td>100 ms</td><td>10 / second</td><td>Faster than most people manage by hand.</td></tr>
+        <tr><td>50 ms</td><td>20 / second</td><td>Fast enough that some programs begin dropping clicks.</td></tr>
+        <tr><td>10 ms</td><td>100 / second</td><td>Rarely does anything the 50 ms setting did not.</td></tr>
+      </tbody>
+    </table>
+    <p>Smaller is not better. Past a point the program being clicked stops
+    keeping up and quietly ignores the surplus, so the only thing a tiny
+    interval reliably adds is CPU load. If you are not sure, start at 100 ms
+    and go down only if it is genuinely too slow.
+    <a href="https://gtjevptje.github.io/Macronaut/click-speed-test.html">The click speed test</a> is a
+    quick way to see what your own hand does for comparison.</p>
+
+    <h2>Games, honestly</h2>
+    <p>A lot of auto clicker traffic is game traffic, so this deserves a
+    straight answer rather than a footnote. <b>Many online games prohibit
+    automation</b> and enforce it — suspensions and permanent bans are normal
+    outcomes, and the risk belongs to every auto clicker equally. Read the rules
+    of the specific game and decide for yourself.</p>
+    <p>The other half is technical: some games ignore ordinary injected input
+    entirely, so nothing happens. Macronaut has three input backends for that —
+    ordinary injection, SendInput scancodes, and an Interception kernel driver
+    that presents as a real keyboard — switchable from a dropdown when the first
+    one has no effect.</p>
+
+    <h2>When a clicker is not enough</h2>
+    <p>An auto clicker repeats one thing on a timer. Sooner or later a job needs
+    more: click <em>here</em>, wait for something to appear, type a line, click
+    <em>there</em>. That is the other half of Macronaut, one link away under
+    <b>Advanced</b> — record what you do once and it becomes an editable flow,
+    or drag the steps onto a canvas and wire them together. It can wait for an
+    image, read text on screen with Windows&rsquo; own OCR, and branch on what
+    it finds.</p>
+    <p>You never have to go near it. The auto clicker is the window it opens
+    on, and it reopens on whichever of the two you closed it on.</p>
+
+    <h2>Other free auto clickers</h2>
+    <p>There are several, some of them long-established and perfectly good.
+    Where this one differs: it is a single file rather than an installer, it
+    carries no advertising, and the same download grows into a full macro tool
+    if the simple version stops being enough. Where it loses: it is
+    <b>78 MB</b> against a few hundred kilobytes for the smallest of
+    them, because it bundles a whole UI toolkit — and it is not code-signed,
+    while some of the older ones are.</p>
+    <p>If you came here from AutoHotkey, there is a
+    <a href="https://gtjevptje.github.io/Macronaut/autohotkey-alternative.html">side-by-side comparison</a>,
+    including what AutoHotkey still does better. If you came from TinyTask,
+    <a href="https://gtjevptje.github.io/Macronaut/tinytask-alternative.html">that comparison is here</a>.</p>
+
+    <h2>Questions</h2>
+    <div class="faq">
+      <details><summary>Is the free version a trial?</summary>
+      <div class="body"><p>No. The auto clicker does not expire, has no
+      watermark and does not nag. A paid tier exists for the screen-watching
+      features of the wider tool and is not switched on yet — right now
+      everything is free, including the parts that will not stay
+      free.</p></div></details>
+
+      <details><summary>Does it need an internet connection?</summary>
+      <div class="body"><p>Only to check for updates, which can be turned off.
+      The clicking itself happens entirely on your machine.</p></div></details>
+
+      <details><summary>Can it click somewhere specific rather than where the cursor is?</summary>
+      <div class="body"><p>Yes, but that is the canvas rather than the simple
+      screen: a Click step takes coordinates, and you can pick them by pointing
+      at the spot. The simple auto clicker deliberately clicks wherever the
+      cursor already is, because that is what almost everyone
+      wants.</p></div></details>
+
+      <details><summary>Will it work on macOS or Linux?</summary>
+      <div class="body"><p>No. It is Windows 10 and 11, 64-bit, and there is
+      no build for anything else.</p></div></details>
+
+      <details><summary>Where does it store things?</summary>
+      <div class="body"><p>In your user profile, alongside your saved
+      automations. Nothing is written to the Windows directory and nothing is
+      added to the registry, so deleting the file and that folder removes it
+      entirely.</p></div></details>
+    </div>
+
+    <div class="cta" style="margin:32px 0 8px">
+      <a class="btn btn-primary btn-lg" href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">Download free for Windows</a>
+      <a class="btn btn-lg" href="https://gtjevptje.github.io/Macronaut/">Everything else it does</a>
+    </div>
+
+    <p class="sub small" style="margin-top:30px">Wrong about something here, or
+    it did not work? <a href="mailto:gerbenvanpoucke0@gmail.com">gerbenvanpoucke0@gmail.com</a> reaches the person
+    who wrote it.</p>
+    </article>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap row">
+    <div>Macronaut 2.3.2 &middot; &copy; 2026 Gerben van Poucke &middot;
+      <a href="mailto:gerbenvanpoucke0@gmail.com">gerbenvanpoucke0@gmail.com</a></div>
+    <nav>
+      <a href="https://gtjevptje.github.io/Macronaut/">Home</a>
+      <a href="https://gtjevptje.github.io/Macronaut/click-speed-test.html">Click speed test</a>
+      <a href="https://github.com/gtjevptje/Macronaut">GitHub</a>
+      <a href="https://github.com/gtjevptje/Macronaut/releases">Release notes</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

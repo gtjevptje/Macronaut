@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Click Speed Test — measure your CPS, no ads, nothing to install</title>
+<meta name="description" content="Free click speed test. Measure your clicks per second over 1, 5, 10, 30, 60 or 100 seconds. No ads, no sign-up, no download — it runs in the page. See how your CPS compares, and what the number actually means.">
+<link rel="canonical" href="https://gtjevptje.github.io/Macronaut/click-speed-test.html">
+<meta name="theme-color" content="#0a0818">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Macronaut">
+<meta property="og:title" content="Click Speed Test — measure your CPS, no ads">
+<meta property="og:description" content="How many times can you click in a second? Measure it over 1 to 100 seconds. Runs in the page, nothing to install, no ads.">
+<meta property="og:url" content="https://gtjevptje.github.io/Macronaut/click-speed-test.html">
+<meta property="og:image" content="https://gtjevptje.github.io/Macronaut/assets/hero.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Click Speed Test",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "browserRequirements": "Requires JavaScript",
+  "url": "https://gtjevptje.github.io/Macronaut/click-speed-test.html",
+  "description": "A click speed test that measures clicks per second over a chosen duration, in the browser, with no advertising and no sign-up.",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "What is a good CPS?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Most people land between 5 and 8 clicks per second on a 5-second test using ordinary clicking. Above about 10 CPS almost always means a technique such as jitter or butterfly clicking rather than faster ordinary clicks. The average is around 6 to 7."}},
+    {"@type": "Question", "name": "How is CPS calculated?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Clicks per second is the number of clicks divided by the length of the test in seconds. The timer here starts on your first click rather than on a countdown, so no part of your reaction time is counted against you."}},
+    {"@type": "Question", "name": "Does this test work on a phone or tablet?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Taps count the same as clicks. Scores tend to be higher on a touchscreen because two thumbs can alternate, so a touchscreen score is not comparable with a mouse score."}},
+    {"@type": "Question", "name": "Is an auto clicker allowed in games?",
+     "acceptedAnswer": {"@type": "Answer", "text": "It depends entirely on the game. Many online games forbid automation in their terms of service and can suspend or ban an account for it, and that risk is real regardless of which tool is used. Single-player games, idle games and ordinary desktop work are a different matter."}},
+    {"@type": "Question", "name": "Why does my score drop on the longer tests?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Because clicking fast is not sustainable. A 1-second burst measures peak speed and a 60-second run measures endurance, and almost everybody is meaningfully slower on the second. Comparing the two is only fair at the same duration."}}
+  ]
+}
+</script>
+<style>
+:root{
+  --bg:#0a0818; --panel:#15122c; --panel2:#1d1840; --hover:#272052;
+  --border:#3a2f7a; --text:#ece9fb; --muted:#a79fd4;
+  --accent:#8b5cf6; --accent-hover:#a279f8; --green:#2fd3a4; --amber:#f5b14b;
+  --max:1080px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font:16px/1.65 "Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+/* A very faint starfield, the same idea as the app's top bar. Pure CSS so the
+   page stays one file and one request. */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
+  background:
+    radial-gradient(1px 1px at 12% 18%, #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 68% 9%,  #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 34% 42%, #bfa9f0 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 33%, #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 52% 66%, #a98fe0 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 78%, #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 88%, #bfa9f0 50%, transparent 51%);
+}
+main,header,footer{position:relative; z-index:1}
+.wrap{max-width:var(--max); margin:0 auto; padding:0 24px}
+a{color:var(--accent-hover); text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3{line-height:1.2; margin:0 0 .5em}
+h1{font-size:clamp(34px,5.2vw,56px); font-weight:800; letter-spacing:-.02em}
+h2{font-size:clamp(25px,3.2vw,34px); font-weight:800; letter-spacing:-.01em}
+h3{font-size:19px; font-weight:700}
+p{margin:0 0 1em}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+
+/* ── Nav ─────────────────────────────────────────────────────────── */
+header{border-bottom:1px solid var(--border); background:rgba(10,8,24,.85);
+  backdrop-filter:blur(10px); position:sticky; top:0; z-index:20}
+.nav{display:flex; align-items:center; gap:24px; height:62px}
+.brand{font-weight:800; font-size:18px; letter-spacing:-.01em; color:var(--text)}
+.brand:hover{text-decoration:none}
+.tag{background:var(--accent); color:#fff; border-radius:7px; padding:2px 8px;
+  font-size:11px; font-weight:800; margin-left:8px; vertical-align:2px}
+.nav nav{display:flex; gap:22px; margin-left:auto; font-size:15px}
+.nav nav a{color:var(--muted)}
+.nav nav a:hover{color:var(--text); text-decoration:none}
+@media(max-width:720px){.nav nav{display:none}}
+
+/* ── Buttons ─────────────────────────────────────────────────────── */
+.btn{display:inline-block; padding:13px 22px; border-radius:12px; font-weight:700;
+  font-size:16px; border:1px solid var(--border); background:var(--panel2);
+  color:var(--text); cursor:pointer; transition:.15s}
+.btn:hover{background:var(--hover); text-decoration:none}
+.btn-primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn-primary:hover{background:var(--accent-hover); border-color:var(--accent-hover)}
+.btn-lg{padding:16px 30px; font-size:17px}
+.btn[aria-disabled="true"]{opacity:.55; cursor:not-allowed}
+.cta{display:flex; gap:14px; flex-wrap:wrap; align-items:center}
+
+/* ── Hero ────────────────────────────────────────────────────────── */
+.hero{padding:76px 0 56px; text-align:center}
+.hero p.lead{font-size:clamp(17px,2.1vw,21px); color:var(--muted);
+  max-width:640px; margin:0 auto 30px}
+.hero .cta{justify-content:center}
+.under{margin-top:18px; font-size:14px; color:var(--muted)}
+/* Quieter and narrower than the spec line above it: this is a thing to know
+   before leaving, not a second sales point, and a scare-sized paragraph under
+   a Download button argues against the button. */
+.heads-up{margin-top:10px; font-size:13px; max-width:52ch;
+          margin-left:auto; margin-right:auto; line-height:1.5;
+          opacity:.85}
+.heads-up b{color:var(--text); font-weight:600}
+
+/* ── "free for now" ──────────────────────────────────────────────── */
+/* The price is struck through rather than removed: what Pro will cost is
+   the anchor that makes "free right now" mean anything, and a number that
+   quietly vanishes and reappears later reads as a bait-and-switch. */
+.freenow{border:1px solid var(--accent); border-radius:14px;
+         padding:16px 20px; margin:0 0 26px; text-align:center;
+         background:color-mix(in srgb, var(--accent) 8%, transparent)}
+.freenow b{color:var(--text)}
+.freenow .lead2{font-size:17px; font-weight:600; color:var(--text);
+                display:block; margin-bottom:4px}
+.was{text-decoration:line-through; opacity:.5; font-weight:600}
+.price .now{color:var(--accent)}
+.price .was{font-size:.62em; margin-right:10px}
+li.later{opacity:.65}
+li.later em{font-style:normal; opacity:.8}
+/* ⚠ `height:auto` is load-bearing, not tidiness. The width/height attributes
+   on the <img> are there to reserve the right space before the image arrives
+   (no layout shift) — but with `max-width:100%` and no `height:auto` the
+   browser honours the height attribute literally, so on any viewport narrower
+   than the image the picture is squashed to a fixed 1000px box. Caught by
+   previewing the page, which nothing about the markup would have shown. */
+.shot{margin:52px auto 0; max-width:100%; height:auto; border:1px solid var(--border);
+  border-radius:16px; display:block; box-shadow:0 24px 70px rgba(0,0,0,.55);
+  background:var(--panel)}
+/* A shot sitting inside a card rather than under the hero: it is illustrating
+   the paragraph beside it, so it wants a shadow that does not fight the card's
+   own edge. Capped in height because the Basic face is a tall, narrow window
+   and at full width it would tower over everything around it. */
+.shot-inline{margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.35);
+  max-height:340px; width:auto}
+/* The one card carrying a screenshot spans the grid. Left in a normal cell it
+   made its own row twice as tall as the card beside it, which then sat mostly
+   empty — grid rows match heights, so a tall cell is paid for by its
+   neighbour. */
+.card-wide{grid-column:1/-1; display:flex; gap:26px; align-items:center}
+.card-wide > div{flex:1 1 340px; min-width:0}
+@media (max-width:700px){
+  .card-wide{flex-direction:column; align-items:stretch}
+  .shot-inline{max-height:none; width:100%}
+}
+
+/* ── Sections ────────────────────────────────────────────────────── */
+section{padding:66px 0; border-top:1px solid var(--border)}
+section > .wrap > h2{text-align:center}
+.sub{text-align:center; color:var(--muted); max-width:620px; margin:0 auto 42px}
+
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:18px}
+.card{background:var(--panel); border:1px solid var(--border); border-radius:16px;
+  padding:24px}
+.card h3{margin-bottom:.35em}
+.card p{margin:0; color:var(--muted); font-size:15px}
+.card .ico{font-size:22px; display:block; margin-bottom:12px}
+
+/* ── Pricing ─────────────────────────────────────────────────────── */
+.plans{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px; max-width:800px; margin:0 auto; align-items:start}
+.plan{background:var(--panel); border:1px solid var(--border); border-radius:18px;
+  padding:30px}
+.plan.best{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent),
+  0 20px 60px rgba(139,92,246,.16)}
+.plan .name{font-size:14px; font-weight:800; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted)}
+.plan.best .name{color:var(--accent-hover)}
+.price{font-size:42px; font-weight:800; letter-spacing:-.02em; margin:10px 0 2px}
+.price span{font-size:15px; font-weight:600; color:var(--muted); letter-spacing:0}
+.plan ul{list-style:none; padding:0; margin:22px 0 26px}
+.plan li{padding:7px 0 7px 28px; position:relative; font-size:15px; color:var(--muted)}
+.plan li::before{content:"✓"; position:absolute; left:0; top:7px;
+  color:var(--green); font-weight:800}
+.plan li.no::before{content:"—"; color:var(--border)}
+.plan .btn{width:100%; text-align:center}
+.pending{margin-top:14px; font-size:13px; color:var(--amber)}
+
+/* ── FAQ ─────────────────────────────────────────────────────────── */
+.faq{max-width:760px; margin:0 auto}
+details{background:var(--panel); border:1px solid var(--border);
+  border-radius:14px; padding:0 22px; margin-bottom:12px}
+details[open]{background:var(--panel2)}
+summary{cursor:pointer; font-weight:700; padding:18px 0; list-style:none;
+  display:flex; justify-content:space-between; gap:16px; align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+"; color:var(--muted); font-weight:800; font-size:20px}
+details[open] summary::after{content:"−"}
+details .body{padding:0 0 20px; color:var(--muted); font-size:15px}
+details .body p:last-child{margin-bottom:0}
+
+/* ── Warning + footer ────────────────────────────────────────────── */
+.warn{background:var(--panel); border:1px solid var(--border);
+  border-left:3px solid var(--amber); border-radius:14px; padding:22px 24px;
+  max-width:760px; margin:0 auto; color:var(--muted); font-size:15px}
+.warn b{color:var(--text)}
+footer{border-top:1px solid var(--border); padding:38px 0 52px;
+  color:var(--muted); font-size:14px}
+footer .row{display:flex; gap:22px; flex-wrap:wrap; align-items:center}
+footer .row nav{margin-left:auto; display:flex; gap:20px; flex-wrap:wrap}
+</style>
+<style>
+.crumb{font-size:14px; color:var(--muted); margin-bottom:8px}
+.crumb a{color:var(--muted)}
+article p, article li{max-width:70ch}
+article h2{margin-top:44px}
+
+.tester{background:var(--panel); border:1px solid var(--border);
+        border-radius:18px; padding:20px; margin:26px 0}
+.durations{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;
+           align-items:center}
+.durations .lbl{font-size:13px; letter-spacing:.05em; text-transform:uppercase;
+                color:var(--muted); margin-right:4px}
+.dur{background:var(--panel2); border:1px solid var(--border);
+     color:var(--text); border-radius:999px; padding:7px 15px; font:inherit;
+     font-size:14px; cursor:pointer}
+.dur:hover{background:var(--hover)}
+.dur[aria-pressed="true"]{background:var(--accent); border-color:var(--accent);
+                          color:#fff; font-weight:600}
+
+.pad{width:100%; border:2px dashed var(--border); background:var(--panel2);
+     color:var(--text); border-radius:14px; min-height:290px; display:flex;
+     flex-direction:column; align-items:center; justify-content:center;
+     gap:6px; cursor:pointer; font:inherit; text-align:center; padding:24px;
+     user-select:none; -webkit-user-select:none; touch-action:manipulation;
+     transition:background .06s linear, border-color .12s linear}
+.pad:hover{background:var(--hover)}
+.pad.live{border-style:solid; border-color:var(--accent);
+          background:var(--hover)}
+.pad.flash{background:var(--accent)}
+.pad:focus-visible{outline:3px solid var(--accent-hover); outline-offset:3px}
+.pad .big{font-size:64px; font-weight:800; line-height:1;
+          font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+.pad .cue{font-size:19px; font-weight:600}
+.pad .hint{font-size:14px; color:var(--muted); max-width:44ch}
+.pad.live .hint{opacity:.55}
+
+.readout{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+         margin-top:14px}
+@media (max-width:640px){.readout{grid-template-columns:repeat(2,1fr)}}
+.readout div{background:var(--panel2); border:1px solid var(--border);
+             border-radius:12px; padding:12px 14px}
+.readout .k{font-size:12px; letter-spacing:.06em; text-transform:uppercase;
+            color:var(--muted)}
+/* "Best (5s)" uppercased is "BEST (5S)", and a capital S at 12px reads as a
+   5 -- the label appeared to say "BEST (55)". The duration keeps its case. */
+.readout .k .lc{text-transform:none}
+.readout .v{font-size:26px; font-weight:700; font-variant-numeric:tabular-nums;
+            line-height:1.25}
+.readout .v.accent{color:var(--accent)}
+
+.verdict{border-left:3px solid var(--accent); padding:2px 0 2px 18px;
+         margin:18px 0 0; font-size:17px; display:none}
+.verdict.show{display:block}
+.verdict b{color:var(--text)}
+.again{margin-top:14px}
+
+table.cps{width:100%; border-collapse:collapse; margin:20px 0; font-size:15px}
+table.cps th, table.cps td{text-align:left; padding:9px 12px;
+                           border-bottom:1px solid var(--border)}
+table.cps th{font-size:12px; letter-spacing:.06em; text-transform:uppercase;
+             color:var(--muted); font-weight:600}
+table.cps td:first-child{font-variant-numeric:tabular-nums; white-space:nowrap;
+                         font-weight:600}
+table.cps tr:last-child td{border-bottom:none}
+.nojs{background:var(--panel2); border:1px solid var(--amber);
+      border-radius:12px; padding:14px 16px; margin:20px 0}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="https://gtjevptje.github.io/Macronaut/">Macronaut</a>
+    <nav>
+      <a href="https://gtjevptje.github.io/Macronaut/#features">Features</a>
+      <a href="https://gtjevptje.github.io/Macronaut/auto-clicker.html">Auto clicker</a>
+      <a href="https://gtjevptje.github.io/Macronaut/#faq">FAQ</a>
+      <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section>
+  <div class="wrap">
+    <article>
+    <p class="crumb"><a href="https://gtjevptje.github.io/Macronaut/">Macronaut</a> &rarr; Click speed test</p>
+    <h1>Click speed test</h1>
+    <p class="lead">How many times can you click in a second? Pick a length,
+    then click the box as fast as you can. The clock starts on your
+    <em>first</em> click, so none of your reaction time is counted against you.
+    No ads, no sign-up, nothing to install.</p>
+
+    <noscript>
+      <div class="nojs"><b>This test needs JavaScript.</b> It runs entirely in
+      your browser — there is no server counting anything — so with scripting
+      switched off there is nothing to measure with.</div>
+    </noscript>
+
+    <div class="tester">
+      <div class="durations" role="group" aria-label="Test length">
+        <span class="lbl">Seconds</span>
+        <button class="dur" type="button" data-s="1">1</button>
+        <button class="dur" type="button" data-s="5" aria-pressed="true">5</button>
+        <button class="dur" type="button" data-s="10">10</button>
+        <button class="dur" type="button" data-s="30">30</button>
+        <button class="dur" type="button" data-s="60">60</button>
+        <button class="dur" type="button" data-s="100">100</button>
+      </div>
+
+      <button class="pad" id="pad" type="button" aria-describedby="padhint">
+        <span class="cue" id="cue">Click here to start</span>
+        <span class="big" id="big">0</span>
+        <span class="hint" id="padhint">The timer starts the moment you click.
+        Space and Enter count too, so a keyboard works.</span>
+      </button>
+
+      <div class="readout" aria-live="off">
+        <div><div class="k">Clicks</div><div class="v" id="rClicks">0</div></div>
+        <div><div class="k">Time left</div><div class="v" id="rLeft">5.00s</div></div>
+        <div><div class="k">CPS</div><div class="v accent" id="rCps">0.00</div></div>
+        <div><div class="k">Best (5s)</div><div class="v" id="rBest">&mdash;</div></div>
+      </div>
+
+      <p class="verdict" id="verdict" role="status"></p>
+      <div class="again" id="again" style="display:none">
+        <button class="btn" type="button" id="reset">Try again</button>
+      </div>
+    </div>
+
+    <h2>What the number means</h2>
+    <p>Clicks per second is just clicks divided by seconds, which makes it
+    easy to compare and easy to misread. Two things move it more than skill
+    does: <b>the length of the test</b>, because nobody sustains a one-second
+    burst for a minute, and <b>the input device</b>, because two thumbs on a
+    touchscreen alternate in a way one finger on a mouse button cannot. Compare
+    like with like or the comparison means nothing.</p>
+
+    <p>Rough bands for a <b>5-second test with a mouse</b>, which is the
+    common default:</p>
+
+    <table class="cps">
+      <thead><tr><th>CPS</th><th>Where that sits</th></tr></thead>
+      <tbody>
+        <tr><td>under 4</td><td>Unhurried, or a trackpad. Perfectly normal for ordinary use.</td></tr>
+        <tr><td>4 &ndash; 6</td><td>Comfortable steady clicking, one finger.</td></tr>
+        <tr><td>6 &ndash; 8</td><td>The middle of the distribution. Most people who try hard land here.</td></tr>
+        <tr><td>8 &ndash; 10</td><td>Fast. Usually a light-switch mouse and a practised finger.</td></tr>
+        <tr><td>10 &ndash; 14</td><td>Almost always a technique — jitter or butterfly clicking, not ordinary clicks.</td></tr>
+        <tr><td>over 14</td><td>Drag clicking, a mouse with a faulty or double-firing switch, or software.</td></tr>
+      </tbody>
+    </table>
+
+    <p class="sub small">These are approximate, and anyone quoting an exact
+    global average is inventing it — there is no register of everybody&rsquo;s
+    clicks. Treat them as a sense of scale, not a scoreboard.</p>
+
+    <h2>Clicking faster, and the part nobody mentions</h2>
+    <p>The techniques people use to push past ordinary clicking are real:
+    <b>jitter clicking</b> tenses the forearm so the tremor drives the button,
+    <b>butterfly clicking</b> alternates two fingers on one button, and
+    <b>drag clicking</b> pulls a fingertip across the button so friction
+    triggers it many times.</p>
+    <p>They also all work by doing something repetitive and slightly violent
+    to a hand and forearm you would like to keep. Jitter clicking in particular
+    is deliberate sustained tension in exactly the tissue that repetitive strain
+    injury affects. It is worth knowing that before chasing a number: a personal
+    best on a click test is not worth a wrist that hurts in six months, and that
+    trade catches people who are convinced it will not.</p>
+
+    <h2>If you want the clicks made for you</h2>
+    <p>Most people who measure their click speed are not really curious about
+    the number — they have something that needs clicking a few thousand times
+    and are working out whether to do it by hand. That is a different tool.</p>
+    <p><b>Macronaut</b> is a free auto clicker for Windows. It opens on a plain
+    screen: how often to click, which button, how many times, Start. It is a
+    single 78 MB file with no installer and no account, and the
+    auto-clicker half of it is free permanently.</p>
+
+    <p>Converting a CPS score into the interval Macronaut asks for is just
+    dividing into 1000:</p>
+
+    <table class="cps">
+      <thead><tr><th>Clicks per second</th><th>Interval to type</th><th>In practice</th></tr></thead>
+      <tbody>
+        <tr><td>1 CPS</td><td>1000 ms</td><td>Once a second — keeping a session awake.</td></tr>
+        <tr><td>2 CPS</td><td>500 ms</td><td>Comfortable, obviously deliberate.</td></tr>
+        <tr><td>5 CPS</td><td>200 ms</td><td>About as fast as an unhurried person.</td></tr>
+        <tr><td>10 CPS</td><td>100 ms</td><td>Faster than most people manage by hand.</td></tr>
+        <tr><td>20 CPS</td><td>50 ms</td><td>Clearly not a person, and enough to overwhelm some apps.</td></tr>
+        <tr><td>100 CPS</td><td>10 ms</td><td>Possible, rarely useful, and often dropped by the target.</td></tr>
+      </tbody>
+    </table>
+
+    <p class="sub small">A very short interval is not automatically better. The
+    program on the other end has to keep up, and many stop responding to the
+    extra clicks long before the mouse does.</p>
+
+    <div class="cta" style="margin:22px 0">
+      <a class="btn btn-primary btn-lg" href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">Download the auto clicker &mdash; free</a>
+      <a class="btn btn-lg" href="https://gtjevptje.github.io/Macronaut/auto-clicker.html">How it works</a>
+    </div>
+    <p class="under heads-up" style="margin-left:0;text-align:left">Windows will
+    say <b>&ldquo;Windows protected your PC&rdquo;</b> the first time you run
+    it. It says that about any program without a signing certificate — click
+    <b>More info</b>, then <b>Run anyway</b>.</p>
+
+    <h2>A word about games</h2>
+    <p>Plenty of people arrive at a click test because of a game. Worth saying
+    plainly: <b>many online games forbid automation</b> and will suspend an
+    account for it, and that is true of every auto clicker, not just this one.
+    Read the rules of the game you are playing and make your own decision.
+    Idle games, single-player games and ordinary desktop drudgery are a
+    different question entirely.</p>
+
+    <h2>Questions</h2>
+    <div class="faq">
+      <details><summary>Does clicking here send anything anywhere?</summary>
+      <div class="body"><p>No. The test is a few dozen lines of JavaScript in
+      this page. Nothing is uploaded, there is no account, and there are no
+      third-party scripts on this page at all. Your best score is kept in your
+      own browser&rsquo;s local storage and never leaves it.</p></div></details>
+
+      <details><summary>Why does my best score not survive?</summary>
+      <div class="body"><p>It is stored per browser and per device, in local
+      storage. A private window, a different browser, or clearing site data all
+      start it fresh.</p></div></details>
+
+      <details><summary>Can I use the keyboard?</summary>
+      <div class="body"><p>Yes — once the box has focus, Space and Enter count
+      as clicks. That measures something slightly different, since a keyboard
+      repeats differently from a mouse button, but the test does not care.</p>
+      </div></details>
+
+      <details><summary>Is 10 seconds or 100 seconds the &ldquo;real&rdquo; test?</summary>
+      <div class="body"><p>Neither is more real. Short tests measure peak
+      speed, long tests measure endurance, and they answer different questions.
+      The one thing that matters is comparing scores at the same length.</p>
+      </div></details>
+    </div>
+
+    <p class="sub small" style="margin-top:34px">Something wrong on this page?
+    <a href="mailto:gerbenvanpoucke0@gmail.com">gerbenvanpoucke0@gmail.com</a>.</p>
+    </article>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap row">
+    <div>Macronaut 2.3.2 &middot; &copy; 2026 Gerben van Poucke &middot;
+      <a href="mailto:gerbenvanpoucke0@gmail.com">gerbenvanpoucke0@gmail.com</a></div>
+    <nav>
+      <a href="https://gtjevptje.github.io/Macronaut/">Home</a>
+      <a href="https://gtjevptje.github.io/Macronaut/auto-clicker.html">Auto clicker</a>
+      <a href="https://github.com/gtjevptje/Macronaut">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var pad = document.getElementById("pad");
+  if (!pad) return;
+
+  var cue = document.getElementById("cue");
+  var big = document.getElementById("big");
+  var rClicks = document.getElementById("rClicks");
+  var rLeft = document.getElementById("rLeft");
+  var rCps = document.getElementById("rCps");
+  var rBest = document.getElementById("rBest");
+  var verdict = document.getElementById("verdict");
+  var again = document.getElementById("again");
+  var reset = document.getElementById("reset");
+  var durs = Array.prototype.slice.call(document.querySelectorAll(".dur"));
+
+  var seconds = 5, clicks = 0, startedAt = 0, running = false, ticker = 0;
+
+  // localStorage throws outright in some privacy modes rather than returning
+  // null, so every touch of it is guarded. A best score is a nicety; losing it
+  // must never take the test down with it.
+  function bestKey() { return "macronaut.cps.best." + seconds; }
+  function readBest() {
+    try { return parseFloat(localStorage.getItem(bestKey())) || 0; }
+    catch (e) { return 0; }
+  }
+  function writeBest(v) {
+    try { localStorage.setItem(bestKey(), String(v)); } catch (e) {}
+  }
+
+  function fmt(n) { return n.toFixed(2); }
+
+  function showBest() {
+    var b = readBest();
+    rBest.textContent = b ? fmt(b) : "—";
+    rBest.previousElementSibling.innerHTML =
+      'Best <span class="lc">(' + seconds + 's)</span>';
+  }
+
+  function idle() {
+    running = false;
+    clearInterval(ticker);
+    pad.classList.remove("live");
+    clicks = 0;
+    big.textContent = "0";
+    cue.textContent = "Click here to start";
+    rClicks.textContent = "0";
+    rLeft.textContent = fmt(seconds) + "s";
+    rCps.textContent = "0.00";
+    again.style.display = "none";
+    showBest();
+  }
+
+  function band(cps) {
+    if (cps < 4) return "an unhurried pace — which is what most clicking actually is";
+    if (cps < 6) return "steady one-finger clicking";
+    if (cps < 8) return "right in the middle of where most people land";
+    if (cps < 10) return "fast for ordinary clicking";
+    if (cps < 14) return "the range that usually means a technique rather than ordinary clicks";
+    return "the range where it is normally drag clicking, a double-firing switch, or software";
+  }
+
+  function finish() {
+    running = false;
+    clearInterval(ticker);
+    pad.classList.remove("live");
+    var cps = clicks / seconds;
+    rLeft.textContent = "0.00s";
+    rCps.textContent = fmt(cps);
+    big.textContent = fmt(cps);
+    cue.textContent = "CPS over " + seconds + "s";
+
+    var prev = readBest();
+    var beat = cps > prev;
+    if (beat) writeBest(cps);
+    showBest();
+
+    verdict.innerHTML = "<b>" + fmt(cps) + " clicks per second</b> — " +
+      clicks + " clicks in " + seconds + " second" + (seconds === 1 ? "" : "s") +
+      ". That is " + band(cps) + "." +
+      (beat && prev ? " New best at this length." : "");
+    verdict.classList.add("show");
+    again.style.display = "";
+  }
+
+  function tick() {
+    var left = seconds - (performance.now() - startedAt) / 1000;
+    if (left <= 0) { rLeft.textContent = "0.00s"; finish(); return; }
+    rLeft.textContent = fmt(left) + "s";
+    var elapsed = (performance.now() - startedAt) / 1000;
+    if (elapsed >= 0.5) rCps.textContent = fmt(clicks / elapsed);
+  }
+
+  function hit() {
+    if (!running) {
+      // ⚠ The clock starts on the first click, not on a countdown. Starting it
+      // before the user is ready charges their reaction time to their score,
+      // which on a 1-second test is most of the score.
+      running = true;
+      clicks = 0;
+      startedAt = performance.now();
+      verdict.classList.remove("show");
+      again.style.display = "none";
+      pad.classList.add("live");
+      cue.textContent = "Keep going";
+      ticker = setInterval(tick, 50);
+    }
+    clicks++;
+    big.textContent = String(clicks);
+    rClicks.textContent = String(clicks);
+    pad.classList.add("flash");
+    setTimeout(function () { pad.classList.remove("flash"); }, 45);
+  }
+
+  // pointerdown, not click: a <button> fires click on mouse-up, which on a
+  // fast test loses the last press and measures the release rather than the
+  // press. It also makes every hit land as early as the hardware allows.
+  pad.addEventListener("pointerdown", function (e) { e.preventDefault(); hit(); });
+  pad.addEventListener("keydown", function (e) {
+    if (e.key === " " || e.key === "Enter") { e.preventDefault(); hit(); }
+  });
+  pad.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+
+  durs.forEach(function (b) {
+    b.addEventListener("click", function () {
+      durs.forEach(function (o) { o.removeAttribute("aria-pressed"); });
+      b.setAttribute("aria-pressed", "true");
+      seconds = parseInt(b.getAttribute("data-s"), 10);
+      verdict.classList.remove("show");
+      idle();
+    });
+  });
+
+  reset.addEventListener("click", function () {
+    verdict.classList.remove("show");
+    idle();
+    pad.focus();
+  });
+
+  idle();
+})();
+</script>
+
+</body>
+</html>
