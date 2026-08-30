@@ -172,25 +172,39 @@ Windows 10 or 11, 64-bit. Nothing else — everything is inside the `.exe`.
 
 > **On first run, Windows may warn you.** Macronaut is not code-signed yet, so
 > SmartScreen shows *"Windows protected your PC"* for new downloads. Click
-> **More info → Run anyway**. Signing is on the roadmap.
+> **More info → Run anyway**. Signing is on the roadmap — and in the meantime
+> you do not have to take my word for what is in the file:
+> [the source is public](https://github.com/gtjevptje/macronaut-source), and `pyinstaller macronaut.spec`
+> builds this exact executable from it.
 
 ## A word of warning
 
 Macronaut sends real keyboard and mouse input. **Many online games and services
 forbid automation in their terms of service, and using it against them can cost
-you your account.** That is your call to make — see section 5 of the
-[LICENSE](https://github.com/gtjevptje/Macronaut/releases/latest/download/LICENSE).
+you your account.** That is your call to make — read their rules first. There is
+no warranty of any kind; see sections 15 and 16 of the
+[licence](https://github.com/gtjevptje/macronaut-source/blob/main/LICENSE).
 
 ## Licence
 
-**Proprietary — © 2026 Gerben van Poucke. All rights reserved.**
+**Free software, under the GNU General Public License v3.0 or later.**
+Copyright © 2026 Gerben van Poucke. `SPDX-License-Identifier: GPL-3.0-or-later`
 
-Macronaut is licensed, not sold: install and run it on machines you own or
-control. Redistribution, resale and reverse engineering are not permitted. The
-source is not published. Full terms ship inside the app under
-**Settings → About & legal**, alongside the
-[third-party notices](https://github.com/gtjevptje/Macronaut/releases/latest/download/THIRD-PARTY-NOTICES.md)
-for the open-source components it is built on.
+Run it, read it, change it, pass it on. The one obligation is that a modified
+version you distribute — as source or as a built `.exe` — comes with its changes
+published under the same licence.
+
+**[The complete source is here](https://github.com/gtjevptje/macronaut-source.)** Macronaut was proprietary
+until 30 August 2026, and the reason it is not any more is the paragraph above
+this one: an unsigned executable that installs a global keyboard hook is asking
+for a lot of trust, and publishing the code is the only answer to that which
+does not ask for more. `pyinstaller macronaut.spec` rebuilds this download from
+it.
+
+The licence and the
+[third-party notices](https://github.com/gtjevptje/macronaut-source/blob/main/THIRD-PARTY-NOTICES.md) also ship
+inside the app, under **Settings → About & legal**, next to a link back to the
+source.
 
 ## Getting in touch
 
