@@ -207,6 +207,12 @@ this one: an unsigned executable that installs a global keyboard hook is asking
 for a lot of trust, and publishing the code is the only answer to that which
 does not ask for more. `pyinstaller macronaut.spec` builds it from that source.
 
+⚠ **Which builds this covers.** Macronaut was proprietary until 30 August 2026.
+Releases from **2.3.3 onward are GPL**; builds published before that date remain
+under the EULA they shipped with, and relicensing does not reach backwards into
+copies already downloaded. The `LICENSE` file in this repository is the licence
+of what is here now.
+
 The licence and the
 [third-party notices](https://github.com/gtjevptje/macronaut-source/blob/main/THIRD-PARTY-NOTICES.md) also ship
 inside the app, under **Settings → About & legal**, next to a link back to the
