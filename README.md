@@ -166,6 +166,10 @@ your computer is a crash report, and only if you opt in; those carry the error,
 the version, your Windows version and which step was running, never your
 scripts, your keystrokes, anything on screen, or your name.
 
+The [full privacy policy](https://gtjevptje.github.io/Macronaut/privacy.html) says exactly what is in a
+crash report, what is stripped out of it before it is written to disk, and how
+to have one deleted.
+
 ## Requirements
 
 Windows 10 or 11, 64-bit. Nothing else — everything is inside the `.exe`.
@@ -175,7 +179,10 @@ Windows 10 or 11, 64-bit. Nothing else — everything is inside the `.exe`.
 > **More info → Run anyway**. Signing is on the roadmap — and in the meantime
 > you do not have to take my word for what is in the file:
 > [the source is public](https://github.com/gtjevptje/macronaut-source), and `pyinstaller macronaut.spec`
-> builds this exact executable from it.
+> builds the program from it. Your build will not have the same SHA-256 as the
+> download — PyInstaller stamps timestamps into its output, so no two builds
+> match byte for byte, not even two of mine. What you can check is that nothing
+> goes into the `.exe` that is not in that repository.
 
 ## A word of warning
 
@@ -198,8 +205,7 @@ published under the same licence.
 until 30 August 2026, and the reason it is not any more is the paragraph above
 this one: an unsigned executable that installs a global keyboard hook is asking
 for a lot of trust, and publishing the code is the only answer to that which
-does not ask for more. `pyinstaller macronaut.spec` rebuilds this download from
-it.
+does not ask for more. `pyinstaller macronaut.spec` builds it from that source.
 
 The licence and the
 [third-party notices](https://github.com/gtjevptje/macronaut-source/blob/main/THIRD-PARTY-NOTICES.md) also ship

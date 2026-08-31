@@ -3,40 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>An AutoHotkey alternative you don't have to write code in — Macronaut</title>
-<meta name="description" content="AutoHotkey is a scripting language. Macronaut does the same job by recording what you do, or by letting you draw the flow. An honest comparison, including what AutoHotkey still does better.">
-<link rel="canonical" href="https://gtjevptje.github.io/Macronaut/autohotkey-alternative.html">
+<title>Privacy — Macronaut</title>
+<meta name="description" content="What Macronaut sends, what it does not, and who can see it. No accounts, no analytics, no tracking. Two network calls exist: an update check, and an opt-in crash report you are shown before it is sent.">
+<link rel="canonical" href="https://gtjevptje.github.io/Macronaut/privacy.html">
 <meta name="theme-color" content="#0a0818">
 <link rel="icon" href="https://gtjevptje.github.io/Macronaut/favicon.ico" sizes="32x32">
 <link rel="icon" href="https://gtjevptje.github.io/Macronaut/icon-512.png" type="image/png" sizes="512x512">
 <link rel="apple-touch-icon" href="https://gtjevptje.github.io/Macronaut/apple-touch-icon.png">
 
-<meta property="og:type" content="article">
+<meta property="og:type" content="website">
 <meta property="og:site_name" content="Macronaut">
-<meta property="og:title" content="An AutoHotkey alternative you don't have to write code in">
-<meta property="og:description" content="Same job, no scripting language. An honest comparison — including the things AutoHotkey still does better.">
-<meta property="og:url" content="https://gtjevptje.github.io/Macronaut/autohotkey-alternative.html">
-<meta property="og:image" content="https://gtjevptje.github.io/Macronaut/assets/hero.png">
-<meta name="twitter:card" content="summary_large_image">
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {"@type": "Question", "name": "What is the best alternative to AutoHotkey?",
-     "acceptedAnswer": {"@type": "Answer", "text": "It depends on why you are leaving. If you want the same power without the syntax, Pulover's Macro Creator is built on AutoHotkey itself and keeps its reach. If you want to stop writing code altogether, a visual tool such as Macronaut trades reach for being usable the same afternoon. If you only ever wanted a repeating click, an auto clicker is a smaller answer than either."}},
-    {"@type": "Question", "name": "Is there a no-code alternative to AutoHotkey?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Macronaut does the common half of the same job by recording what you do, or by dragging steps onto a canvas and wiring them together, with no script file and nothing to save and run. The trade is real: AutoHotkey is a full programming language and will do things a visual editor cannot."}},
-    {"@type": "Question", "name": "Is AutoHotkey hard to learn?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Not hard so much as front-loaded. A basic auto clicker in AutoHotkey v2 requires knowing that a directive goes at the top, that global is needed inside a function, that a timer rather than a loop is how you repeat something, and that a timer is switched off by setting it to zero. None of that is difficult, but it is four things to learn before the mouse clicks once."}},
-    {"@type": "Question", "name": "What does AutoHotkey still do better?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Several things, and they are not close. It is a real programming language with variables, functions, file handling and COM automation. It has twenty years of community answers behind it. And it is the best tool there is for remapping keys and building system-wide hotkeys, which is not what a visual macro tool is for at all. Both are free and open source, so that is not a difference between them."}},
-    {"@type": "Question", "name": "Can I use both AutoHotkey and a visual macro tool?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes, and it is a sensible split. Nothing stops you keeping AutoHotkey for keyboard remapping and system-wide hotkeys while using a visual tool for repetitive on-screen work. They do not conflict."}}
-  ]
-}
-</script>
+<meta property="og:title" content="Privacy — Macronaut">
+<meta property="og:description" content="No accounts, no analytics, no tracking. Exactly two things ever leave your machine, and one of them asks first.">
+<meta property="og:url" content="https://gtjevptje.github.io/Macronaut/privacy.html">
 
 <style>
 :root{
@@ -212,22 +191,21 @@ footer .row{display:flex; gap:22px; flex-wrap:wrap; align-items:center}
 footer .row nav{margin-left:auto; display:flex; gap:20px; flex-wrap:wrap}
 </style>
 <style>
-.compare{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:26px 0}
-@media (max-width:820px){.compare{grid-template-columns:1fr}}
-.compare > div{background:var(--panel); border:1px solid var(--border);
-               border-radius:14px; padding:20px}
-.compare h3{margin:0 0 12px; font-size:15px; letter-spacing:.04em;
-            text-transform:uppercase; color:var(--muted)}
-pre{background:#05070e; border:1px solid var(--border); border-radius:10px;
-    padding:14px 16px; overflow-x:auto; font-size:13px; line-height:1.55;
-    margin:0}
-code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace}
-.verdict{border-left:3px solid var(--accent); padding:2px 0 2px 18px;
-         margin:26px 0; font-size:17px}
 article h2{margin-top:44px}
+article h3{margin-top:30px; font-size:17px}
 article p, article li{max-width:70ch}
 .crumb{font-size:14px; color:var(--muted); margin-bottom:8px}
 .crumb a{color:var(--muted)}
+.stamp{font-size:14px; color:var(--muted); margin-top:6px}
+table{border-collapse:collapse; margin:22px 0; width:100%; max-width:70ch;
+      font-size:15px}
+th,td{border:1px solid var(--border); padding:10px 13px; text-align:left;
+      vertical-align:top}
+th{background:var(--panel); font-size:13px; letter-spacing:.04em;
+   text-transform:uppercase; color:var(--muted); font-weight:600}
+.key{border-left:3px solid var(--accent); padding:2px 0 2px 18px;
+     margin:26px 0; font-size:17px}
+code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.94em}
 </style>
 </head>
 <body>
@@ -248,128 +226,151 @@ article p, article li{max-width:70ch}
 <section>
   <div class="wrap">
     <article>
-    <p class="crumb"><a href="https://gtjevptje.github.io/Macronaut/">Macronaut</a> → AutoHotkey alternative</p>
-    <h1>An AutoHotkey alternative you don&rsquo;t have to write code in</h1>
-    <p class="lead">AutoHotkey is a programming language. That is its strength
-    and it is also the reason most people who need it never end up using it.
-    Macronaut does the common half of the same job with a screen of numbers you
-    fill in — or, when a job needs more than that, by recording what you do and
-    letting you wire the steps together on a canvas.</p>
+    <p class="crumb"><a href="https://gtjevptje.github.io/Macronaut/">Macronaut</a> &rarr; Privacy</p>
+    <h1>Privacy</h1>
+    <p class="lead">Macronaut is an app that watches your keyboard and mouse in
+    order to do its job. That is a lot to ask of somebody, so this page is
+    specific rather than reassuring: it says what leaves your computer, what is
+    in it, and what you can do about it.</p>
+    <p class="stamp">Last updated 31 August 2026 &middot; Macronaut
+    2.3.3</p>
 
-    <div class="verdict">
-      <b>The short version.</b> If you are comfortable writing code, AutoHotkey
-      is more powerful and you should probably use it. If you have been putting
-      off learning it for months while doing the same clicks by hand, that is
-      the gap Macronaut is for.
-    </div>
+    <p class="key">There is no account, no analytics, no advertising and no
+    tracking of any kind. Nothing you record, type, click or see is ever
+    transmitted. Exactly two things reach the network, and one of them asks
+    your permission first.</p>
 
-    <h2>The same job, both ways</h2>
-    <p>An auto-clicker you can start and stop with F8. In AutoHotkey v2 that is
-    a script you write, save as a <code>.ahk</code> file, and run:</p>
-
-    <div class="compare">
-      <div>
-        <h3>AutoHotkey v2</h3>
-<pre><code>#Requires AutoHotkey v2.0
-
-running := false
-
-F8:: {
-    global running := !running
-    if running
-        SetTimer(DoClick, 100)
-    else
-        SetTimer(DoClick, 0)
-}
-
-DoClick() {
-    Click
-}</code></pre>
-      </div>
-      <div>
-        <h3>Macronaut</h3>
-        <p style="margin-top:0">Open it. That screen <em>is</em> an
-        auto-clicker — type <b>100</b> in the ms box and press
-        <b>Start</b>. F8 starts and stops it too.</p>
-        <p>To make it stop after 100 clicks, tick <b>Repeat</b> and type 100.
-        There is no file to save and nothing to run.</p>
-        <p class="sub" style="margin-bottom:0">The node canvas on the left of
-        this comparison is the <em>other</em> half of Macronaut, one click away
-        under <b>Advanced</b>, for when a job needs more than a timer.</p>
-      </div>
-    </div>
-
-    <p>Neither of those is <em>hard</em>. But the left-hand one asks you to
-    know that a directive goes at the top, that <code>global</code> is needed
-    inside a function, that a timer is how you repeat something, and that
-    <code>0</code> is how you turn a timer off. If you already know those, you
-    lost nothing. If you do not, you have four things to learn before your
-    mouse clicks once.</p>
-
-    <h2>What AutoHotkey does better</h2>
-    <p>This part is not close, and pretending otherwise would waste your time:</p>
+    <h2>What never leaves your machine</h2>
+    <p>All of it runs locally. Your macros and flows are files in
+    <code>%USERPROFILE%\.macronaut</code>, in plain JSON you can read, edit,
+    copy and delete yourself. Specifically, none of the following is ever
+    uploaded, and there is no code in the program that could:</p>
     <ul>
-      <li><b>It is a real language.</b> Variables, functions, arrays, string
-      handling, file I/O, COM automation, sending Windows messages directly to
-      a control. Macronaut has a flow with branches and variables; that is
-      nowhere near the same reach.</li>
-      <li><b>Twenty years of community.</b> Almost any problem you have has a
-      forum thread with a working answer in it. Macronaut is one person.</li>
-      <li><b>Tiny.</b> A fraction of the download, and it has been packaged
-      and repackaged everywhere for twenty years.</li>
-      <li><b>Remapping keys and building custom hotkeys</b> across the whole
-      system, which is arguably what it is best at and is not what Macronaut
-      is for at all.</li>
+      <li>Your recordings, macros, flows and their names</li>
+      <li>Your keystrokes and mouse movements &mdash; while recording, while
+          replaying, or at any other time</li>
+      <li>Screenshots, screen contents, or the images used by image-matching
+          steps</li>
+      <li>Text read by the OCR step, which uses the OCR engine built into
+          Windows and does not use a cloud service</li>
+      <li>Your settings, your file paths, your clipboard, or the names of the
+          programs you use Macronaut with</li>
     </ul>
 
-    <h2>What Macronaut does better</h2>
-    <ul>
-      <li><b>Nothing to learn first.</b> The window it opens on is an
-      auto-clicker with the numbers already on it. Or press Record, do the
-      thing once, press stop — what you did is now a flow you can edit,
-      reorder and re-run.</li>
-      <li><b>You can see it.</b> A flow is a diagram, so a colleague can read
-      it, and so can you in six months. Debugging is watching which node
-      lights up.</li>
-      <li><b>Reading the screen is built in.</b> Wait-for-image, wait-for-text
-      through Windows&rsquo; own OCR, and wait-for-pixel are steps you drop in,
-      not libraries you find and wire up.</li>
-      <li><b>Input that games accept.</b> Three backends — ordinary injection,
-      SendInput scancodes, and an Interception kernel driver — switchable from
-      a dropdown when a target ignores the first one.</li>
-      <li><b>It is one file.</b> No installer, no runtime, no admin rights.</li>
-    </ul>
+    <h2>The two things that do use the network</h2>
 
-    <h2>Which one should you use?</h2>
-    <p><b>Use AutoHotkey</b> if you want system-wide hotkeys and remapping, if
-    your task needs real logic or touches files and other programs, or if you
-    write code already and the syntax costs you nothing.</p>
-    <p><b>Use Macronaut</b> if the task is &ldquo;do these clicks and
-    keystrokes, watch for that thing to appear, then carry on&rdquo;, if you
-    want to hand the automation to someone who does not code, or if you have
-    genuinely been meaning to learn AutoHotkey since last year and have not.</p>
-    <p>They also coexist perfectly well. Nothing stops you keeping AutoHotkey
-    for your keyboard remaps and using Macronaut for the repetitive screen work.</p>
+    <h3>1. The update check</h3>
+    <p>Macronaut asks GitHub whether there is a newer release, by fetching one
+    small file from the public releases page. The request contains no
+    identifier, no licence key and nothing about you; it is the same request
+    your browser would make if you opened that page. As with any request to any
+    website, GitHub can see the IP address it came from. You can turn the check
+    off in <b>Settings</b>, and Macronaut then never contacts the network on its
+    own at all.</p>
 
-    <h2>Trying it</h2>
-    <p>Macronaut is a single 78 MB file for Windows 10 and 11. No
-    installer, no account, and every feature is free right now — including the
-    ones that will eventually be paid.</p>
-    <div class="cta" style="margin:22px 0">
-      <a class="btn btn-primary btn-lg" href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">Download free for Windows</a>
-      <a class="btn btn-lg" href="https://gtjevptje.github.io/Macronaut/">What it does</a>
-    </div>
-    <p class="under heads-up" style="margin-left:0;text-align:left">Windows will
-    say <b>&ldquo;Windows protected your PC&rdquo;</b> on first run. It says that
-    for any app without a signing certificate — click <b>More info</b>, then
-    <b>Run anyway</b>.</p>
+    <h3>2. Crash reports &mdash; only if you say yes</h3>
+    <p>If Macronaut dies, it writes a report to disk. It is <b>not</b> sent
+    then. The next time the app starts, it asks you, once, and there is a button
+    to read the exact report before you decide. If you decline, the reports are
+    <b>deleted</b> rather than merely kept back, and you are not asked again.
+    You can change the answer later in <b>Settings</b>.</p>
+    <p>If you agree, the report goes to <a href="https://sentry.io/">Sentry</a>,
+    an error-tracking service, and nowhere else. Here is what is in one:</p>
+    <table>
+      <thead><tr><th>Sent</th><th>Not sent</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>The error and its Python traceback &mdash; module names, function
+              names, line numbers</td>
+          <td>Your name, e-mail, licence key or any account identifier
+              &mdash; the app holds no such thing to send</td>
+        </tr>
+        <tr>
+          <td>The Macronaut version that crashed, and whether it was the
+              <code>.exe</code> or run from source</td>
+          <td>The content of your macros, or anything you recorded</td>
+        </tr>
+        <tr>
+          <td>Your Windows version, CPU architecture and Python version</td>
+          <td>Keystrokes, mouse positions, clipboard or screen contents</td>
+        </tr>
+        <tr>
+          <td>Which <em>kind</em> of step was running when it died
+              (&ldquo;click&rdquo;, &ldquo;wait&rdquo;, &ldquo;detect
+              image&rdquo;), and a short trail of the last such events</td>
+          <td>Your IP address is not put in the report, though as with any
+              network request the receiving server sees it</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Your Windows account name is very often your real name, and it appears
+    in every file path in every traceback. Macronaut replaces your home
+    directory with <code>%HOME%</code> and your account name with
+    <code>%USER%</code> <em>before the report is written to disk</em>, so the
+    unredacted version is never stored, let alone sent. Two honest limits on
+    that: an account name shorter than three characters is left alone, because
+    substituting it would corrupt unrelated words; and it is text substitution,
+    so it cannot promise to catch a name that appears in some form it has not
+    been told about. This is also why you are shown the report before it goes.</p>
 
-    <p>Also worth comparing:
-    <a href="https://gtjevptje.github.io/Macronaut/tinytask-alternative.html">Macronaut against
-    TinyTask</a>, if what you want is to record something rather than write it.</p>
+    <h2>Paid licences</h2>
+    <p>A Pro licence is verified <b>offline</b>, by checking a signature on the
+    key itself. Activating does not contact us, because there is nothing to
+    contact &mdash; the program has no server. We therefore cannot see who has
+    activated, on how many machines, or whether the software is being used at
+    all. If you buy a licence, the payment processor handles the transaction and
+    the e-mail address you give them under their own privacy policy; that
+    information never enters the application.</p>
 
-    <p class="sub small">Wrong about something here? AutoHotkey moves and I
-    would rather this page were accurate than flattering —
+    <h2>This website</h2>
+    <p>These pages are static files on GitHub Pages. There are no cookies, no
+    analytics, no tracking pixels and no third-party scripts &mdash; you can
+    confirm that by viewing the source of any page here, or by reading the
+    <a href="https://github.com/gtjevptje/macronaut-source">generator that produces them</a>. GitHub serves the
+    files and keeps its own server logs, which is outside our control and
+    covered by
+    <a href="https://docs.github.com/site-policy/privacy-policies/github-privacy-statement">GitHub's
+    privacy statement</a>.</p>
+
+    <h2>Data we hold about you</h2>
+    <p>None, unless you have e-mailed us or sent a crash report. Crash reports
+    are retained for 90 days by Sentry and then deleted automatically. If you
+    have written to us, we hold that e-mail. There is nothing else, no profile,
+    and nothing is ever sold, rented or shared for advertising.</p>
+
+    <h2>Children</h2>
+    <p>Macronaut is a desktop utility and is not directed at children, and it
+    collects nothing that would identify anyone of any age.</p>
+
+    <h2>Your rights, and how to use them</h2>
+    <p>Under the GDPR and similar laws you may ask what is held about you, ask
+    for it to be corrected, or ask for it to be erased. In practice the answer
+    is nearly always &ldquo;nothing&rdquo; &mdash; but if you sent a crash report
+    and want it removed, write to
+    <a href="mailto:gerbenvanpoucke0@gmail.com">gerbenvanpoucke0@gmail.com</a> with roughly when it was and it
+    will be deleted. No account is needed to ask, and there is no charge.</p>
+    <p>You can also simply not send them, which is the default.</p>
+
+    <h2>How to check any of this</h2>
+    <p>Do not take it on trust. <a href="https://github.com/gtjevptje/macronaut-source">The complete source is
+    public</a> under the GPL, and the parts this page describes are small enough
+    to read in a sitting: <code>crashreport.py</code> writes the reports and does
+    the redaction, <code>crashsend.py</code> builds and sends them,
+    <code>crash_ui.py</code> is the dialog that asks, <code>version.py</code>
+    holds the one update URL, and <code>licensing.py</code> contains no network
+    code at all. If this page and the code ever disagree, the code is the truth
+    and I would like to be told &mdash;
+    <a href="mailto:gerbenvanpoucke0@gmail.com">gerbenvanpoucke0@gmail.com</a>.</p>
+
+    <h2>Changes</h2>
+    <p>If this policy changes materially, the date at the top changes and the
+    old wording stays in the
+    <a href="https://github.com/gtjevptje/macronaut-source/commits/main/site/privacy.template.html">page's
+    revision history</a>, which is public. There is no mailing list to notify,
+    because there is no mailing list.</p>
+
+    <h2>Who to contact</h2>
+    <p>Macronaut is made by one person: Gerben van Poucke, Belgium.
     <a href="mailto:gerbenvanpoucke0@gmail.com">gerbenvanpoucke0@gmail.com</a>.</p>
     </article>
   </div>
@@ -378,12 +379,10 @@ DoClick() {
 
 <footer>
   <div class="wrap row">
-    <div>Macronaut 2.3.3 · © 2026 Gerben van Poucke ·
+    <div>Macronaut 2.3.3 &middot; &copy; 2026 Gerben van Poucke &middot;
       <a href="mailto:gerbenvanpoucke0@gmail.com">gerbenvanpoucke0@gmail.com</a></div>
     <nav>
       <a href="https://gtjevptje.github.io/Macronaut/">Home</a>
-      <a href="https://gtjevptje.github.io/Macronaut/auto-clicker.html">Auto clicker</a>
-      <a href="https://gtjevptje.github.io/Macronaut/tinytask-alternative.html">vs TinyTask</a>
       <a href="https://gtjevptje.github.io/Macronaut/privacy.html">Privacy</a>
       <a href="https://github.com/gtjevptje/Macronaut">GitHub</a>
       <a href="https://github.com/gtjevptje/macronaut-source">Source code</a>
