@@ -158,6 +158,15 @@ header{border-bottom:1px solid var(--border); background:rgba(10,8,24,.85);
 .was{text-decoration:line-through; opacity:.5; font-weight:600}
 .price .now{color:var(--accent)}
 .price .was{font-size:.62em; margin-right:10px}
+/* ⚠ Every <table> on this site goes inside one of these. A table wider than
+   the viewport does not scroll by itself — it drags the whole document, so
+   every heading and paragraph sits off-centre and the reader pans sideways to
+   read prose. Measured 3 September 2026: the TinyTask comparison pushed a
+   375px phone to 439px, invisible at any desk-sized window. Lives here rather
+   than in a page's own <style> because SHARED_CSS is lifted from this file,
+   and two copies of a rule diverge the first time one is edited. */
+.tblwrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
+
 /* A restriction that is not in force yet: dimming reads as "not active". */
 li.later{opacity:.65}
 li.later em{font-style:normal; opacity:.8}
@@ -378,7 +387,7 @@ table.cps tr:last-child td{border-bottom:none}
     </div>
 
     <h2>Choosing an interval</h2>
-    <table class="cps">
+    <div class="tblwrap"><table class="cps">
       <thead><tr><th>Interval</th><th>Rate</th><th>What it suits</th></tr></thead>
       <tbody>
         <tr><td>1000 ms</td><td>1 / second</td><td>Keeping a session or a screen awake.</td></tr>
@@ -388,7 +397,7 @@ table.cps tr:last-child td{border-bottom:none}
         <tr><td>50 ms</td><td>20 / second</td><td>Fast enough that some programs begin dropping clicks.</td></tr>
         <tr><td>10 ms</td><td>100 / second</td><td>Rarely does anything the 50 ms setting did not.</td></tr>
       </tbody>
-    </table>
+    </table></div>
     <p>Smaller is not better. Past a point the program being clicked stops
     keeping up and quietly ignores the surplus, so the only thing a tiny
     interval reliably adds is CPU load. If you are not sure, start at 100 ms

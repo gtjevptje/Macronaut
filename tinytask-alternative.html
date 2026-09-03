@@ -136,6 +136,15 @@ header{border-bottom:1px solid var(--border); background:rgba(10,8,24,.85);
 .was{text-decoration:line-through; opacity:.5; font-weight:600}
 .price .now{color:var(--accent)}
 .price .was{font-size:.62em; margin-right:10px}
+/* ⚠ Every <table> on this site goes inside one of these. A table wider than
+   the viewport does not scroll by itself — it drags the whole document, so
+   every heading and paragraph sits off-centre and the reader pans sideways to
+   read prose. Measured 3 September 2026: the TinyTask comparison pushed a
+   375px phone to 439px, invisible at any desk-sized window. Lives here rather
+   than in a page's own <style> because SHARED_CSS is lifted from this file,
+   and two copies of a rule diverge the first time one is edited. */
+.tblwrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
+
 /* A restriction that is not in force yet: dimming reads as "not active". */
 li.later{opacity:.65}
 li.later em{font-style:normal; opacity:.8}
@@ -256,7 +265,6 @@ table.cmp tr:last-child td{border-bottom:none}
    is enough for the table to fit on its own; and it sits in a scroll box
    regardless, so a longer label added later scrolls the TABLE instead of the
    page. */
-.tblwrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
 @media (max-width:560px){
   table.cmp td:first-child{white-space:normal}
   table.cmp th, table.cmp td{padding:9px 8px; font-size:14px}
