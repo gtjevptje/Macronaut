@@ -136,8 +136,14 @@ header{border-bottom:1px solid var(--border); background:rgba(10,8,24,.85);
 .was{text-decoration:line-through; opacity:.5; font-weight:600}
 .price .now{color:var(--accent)}
 .price .was{font-size:.62em; margin-right:10px}
+/* A restriction that is not in force yet: dimming reads as "not active". */
 li.later{opacity:.65}
 li.later em{font-style:normal; opacity:.8}
+/* ⚠ A benefit the visitor has RIGHT NOW, which is the opposite polarity and
+   must not be dimmed — a greyed row in a feature list scans as "you do not
+   get this". Same weight as the rest of the list, with the qualifier in the
+   accent so it reads as good news rather than small print. */
+li.nowfree em{font-style:normal; color:var(--green)}
 /* ⚠ `height:auto` is load-bearing, not tidiness. The width/height attributes
    on the <img> are there to reserve the right space before the image arrives
    (no layout shift) — but with `max-width:100%` and no `height:auto` the
