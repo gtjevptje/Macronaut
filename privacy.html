@@ -266,9 +266,20 @@ code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.94e
           steps</li>
       <li>Text read by the OCR step, which uses the OCR engine built into
           Windows and does not use a cloud service</li>
-      <li>Your settings, your file paths, your clipboard, or the names of the
-          programs you use Macronaut with</li>
+      <li>Your settings, your clipboard, or the names of the programs you use
+          Macronaut with</li>
     </ul>
+
+    <p class="heads-up"><b>One correction, made 3 September 2026.</b> This list
+    used to say &ldquo;your file paths&rdquo; as well, and that was not
+    accurate. A crash report contains a traceback, and a traceback names the
+    file each line of code came from &mdash; almost always Macronaut&rsquo;s
+    own files, but a file of yours can appear in one, for instance if a step
+    could not open a template image you had chosen. Those paths are redacted
+    (see <a href="#redaction">what is stripped out</a>) and you are shown the
+    whole report before it goes, but they are not <em>absent</em>, and this
+    page should not have implied they were. The redaction section was right and
+    this bullet was wrong; the two contradicted each other.</p>
 
     <h2>The two things that do use the network</h2>
 
@@ -316,7 +327,8 @@ code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.94e
         </tr>
       </tbody>
     </table>
-    <p>Your Windows account name is very often your real name, and it appears
+    <p id="redaction">Your Windows account name is very often your real name,
+    and it appears
     in every file path in every traceback. Macronaut replaces your home
     directory with <code>%HOME%</code> and your account name with
     <code>%USER%</code> <em>before the report is written to disk</em>, so the
