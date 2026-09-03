@@ -245,6 +245,22 @@ table.cmp th{font-size:12px; letter-spacing:.06em; text-transform:uppercase;
              color:var(--muted); font-weight:600}
 table.cmp td:first-child{font-weight:600; white-space:nowrap}
 table.cmp tr:last-child td{border-bottom:none}
+/* ⚠ That nowrap took the whole page sideways on a phone. `width:100%` cannot
+   shrink a cell that refuses to wrap, so the table pushed the document to
+   439px inside a 375px viewport — and an overflowing table does not scroll by
+   itself, it drags the body with it. Every heading and paragraph on the page
+   then sits off-centre and the reader has to pan to read anything.
+   Measured 3 September 2026, and only on this page: the AutoHotkey comparison
+   has no such table.
+   Two guards rather than one. The row labels wrap on a narrow screen, which
+   is enough for the table to fit on its own; and it sits in a scroll box
+   regardless, so a longer label added later scrolls the TABLE instead of the
+   page. */
+.tblwrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
+@media (max-width:560px){
+  table.cmp td:first-child{white-space:normal}
+  table.cmp th, table.cmp td{padding:9px 8px; font-size:14px}
+}
 </style>
 </head>
 <body>
@@ -323,7 +339,7 @@ table.cmp tr:last-child td{border-bottom:none}
     </div>
 
     <h2>Side by side</h2>
-    <table class="cmp">
+    <div class="tblwrap"><table class="cmp">
       <thead><tr><th></th><th>TinyTask</th><th>Macronaut</th></tr></thead>
       <tbody>
         <tr><td>Records input</td><td>Yes</td><td>Yes</td></tr>
@@ -338,7 +354,7 @@ table.cmp tr:last-child td{border-bottom:none}
         <tr><td>Input that games accept</td><td>Standard injection</td><td>Three backends, including a kernel driver</td></tr>
         <tr><td>Price</td><td>Free</td><td>Free for all of this; a paid tier for screen-watching, not yet switched on</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
     <h2>What TinyTask still does better</h2>
     <p>Two real things, and they are not small:</p>
