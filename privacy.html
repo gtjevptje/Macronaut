@@ -404,9 +404,28 @@ code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.94e
     <h2>Changes</h2>
     <p>If this policy changes materially, the date at the top changes and the
     old wording stays in the
-    <a href="https://github.com/gtjevptje/macronaut-source/commits/main/site/privacy.template.html">page's
+    <a href="https://github.com/gtjevptje/Macronaut/commits/main/privacy.html">page's
     revision history</a>, which is public. There is no mailing list to notify,
     because there is no mailing list.</p>
+
+    <!-- ⚠ This link pointed at the SOURCE repo's copy of this page's template
+         until 12 September 2026, and that path has never existed there: `site/`
+         is withheld from the public mirror on purpose. The link resolved with a
+         200, because GitHub renders an empty commit list rather than a 404, so
+         nothing looked broken — the promise directly above it simply did not
+         work. Of everything on this page that is the worst one to get wrong: it
+         is the mechanism by which a reader checks whether a privacy policy
+         quietly changed.
+
+         It now points at the RENDERED page in the site repo, which is public,
+         has a real history, and is the copy people actually read. The commits
+         there are site rebuilds rather than policy edits, so the wording change
+         has to be found by diffing — but the old wording is genuinely there,
+         which is what was promised. The dated stamp at the top comes from the
+         template's own last commit (see build_site.privacy_updated), so it
+         still says when the policy changed rather than when the site was
+         last built. -->
+
 
     <h2>Who to contact</h2>
     <p>Macronaut is made by one person: Gerben van Poucke, Belgium.
