@@ -107,10 +107,7 @@ header{border-bottom:1px solid var(--border); background:rgba(10,8,24,.85);
           opacity:.85}
 .heads-up b{color:var(--text); font-weight:600}
 
-/* ── "free for now" ──────────────────────────────────────────────── */
-/* The price is struck through rather than removed: what Pro will cost is
-   the anchor that makes "free right now" mean anything, and a number that
-   quietly vanishes and reappears later reads as a bait-and-switch. */
+/* ── banner ──────────────────────────────────────────────────────── */
 .freenow{border:1px solid var(--accent); border-radius:14px;
          padding:16px 20px; margin:0 0 26px; text-align:center;
          background:color-mix(in srgb, var(--accent) 8%, transparent)}
@@ -260,7 +257,7 @@ code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.94e
     order to do its job. That is a lot to ask of somebody, so this page is
     specific rather than reassuring: it says what leaves your computer, what is
     in it, and what you can do about it.</p>
-    <p class="stamp">Last updated 12 September 2026 &middot; Macronaut 2.3.4</p>
+    <p class="stamp">Last updated 16 September 2026 &middot; Macronaut 2.3.4</p>
 
     <p class="key">There is no account, no analytics, no advertising and no
     tracking of any kind. Nothing you record, type, click or see is ever
@@ -300,7 +297,7 @@ code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.94e
     <h3>1. The update check</h3>
     <p>Macronaut asks GitHub whether there is a newer release, by fetching one
     small file from the public releases page. The request contains no
-    identifier, no licence key and nothing about you; it is the same request
+    identifier and nothing about you; it is the same request
     your browser would make if you opened that page. As with any request to any
     website, GitHub can see the IP address it came from. You can turn the check
     off in <b>Settings</b>, and Macronaut then never contacts the network on its
@@ -320,7 +317,7 @@ code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.94e
         <tr>
           <td>The error and its Python traceback &mdash; module names, function
               names, line numbers</td>
-          <td>Your name, e-mail, licence key or any account identifier
+          <td>Your name, e-mail or any account identifier
               &mdash; the app holds no such thing to send</td>
         </tr>
         <tr>
@@ -352,14 +349,6 @@ code{font-family:ui-monospace,"Cascadia Code",Consolas,monospace; font-size:.94e
     so it cannot promise to catch a name that appears in some form it has not
     been told about. This is also why you are shown the report before it goes.</p>
 
-    <h2>Paid licences</h2>
-    <p>A Pro licence is verified <b>offline</b>, by checking a signature on the
-    key itself. Activating does not contact us, because there is nothing to
-    contact &mdash; the program has no server. We therefore cannot see who has
-    activated, on how many machines, or whether the software is being used at
-    all. If you buy a licence, the payment processor handles the transaction and
-    the e-mail address you give them under their own privacy policy; that
-    information never enters the application.</p>
 
     <h2>This website</h2>
     <p>These pages are static files on GitHub Pages. There are no cookies, no

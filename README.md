@@ -1,7 +1,8 @@
 <h1 align="center">Macronaut</h1>
 
-<p align="center"><b>The AutoHotkey alternative without the code.</b><br>
-Automate repetitive tasks in any Windows app — draw the flow, press play.</p>
+<p align="center"><b>An auto clicker that watches the screen and decides what to do.</b><br>
+Wait for something to appear, click it where it actually is, and keep going when
+it doesn't. In any Windows app, without writing code.</p>
 
 <p align="center">
   <a href="https://github.com/gtjevptje/Macronaut/releases/latest"><img alt="latest release" src="https://img.shields.io/github/v/release/gtjevptje/Macronaut?label=latest&color=7c5cff"></a>
@@ -16,33 +17,56 @@ Automate repetitive tasks in any Windows app — draw the flow, press play.</p>
   click <b>More info → Run anyway</b>. It does that for any unsigned app.</sub>
 </h3>
 
-<p align="center"><i>One file. No installer. It updates itself.</i></p>
+<p align="center"><i>One 78 MB file. No installer, no account, no Python.
+It updates itself.</i></p>
 
 <p align="center"><a href="https://gtjevptje.github.io/Macronaut/"><b>macronaut website →</b></a></p>
 
 <p align="center"><img alt="A Macronaut flow on the canvas" src="assets/hero.png" width="100%"></p>
 
+## The first two minutes
+
+1. **It opens as a plain auto-clicker.** Interval, button, how many times, where.
+   Press Start. If that is all you came for, you are finished on this screen.
+2. **5 scripts are already in the library** — a clicker that stops
+   after a set number of clicks, one that clicks every 30 seconds to keep a
+   session awake, one that types a block of text. Open one and press Play.
+   Nothing to set up first.
+3. **Advanced is one click away**, and it is a canvas: boxes for the things it
+   does, wires for the order. Record yourself and it lands there as editable
+   steps, or draw it yourself.
+
+## What it does that a plain auto clicker cannot
+
+**It waits for something, then clicks where that thing actually is.**
+Point it at a button, a dialog or an icon. It searches the screen until that
+appears — at a different DPI or window size too — and clicks it where it found
+it, not at a coordinate that was right yesterday. Text works the same way, read
+with Windows' own OCR, and so does a single pixel changing colour.
+
+**It decides.** Every detection has a *found* branch and a *not found* branch,
+so a script can handle the dialog that never appeared instead of hammering the
+spot where it should have been. With loops, jumps and variables to go with it.
+
+**Keyboard and mouse in one script.** Clicks, keystrokes, chords, drags, scroll
+flicks and held keys, in whatever order you need them — hold **W** to keep
+moving while the mouse clicks, and everything is released when the run ends,
+stops or crashes.
+
+**It reaches programs that ignore ordinary input.** Three selectable input
+backends: standard, SendInput scancodes, and the **Interception** kernel driver.
+Many games discard injected input; the lower two look like a real keyboard to
+them.
+
 ---
 
-## What it is
+## The two faces
 
 Macronaut automates clicking, typing and waiting in **any** Windows program —
-including ones with no API, no scripting support and no plugins.
-
-It has **two faces, and you pick which one you get.**
-
-**Basic** is a plain auto-clicker. Click interval, which button, how many times,
-where — set the numbers, press Start. It is the layout anyone who has used an
-auto-clicker already knows, and nothing about it involves a node, a flow or a
-diagram. If that is all you came for, you are done on this screen.
-
-**Advanced** is the node canvas, one click away: boxes for the things it does,
-wires for the order they happen in. Record yourself once and it lands there as
-editable steps, or draw it yourself. No scripting language to learn.
-
-Macronaut opens on whichever one you closed it on, and each remembers its own
-size and position — Basic parked in a corner beside the window it is clicking,
-Advanced as big as you like.
+including ones with no API, no scripting support and no plugins. It opens on
+whichever face you closed it on, and each remembers its own size and position:
+Basic parked in a corner beside the window it is clicking, Advanced as big as
+you like.
 
 <p align="center"><img alt="Macronaut's Basic face — an auto-clicker with click
 interval, mouse button, repeat count, cursor position and a Start button"
@@ -65,44 +89,10 @@ thing once it is running. There is also a
 [**click speed test**](https://gtjevptje.github.io/Macronaut/click-speed-test.html) — no ads, no sign-up,
 runs in the page.
 
-It arrives with **5 automations already built** — an auto-clicker, a
-clicker that stops after a set number of clicks, one that clicks once every 30
-seconds to keep a session awake, one that types a block of text, and one that
-presses a key over and over. None of them need setting up: open one from the
-library and press Play.
+## Free, all of it
 
-## Free or Pro
-
-**The free tier is a complete auto-clicker, not a trial.** No timer, no
-watermark, no expiry, no account, no nagging. **The whole Basic face is free
-and always will be** — that is the tier's reason to exist, not a sample of it.
-Clicking, typing, dragging, scrolling and recording are free permanently too,
-in flows of up to 20 steps.
-
-**Pro** — €9.99, once — adds the half that makes it an automation tool
-rather than a clicker: the steps that **look at the screen** and the steps that
-**decide what to do about it**.
-
-| | Free | Pro |
-|---|:---:|:---:|
-| **Basic — the plain auto-clicker** | ✅ | ✅ |
-| Click, move, drag, scroll | ✅ | ✅ |
-| Type text, press keys and chords | ✅ | ✅ |
-| Record what you do into an editable flow | ✅ | ✅ |
-| Waits, delays, loop counts, playback speed | ✅ | ✅ |
-| Global hotkey and per-script launcher keys | ✅ | ✅ |
-| All three input backends | ✅ | ✅ |
-| Steps per flow | 20 | unlimited |
-| Wait for an image, then click it | — | ✅ |
-| Wait for text (Windows OCR) | — | ✅ |
-| Wait for a pixel to change | — | ✅ |
-| If / Else, Loop, variables, Go to | — | ✅ |
-
-One payment. Yours forever, on every computer you own. Not a subscription, and every future update is included.
-[See the pricing page →](https://gtjevptje.github.io/Macronaut/#buy)
-
-A flow that uses Pro steps still opens, edits and saves on the free tier — it
-just will not *run* until it is licensed. You never lose work.
+No trial, no watermark, no account, no advertising, and no limit on what a
+script can do. Every feature on this page is in the download.
 
 ## What it can do
 
@@ -117,13 +107,13 @@ just will not *run* until it is licensed. You never lose work.
 
 **Build a flow visually** *(the Advanced face)*
 - Drop in **Click**, **Move**, **Drag**, **Scroll**, **Type text**, **Key press**,
-  **Wait**, **Comment** — and, with Pro, **Detect**, **If / Else**, **Loop** and **Go to**
+  **Wait**, **Comment**, **Detect**, **If / Else**, **Loop** and **Go to**
 - Wire them together and press ▶ — the running step lights up as it goes
 - Group a region with a **comment box**; drag the box and everything on it moves
 - Colour-code nodes, bend wires around each other, jump between sections
 - Copy, paste, duplicate and bulk-edit across the whole flow or just a selection
 
-**React to what's on screen** *(Pro)*
+**React to what's on screen**
 - **Find an image** — wait for a button, a dialog or an icon to appear, then click it
 - **Read text** — wait until specific words show up, using Windows' built-in OCR
 - **Check a pixel** — the cheapest possible "is the panel open yet?"
@@ -160,8 +150,7 @@ just will not *run* until it is licensed. You never lose work.
 ## Privacy
 
 Macronaut has no accounts and no telemetry. Automations run entirely on your
-machine, and a Pro licence is verified **offline** — activating tells us
-nothing, because there is nothing for it to tell. The one thing that ever leaves
+machine. The one thing that ever leaves
 your computer is a crash report, and only if you opt in; those carry the error,
 the version, your Windows version and which step was running, never your
 scripts, your keystrokes, anything on screen, or your name.
@@ -220,13 +209,10 @@ source.
 
 ## Getting in touch
 
-**[gerbenvanpoucke0@gmail.com](mailto:gerbenvanpoucke0@gmail.com)** — bug reports, a lost licence key, or a
-refund. It is one person, not a ticket queue.
+**[gerbenvanpoucke0@gmail.com](mailto:gerbenvanpoucke0@gmail.com)** — bug reports. It is one person, not a ticket queue.
 
 ---
 
 <p align="center">
   <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe"><b>⬇&nbsp;&nbsp;Download Macronaut for Windows</b></a>
-  &nbsp;·&nbsp;
-  <a href="https://gtjevptje.github.io/Macronaut/#buy"><b>Get Pro — €9.99</b></a>
 </p>
