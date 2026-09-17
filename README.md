@@ -46,7 +46,7 @@ with Windows' own OCR, and so does a single pixel changing colour.
 
 **It decides.** Every detection has a *found* branch and a *not found* branch,
 so a script can handle the dialog that never appeared instead of hammering the
-spot where it should have been. With loops, jumps and variables to go with it.
+spot where it should have been. With loops and jumps to go with it.
 
 **Keyboard and mouse in one script.** Clicks, keystrokes, chords, drags, scroll
 flicks and held keys, in whatever order you need them — hold **W** to keep
@@ -146,6 +146,7 @@ script can do. Every feature on this page is in the download.
 - Single 78 MB `.exe`, no installer, no Python, no admin needed to run
 - Checks for updates and applies them on restart, verified by SHA-256
 - Always-on-top mode, system tray icon, dark and light themes
+- Light when idle: about 0.1% of one CPU core while it sits waiting (measured on 2.3.5)
 
 ## Privacy
 
