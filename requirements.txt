@@ -24,7 +24,13 @@
 # Keep PySide6 anyway, for the reasons that outlived it: it is the Qt
 # Company's own binding, it tracks Qt releases directly, and swapping the
 # toolkit under ~5k lines of UI buys nothing. Do not swap this back.
-PySide6>=6.6,<7
+#
+# ⚠ Capped below 6.12. That release moved Qt PDF and Qt WebEngine out of
+# PySide6_Addons into wheels of their own (PySide6_Pdf, PySide6_WebEngine),
+# so a clean install resolves a different set of packages from the one the
+# released .exe was built with and THIRD-PARTY-NOTICES.md lists (6.11).
+# Raise the cap together with the notices, never on its own.
+PySide6>=6.6,<6.12
 
 # Input control
 pynput>=1.7.6,<2
