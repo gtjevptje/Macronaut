@@ -1,12 +1,12 @@
 {
-    "version": "2.3.4",
+    "version": "2.3.6",
     "description": "Auto clicker and visual macro recorder. Records mouse and keyboard, replays it as editable steps.",
     "homepage": "https://gtjevptje.github.io/Macronaut/",
     "license": "GPL-3.0-or-later",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/gtjevptje/Macronaut/releases/download/v2.3.4/Macronaut.exe",
-            "hash": "005fc5afb0d3f48ddf51ee5eaecf5e3aa9bbfe93ff713d9dcd57a0df11365c91"
+            "url": "https://github.com/gtjevptje/Macronaut/releases/download/v2.3.6/Macronaut.exe",
+            "hash": "fd23f4afb8e431a33a7ec2c27dbdf50af4c8e38dd96beeb84c93e64eefae495c"
         }
     },
     "bin": "Macronaut.exe",
@@ -17,7 +17,7 @@
         ]
     ],
     "notes": [
-        "Macros and settings are stored in '~/.macronaut' and are kept across updates.",
+        "Scripts and settings are stored in '~/.macronaut' and are kept across updates.",
         "Macronaut is not code-signed, so SmartScreen may warn on first run.",
         "Source: https://github.com/gtjevptje/Macronaut"
     ],
