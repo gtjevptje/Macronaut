@@ -1,0 +1,19 @@
+# Blank issues stay ON: a template that does not fit should never be a reason
+# somebody gives up on reporting something. The templates are there to save a
+# round trip, not to be a gate.
+blank_issues_enabled: true
+
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/gtjevptje/Macronaut/blob/main/SECURITY.md
+    about: >
+      Please report these by email rather than in public. Nothing exploitable
+      should sit in an open issue while it is being fixed.
+
+  - name: Download Macronaut, or check which version is newest
+    url: https://github.com/gtjevptje/Macronaut/releases/latest
+    about: Every release, with its notes and its SHA-256.
+
+  - name: What Macronaut does and does not send
+    url: https://gtjevptje.github.io/Macronaut/privacy.html
+    about: The privacy policy, written from the code that does it.

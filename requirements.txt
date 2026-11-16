@@ -1,0 +1,80 @@
+# Macronaut dependencies
+#
+# ⚠ Every bound here is a PAIR: a floor for the oldest version known to work,
+# and a ceiling at the next major. The ceilings were added on 31 August 2026
+# after CI caught what their absence does. `opencv-python>=4.8.1.78` with no
+# ceiling resolved to 5.0.0.93 on a clean runner, while the shipped 2.3.3 was
+# built against 4.13.0.92 — a whole major version of the library that does the
+# image matching, swapped underneath the app, silently, with the only visible
+# symptom being a build 3.4 MB larger than the release. It could as easily have
+# been a release that went out that way.
+#
+# Raise a ceiling deliberately, having tested it. Do not remove one.
+#
+# pywin32 has no ceiling because its versions are build numbers (306, 311), not
+# semantic versions, so there is no "next major" to bound.
+#
+# GUI: PySide6, NOT PyQt5.
+#
+# ⚠ The reason changed on 30 August 2026 and the old one is now backwards.
+# PySide6 was chosen because LGPL v3 permits use in a closed-source product
+# and PyQt5's GPL v3 would not. Macronaut is GPL-3.0-or-later itself now, so
+# either binding would be licence-clean and that argument is dead.
+#
+# Keep PySide6 anyway, for the reasons that outlived it: it is the Qt
+# Company's own binding, it tracks Qt releases directly, and swapping the
+# toolkit under ~5k lines of UI buys nothing. Do not swap this back.
+PySide6>=6.6,<7
+
+# Input control
+pynput>=1.7.6,<2
+
+# Driver-level input backend (interception_backend.py) — for games that reject
+# user-mode injection (raw-input/DirectInput AAA ports, e.g. Ghost of Tsushima).
+# Optional: the Python package installs via pip, but sending input also needs the
+# Interception KERNEL DRIVER installed once + a reboot:
+#   https://github.com/oblitum/Interception/releases  ->  install-interception.exe /install
+# Macronaut degrades gracefully (interception_backend.is_available() -> False) when
+# the driver isn't present.
+interception-python>=1.13.6,<2; sys_platform == "win32"
+
+# Image recognition trigger
+pyautogui>=0.9.54,<1
+opencv-python>=4.8.1.78,<5
+
+# Image handling (used by pyautogui)
+Pillow>=10.1.0,<13
+
+# Windows API (window focus detection)
+pywin32>=306; sys_platform == "win32"
+
+# Packaging (optional, for building .exe)
+pyinstaller>=6.3.0,<7
+
+# OCR text recognition (the Detect ▸ Text step).
+# The ONLY engine: native Windows OCR (Windows.Media.Ocr) — accurate, ships with
+# Win10/11, nothing to bundle. Reached via the WinRT Python projection.
+#
+# There was a rapidocr-onnxruntime fallback until 2.0.12. Its .onnx models were
+# never collected into the .exe, so it could not start in any published build,
+# while still costing every download 13.2 MB of onnxruntime + shapely +
+# pyclipper. Removed rather than completed (+15 MB of models). Do not add it
+# back without also bundling rapidocr's models/ and config.yaml — otherwise it
+# is dead weight that reports itself as available.
+# These are the SPLIT projection packages. The monolithic `winsdk` also works and
+# ocr.py still falls back to it, but it projects the whole WinRT surface through
+# one 38.5 MB .pyd to provide these five namespaces — which the packages below do
+# in 3.1 MB. That is ~10 MB off every user's download for identical OCR output.
+#
+# ⚠ winrt-Windows.Foundation is NOT optional and is NOT pulled in automatically.
+# It is what makes recognize_async awaitable. Without it the engine imports,
+# constructs an OcrEngine, reports itself available — and then reads nothing at
+# all, silently, because an OCR failure must not kill a running flow. The line
+# that used to be here recommended exactly that broken set. ocr._load_modules
+# imports it explicitly so a missing one is an unavailable engine, not a lie.
+winrt-Windows.Media.Ocr; sys_platform == "win32"
+winrt-Windows.Graphics.Imaging; sys_platform == "win32"
+winrt-Windows.Storage.Streams; sys_platform == "win32"
+winrt-Windows.Globalization; sys_platform == "win32"
+winrt-Windows.Foundation; sys_platform == "win32"
+winrt-Windows.Foundation.Collections; sys_platform == "win32"

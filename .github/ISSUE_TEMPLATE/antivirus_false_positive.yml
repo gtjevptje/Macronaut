@@ -1,0 +1,66 @@
+name: Antivirus flagged Macronaut
+description: Defender or another scanner blocked or removed the download
+labels: ["antivirus"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **The short answer first, in case it is all you needed.**
+
+        Macronaut installs a global keyboard hook and sends synthetic mouse and
+        keyboard input, and it ships as an unsigned PyInstaller executable. That
+        combination is a heuristic match for a keylogger, because it is
+        mechanically what a keylogger does — the difference is what it does with
+        it, which a scanner cannot see. It is a false positive.
+
+        You do not have to take that on trust:
+
+        - [The complete source is here](https://github.com/gtjevptje/Macronaut),
+          under the GPL, and you can build it yourself.
+        - The [privacy policy](https://gtjevptje.github.io/Macronaut/privacy.html)
+          says exactly what does and does not leave your machine.
+        - Every release publishes its SHA-256, so you can check the file you got
+          is the file that was published.
+
+        A signing certificate is being pursued and would fix most of this.
+
+        Still worth filing an issue, though — which scanner and which detection
+        name is genuinely useful, because vendors take false-positive reports
+        and knowing which ones flag it is how that gets done.
+
+  - type: input
+    id: scanner
+    attributes:
+      label: Which scanner
+      placeholder: "Windows Defender / Avast / Malwarebytes / …"
+    validations:
+      required: true
+
+  - type: input
+    id: detection
+    attributes:
+      label: Detection name
+      description: The exact string it showed you, if it gave one. This is the useful part.
+      placeholder: "Trojan:Win32/Wacatac.B!ml"
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: Macronaut version
+      placeholder: "2.3.3"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: what-happened
+    attributes:
+      label: What did it do?
+      options:
+        - Warned me but let me continue
+        - Blocked the download
+        - Quarantined or deleted the file after download
+        - Blocked it from running
+    validations:
+      required: true

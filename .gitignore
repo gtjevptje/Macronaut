@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+dist/
+build/
+*.bak*
+backups/
+_shots/
+/Macronaut/
+.obsidian/
+*.base
+
+# Key material never belongs in a repository. Nothing writes these here; the
+# patterns are a second line of defence.
+signing-key.json
+issued-keys.jsonl

@@ -1,0 +1,80 @@
+name: Bug report
+description: Something does not work the way it should
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. One person reads these, so a little detail saves a
+        round trip.
+
+        **If it is a security issue, please do not file it here** — email
+        gerbenvanpoucke0@gmail.com instead. See
+        [SECURITY.md](https://github.com/gtjevptje/Macronaut/blob/main/SECURITY.md).
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+      placeholder: |
+        I recorded a macro with three clicks and played it back.
+        I expected it to click the same three places.
+        The third click landed in the top-left corner of the screen instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: >
+        The shortest sequence that shows the problem. If you can attach the
+        macro or flow file (`.json` from your `.macronaut` folder), that is
+        usually the fastest possible fix — but read it first and remove anything
+        personal, since typed text is stored in it.
+      placeholder: |
+        1. New flow
+        2. Add a Click node at a fixed coordinate
+        3. Run it
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Macronaut version
+      description: "Settings → About & legal"
+      placeholder: "2.3.3"
+    validations:
+      required: true
+
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      description: "Win + R, type `winver`. Windows 11 24H2, Windows 10 22H2, and so on."
+      placeholder: "Windows 11 24H2"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install
+    attributes:
+      label: How are you running it?
+      options:
+        - The downloaded Macronaut.exe
+        - From source (python main.py)
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else
+      description: >
+        Screenshots, the app it was automating, whether it used to work in an
+        earlier version, whether the Interception driver is installed. Optional.
+    validations:
+      required: false

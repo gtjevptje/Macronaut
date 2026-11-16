@@ -1,0 +1,109 @@
+; Inno Setup script for Macronaut. Rendered by tools/build_installer.py —
+; {{VERSION}} and {{ROOT}} are filled in there, so the version in the installer,
+; in version.py and in the manifest cannot drift apart. Do not edit the rendered
+; copy in build/; edit this one.
+;
+; ⚠ AppId is permanent. It is what Windows uses to recognise an existing
+; installation, so changing it turns every upgrade into a second copy in
+; Add/Remove Programs, with two Start Menu entries and two uninstallers. It was
+; generated once, on 16 September 2026, and stays.
+;
+; ⚠ Per-user install, deliberately. PrivilegesRequired=lowest means no UAC
+; prompt — and an unsigned installer asking for administrator rights is the
+; single worst dialog this project could put in front of a first-time user, on
+; top of the SmartScreen warning they have already clicked through.
+
+#define AppName "Macronaut"
+#define AppVersion "{{VERSION}}"
+#define AppPublisher "Macronaut"
+#define AppURL "https://gtjevptje.github.io/Macronaut/"
+#define AppExe "Macronaut.exe"
+
+[Setup]
+AppId={{2C3F7A48-9E31-4B6D-9C57-5A0E1D4F8B22}
+AppName={#AppName}
+AppVersion={#AppVersion}
+AppVerName={#AppName} {#AppVersion}
+AppPublisher={#AppPublisher}
+AppPublisherURL={#AppURL}
+AppSupportURL={#AppURL}
+AppUpdatesURL={#AppURL}
+VersionInfoVersion={#AppVersion}
+DefaultDirName={localappdata}\Programs\{#AppName}
+DefaultGroupName={#AppName}
+DisableProgramGroupPage=yes
+DisableDirPage=auto
+PrivilegesRequired=lowest
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
+OutputDir={{ROOT}}\dist
+OutputBaseFilename=Macronaut-Setup-{#AppVersion}
+SetupIconFile={{ROOT}}\assets\macronaut.ico
+UninstallDisplayIcon={app}\{#AppExe}
+UninstallDisplayName={#AppName} {#AppVersion}
+WizardStyle=modern
+Compression=lzma2/max
+SolidCompression=yes
+LicenseFile={{ROOT}}\LICENSE
+; ⚠ The updater runs this with /SILENT while Macronaut itself is running. These
+; two let Setup close the app and start it again rather than failing on a locked
+; file — without them a silent update aborts with nothing on screen to say why.
+CloseApplications=yes
+RestartApplications=yes
+
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
+
+[Tasks]
+Name: "desktopicon"; Description: "Create a &desktop shortcut"; GroupDescription: "Additional shortcuts:"; Flags: unchecked
+
+[Files]
+; The whole PyInstaller folder build. `recursesubdirs` matters: the Qt plugins
+; and the winrt OCR packages live several directories down, and a build missing
+; them starts, reports OCR as available and reads nothing — the silent failure
+; macronaut.spec documents at length.
+Source: "{{ROOT}}\dist\Macronaut\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+[Icons]
+Name: "{group}\{#AppName}"; Filename: "{app}\{#AppExe}"
+Name: "{group}\Uninstall {#AppName}"; Filename: "{uninstallexe}"
+Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; Tasks: desktopicon
+
+[Run]
+; The "Start Macronaut" tick on the last page of an ordinary install. A silent
+; run has no last page, so `skipifsilent` leaves it out there.
+Filename: "{app}\{#AppExe}"; Description: "Start {#AppName}"; Flags: nowait postinstall skipifsilent
+; ⚠ The relaunch after an in-app update, and the only thing that does it.
+;
+; The updater runs Setup with /SILENT ... /RESTARTAPPLICATIONS and quits. That
+; switch only restarts programs that registered with Windows' Restart Manager,
+; which Macronaut does not, and by the time Setup looks the app has usually
+; exited on its own anyway. Rehearsed 16 November 2026 with the published 2.3.5
+; installer and this one, both ways round (the app gone, and the app still
+; running): the update installed and self-tested, and nothing came back. The
+; user pressed Install and was left with an empty desktop.
+;
+; So Setup starts the app itself — only when it is silent AND the updater's
+; switch is on the command line. A plain silent install (winget, a script)
+; passes no such switch and must not open a window nobody asked for.
+Filename: "{app}\{#AppExe}"; Flags: nowait skipifnotsilent; Check: UpdaterAskedForRelaunch
+
+[Code]
+function UpdaterAskedForRelaunch: Boolean;
+var
+  I: Integer;
+begin
+  Result := False;
+  for I := 1 to ParamCount do
+    if CompareText(ParamStr(I), '/RESTARTAPPLICATIONS') = 0 then
+    begin
+      Result := True;
+      Exit;
+    end;
+end;
+
+[UninstallDelete]
+; Nothing under ~/.macronaut is touched: scripts, settings, licence and stats are
+; the user's, and an uninstall that deletes somebody's script library is a bug
+; report you never get to read.
+Type: dirifempty; Name: "{app}"

@@ -1,0 +1,51 @@
+name: Feature request
+description: Something Macronaut should be able to do and cannot
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Worth knowing before you write: Macronaut tries to stay a single
+        executable that a person can use without reading anything, so "no" is a
+        common and non-hostile answer. The most persuasive requests describe the
+        job you were doing, not the feature you designed — the job is often
+        solvable a way you did not expect.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: The actual task, in the real world. Not the feature — the job.
+      placeholder: >
+        Every morning I open 40 supplier emails and copy an order number out of
+        each one into a spreadsheet.
+    validations:
+      required: true
+
+  - type: textarea
+    id: blocked
+    attributes:
+      label: Where does Macronaut stop being able to help?
+      placeholder: >
+        It can click and copy fine, but I cannot get it to stop when it reaches
+        the end of the list — it just keeps going on an empty inbox.
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: What did you have in mind?
+      description: Optional. If you already have a design in mind, describe it here.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What are you doing instead right now?
+      description: >
+        Optional, and more useful than it sounds — a workaround that is only
+        slightly annoying is a different priority from one that does not exist.
+    validations:
+      required: false

@@ -1,0 +1,124 @@
+{
+  "version": 2,
+  "nodes": [
+    {
+      "id": "n1",
+      "type": "start",
+      "data": {},
+      "x": -396.5598095563847,
+      "y": -10.52694127280266
+    },
+    {
+      "id": "n2",
+      "type": "action",
+      "data": {
+        "step": {
+          "kind": "click",
+          "data": {
+            "button": "left",
+            "x": 1506,
+            "y": 523,
+            "clicks": 1,
+            "hold": false,
+            "hold_ms": 1000
+          },
+          "delay_ms": 0.0
+        }
+      },
+      "x": -105.51880026810574,
+      "y": -57.977975367823504
+    },
+    {
+      "id": "n4",
+      "type": "if",
+      "data": {
+        "name": "kaka pipi",
+        "condition": {
+          "type": "image",
+          "negate": false,
+          "image_path": "",
+          "confidence": 0.85,
+          "region": [
+            -995,
+            424,
+            451,
+            238
+          ],
+          "timeout_s": 5
+        }
+      },
+      "x": 164.85596725882766,
+      "y": -36.45056562506742
+    },
+    {
+      "id": "n7",
+      "type": "action",
+      "data": {
+        "step": {
+          "kind": "text",
+          "data": {
+            "text": "yoo kapapi",
+            "speed_cps": 10.0
+          },
+          "delay_ms": 0.0
+        }
+      },
+      "x": 471.37208728780365,
+      "y": 54.67584843760112
+    },
+    {
+      "id": "n9",
+      "type": "end",
+      "data": {},
+      "x": 677.6458418502071,
+      "y": -157.66742726408262
+    },
+    {
+      "id": "n15",
+      "type": "if",
+      "data": {},
+      "x": 451.22588561225973,
+      "y": -226.00542690495163
+    },
+    {
+      "id": "n16",
+      "type": "loop",
+      "data": {
+        "name": "",
+        "mode": "repeat_n",
+        "max_iters": 100000,
+        "count": 5
+      },
+      "x": 757.0620094000539,
+      "y": -7.34343437071152
+    }
+  ],
+  "edges": [
+    {
+      "id": "e3",
+      "src": "n1",
+      "dst": "n2",
+      "src_port": "out"
+    },
+    {
+      "id": "e6",
+      "src": "n2",
+      "dst": "n4",
+      "src_port": "out"
+    },
+    {
+      "id": "e8",
+      "src": "n4",
+      "dst": "n7",
+      "src_port": "false"
+    },
+    {
+      "id": "e10",
+      "src": "n4",
+      "dst": "n9",
+      "src_port": "true"
+    }
+  ],
+  "variables": {},
+  "meta": {}
+}

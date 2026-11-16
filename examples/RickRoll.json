@@ -1,0 +1,217 @@
+{
+  "version": 2,
+  "nodes": [
+    {
+      "id": "n1",
+      "type": "start",
+      "data": {},
+      "x": 0.0,
+      "y": 0.0
+    },
+    {
+      "id": "n2",
+      "type": "action",
+      "data": {
+        "step": {
+          "kind": "wait_image",
+          "data": {
+            "image_path": "C:\\Users\\gerbe\\.autoclicker_pro\\captures\\capture_20260614_052135_69396.png",
+            "confidence": 0.7999999999999998,
+            "timeout_s": 0,
+            "click": true,
+            "button": "left",
+            "clicks": 1,
+            "offset_x": 1,
+            "offset_y": -1
+          },
+          "delay_ms": 0.0
+        }
+      },
+      "x": 0.0,
+      "y": 120.0
+    },
+    {
+      "id": "n4",
+      "type": "action",
+      "data": {
+        "step": {
+          "kind": "wait_image",
+          "data": {
+            "image_path": "C:\\Users\\gerbe\\.autoclicker_pro\\captures\\capture_20260614_052235_59442.png",
+            "confidence": 0.95,
+            "timeout_s": 0,
+            "click": true,
+            "button": "left",
+            "clicks": 1,
+            "offset_x": -159,
+            "offset_y": 0
+          },
+          "delay_ms": 0.0
+        }
+      },
+      "x": 0.0,
+      "y": 240.0
+    },
+    {
+      "id": "n6",
+      "type": "action",
+      "data": {
+        "step": {
+          "kind": "wait_image",
+          "data": {
+            "image_path": "C:\\Users\\gerbe\\.autoclicker_pro\\captures\\capture_20260614_052311_27229.png",
+            "confidence": 0.8,
+            "timeout_s": 0,
+            "click": true,
+            "button": "left",
+            "clicks": 1,
+            "offset_x": 0,
+            "offset_y": 0
+          },
+          "delay_ms": 0.0
+        }
+      },
+      "x": 0.0,
+      "y": 360.0
+    },
+    {
+      "id": "n8",
+      "type": "action",
+      "data": {
+        "step": {
+          "kind": "wait_image",
+          "data": {
+            "image_path": "C:\\Users\\gerbe\\.autoclicker_pro\\captures\\capture_20260614_052542_88863.png",
+            "confidence": 0.8,
+            "timeout_s": 0,
+            "click": true,
+            "button": "left",
+            "clicks": 1,
+            "offset_x": -62,
+            "offset_y": 0
+          },
+          "delay_ms": 0.0
+        }
+      },
+      "x": 0.0,
+      "y": 480.0
+    },
+    {
+      "id": "n10",
+      "type": "action",
+      "data": {
+        "step": {
+          "kind": "text",
+          "data": {
+            "text": "never gonna give you up",
+            "speed_cps": 100.0
+          },
+          "delay_ms": 0.0
+        }
+      },
+      "x": 0.0,
+      "y": 600.0
+    },
+    {
+      "id": "n12",
+      "type": "action",
+      "data": {
+        "step": {
+          "kind": "key",
+          "data": {
+            "keys": [
+              "enter"
+            ],
+            "repeat": 1
+          },
+          "delay_ms": 0.0
+        }
+      },
+      "x": 0.0,
+      "y": 720.0
+    },
+    {
+      "id": "n14",
+      "type": "action",
+      "data": {
+        "step": {
+          "kind": "wait_image",
+          "data": {
+            "image_path": "C:\\Users\\gerbe\\.autoclicker_pro\\captures\\capture_20260614_052801_10025.png",
+            "confidence": 0.8,
+            "timeout_s": 0,
+            "click": true,
+            "button": "left",
+            "clicks": 1,
+            "offset_x": 1,
+            "offset_y": 0
+          },
+          "delay_ms": 0.0
+        }
+      },
+      "x": 0.0,
+      "y": 840.0
+    },
+    {
+      "id": "n16",
+      "type": "end",
+      "data": {},
+      "x": 0.0,
+      "y": 960.0
+    }
+  ],
+  "edges": [
+    {
+      "id": "e3",
+      "src": "n1",
+      "dst": "n2",
+      "src_port": "out"
+    },
+    {
+      "id": "e5",
+      "src": "n2",
+      "dst": "n4",
+      "src_port": "out"
+    },
+    {
+      "id": "e7",
+      "src": "n4",
+      "dst": "n6",
+      "src_port": "out"
+    },
+    {
+      "id": "e9",
+      "src": "n6",
+      "dst": "n8",
+      "src_port": "out"
+    },
+    {
+      "id": "e11",
+      "src": "n8",
+      "dst": "n10",
+      "src_port": "out"
+    },
+    {
+      "id": "e13",
+      "src": "n10",
+      "dst": "n12",
+      "src_port": "out"
+    },
+    {
+      "id": "e15",
+      "src": "n12",
+      "dst": "n14",
+      "src_port": "out"
+    },
+    {
+      "id": "e17",
+      "src": "n14",
+      "dst": "n16",
+      "src_port": "out"
+    }
+  ],
+  "variables": {},
+  "meta": {
+    "migrated_from": "v1"
+  }
+}

@@ -1,0 +1,163 @@
+# Runs the suite, then builds the .exe from a clean machine.
+#
+# Free on the public mirror -- GitHub Actions bills nothing for public
+# repositories -- which is one of the things going open source actually bought.
+#
+# Two jobs rather than one, because they answer different questions. `tests`
+# answers "does it work", on every push, in about two minutes. `build` answers
+# "does the published binary come out of this repository", which is slower and
+# is the question anyone deciding whether to trust the download asks. The .spec
+# already knows why that matters: its own comments record that the local build
+# was silently shipping OpenSSL picked up from Git for Windows on the
+# developer's PATH. A clean runner cannot do that.
+name: tests
+
+on:
+  push:
+    # master is this repository, main is the public mirror. Same workflow file
+    # reaches both, so it has to name both.
+    branches: [main, master]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+# A second push supersedes the first; nothing is learned from finishing a run
+# against code that has already been replaced.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: windows-latest          # the app is Windows-only; so is its suite
+    # ⚠ Not decoration. A modal dialog opened by a stray timer once hung this
+    # suite indefinitely (see `_no_crash_consent_timer_may_mature_mid_suite` in
+    # tests/conftest.py). Locally that costs you a Ctrl-C; on a runner, with no
+    # cap, it costs six hours of a shared machine before Actions gives up.
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      # pytest is deliberately not in requirements.txt -- that file is what a
+      # user installs to run Macronaut, not what a contributor installs to test
+      # it. ed25519.py is hand-rolled and in-tree, so there is no crypto
+      # dependency to install here.
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      # conftest.py sets QT_QPA_PLATFORM=offscreen at import time and redirects
+      # the settings directory into a tempdir before any test module loads, so
+      # there is nothing to arrange here and no ~/.macronaut to create.
+      - name: Run the suite
+        run: python -m pytest -q
+
+  build:
+    # Only worth building something the tests have already vouched for.
+    needs: tests
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # This step earned itself. The first CI build came out 3.4 MB larger than
+      # the shipped 2.3.3: requirements.txt had floors and no ceilings, so a
+      # clean install picked up OpenCV 5 where that binary has OpenCV 4 -- a
+      # whole major version of the library doing the image matching, swapped
+      # underneath the app, with a slightly bigger file as the only symptom. It
+      # could as easily have been a release that went out that way.
+      #
+      # Ceilings were added on 31 August 2026 and that specific drift is now
+      # bounded -- verified on 3 September, when this step reported
+      # `opencv-python==4.14.0.94`: a 4.x, where the unbounded resolve had
+      # picked 5.0.0.93.
+      #
+      # The step stays, because ceilings stop majors and nothing stops minors.
+      # That same run resolved 4.14.0.94 while the shipped 2.3.3 was built
+      # against 4.13.0.92, and PySide6 6.11.2 against the release's 6.11.1.
+      # Small drift, but it is drift, and recording it makes the next one
+      # visible in the run rather than in somebody's download.
+      - name: Record the exact dependency set this build used
+        shell: pwsh
+        run: |
+          # ⚠ Single quotes. In PowerShell "```" is a parse error, not a fence:
+          # the first two backticks escape to one literal, then the third
+          # escapes the closing quote and the string never ends.
+          '### Resolved dependencies' | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+          '```'                       | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+          pip freeze                  | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+          '```'                       | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+
+      - name: Build the executable
+        run: pyinstaller macronaut.spec
+
+      # The same gate release.py runs first. "It compiled" is not the claim
+      # worth making; "the binary this pipeline produced starts and passes its
+      # own checks" is. Runs inside the frozen exe, so it exercises the bundle
+      # rather than the source tree.
+      #
+      # ⚠ Start-Process -Wait, not a bare call. macronaut.spec sets
+      # console=False, and PowerShell does not wait for a GUI-subsystem
+      # executable unless something happens to consume its output -- so the
+      # obvious `./dist/Macronaut.exe --selftest` can return before the check
+      # has run and pass an exit code that means nothing. A gate that cannot
+      # fail is worse than no gate.
+      - name: Self-test the binary that was just built
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath dist\Macronaut.exe -ArgumentList '--selftest' `
+                             -Wait -PassThru -NoNewWindow
+          Get-Content $env:TEMP\macronaut-selftest.txt -ErrorAction SilentlyContinue
+          if ($p.ExitCode -ne 0) {
+            throw "the frozen self-test failed with exit code $($p.ExitCode)"
+          }
+
+      # The same digest the website publishes and the package managers pin, so
+      # a mismatch between what this pipeline builds and what was released is
+      # visible in the run summary rather than discovered by a user.
+      - name: Report size and SHA-256
+        shell: pwsh
+        run: |
+          $exe = "dist/Macronaut.exe"
+          $hash = (Get-FileHash $exe -Algorithm SHA256).Hash.ToLower()
+          $size = (Get-Item $exe).Length
+          "| | |"                              | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+          "| --- | --- |"                      | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+          "| Size | $size bytes |"             | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+          "| SHA-256 | ``$hash`` |"            | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
+
+      # ⚠ This artifact is NOT a release. It is unsigned and it has not been
+      # through the three gates release.py runs (frozen --selftest, probe_launch,
+      # rehearse_swap), so it must not be handed to anyone as a download. It
+      # exists so the build is continuously proven and so there is something to
+      # point at when asked whether a pipeline builds the binary.
+      - name: Keep the build
+        uses: actions/upload-artifact@v7
+        with:
+          name: Macronaut-unsigned-${{ github.sha }}
+          path: dist/Macronaut.exe
+          retention-days: 7
+          if-no-files-found: error
+          compression-level: 0     # PyInstaller output does not zip; skip trying
