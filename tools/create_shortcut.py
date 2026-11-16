@@ -142,7 +142,7 @@ def create_shortcut(icon_path: Path):
     if not pythonw.exists():
         pythonw = Path(sys.executable)   # fallback to python.exe
 
-    script  = Path(__file__).parent / "main.py"
+    script  = Path(__file__).resolve().parent.parent / "src" / "main.py"
     work    = script.parent
 
     wsh = win32com.client.Dispatch("WScript.Shell")
@@ -186,7 +186,7 @@ def _set_shortcut_appid(lnk_path, app_id):
 def main():
     print("Macronaut — shortcut installer\n")
 
-    assets = Path(__file__).parent / "assets"
+    assets = Path(__file__).resolve().parent.parent / "assets"
     assets.mkdir(exist_ok=True)
     icon   = assets / "macronaut.ico"
 

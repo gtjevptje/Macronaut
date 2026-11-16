@@ -81,10 +81,15 @@ def test_no_pacing_loop_reads_the_coarse_clock():
     """
     offenders = []
     seen = set()
-    for name in sorted(os.listdir(ROOT)):
+    # The app's modules are in src/; release.py is still at the root.
+    files = [(n, os.path.join(d, n))
+             for d in (os.path.join(ROOT, "src"), ROOT)
+             for n in sorted(os.listdir(d))]
+    assert any(n == "flow_exec.py" for n, _ in files), "src/ was not swept"
+    for name, path in files:
         if not name.endswith(".py"):
             continue
-        with open(os.path.join(ROOT, name), encoding="utf-8") as fh:
+        with open(path, encoding="utf-8") as fh:
             try:
                 tree = ast.parse(fh.read())
             except SyntaxError:                 # not ours to police

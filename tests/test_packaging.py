@@ -54,7 +54,7 @@ def test_the_app_says_the_same_licence_the_licence_file_does():
     the LICENSE button next to it has been told two different things about
     what they are allowed to do with the program in front of them.
     """
-    for name in ("README.md", "main.py"):
+    for name in ("README.md", os.path.join("src", "main.py")):
         text = _read(name)
         assert "GPL-3.0-or-later" in text, f"{name} does not name the licence"
         assert "All rights reserved" not in text, \
@@ -136,7 +136,12 @@ def test_release_notes_are_found_by_name_and_every_release_has_them():
     import release
 
     # The resolver agrees with the convention the files on disk use.
-    for name in os.listdir(ROOT):
+    names = os.listdir(release.NOTES_DIR)
+    assert names, "release-notes/ is empty"
+    # ⚠ None may be left behind at the top level: the resolver would not find
+    # it, and the release would go out with an empty page.
+    assert not [n for n in os.listdir(ROOT) if n.startswith("RELEASE-NOTES-")]
+    for name in names:
         m = re.fullmatch(r"RELEASE-NOTES-(\d+\.\d+\.\d+)\.md", name)
         if not m:
             continue
@@ -254,7 +259,8 @@ def test_no_gpl_qt_binding_anywhere_in_the_app():
     import glob
     imports = re.compile(r"^\s*(?:from|import)\s+PyQt5", re.MULTILINE)
     offenders = []
-    for path in glob.glob(os.path.join(ROOT, "*.py")):
+    for path in (glob.glob(os.path.join(ROOT, "src", "*.py"))
+                 + glob.glob(os.path.join(ROOT, "*.py"))):
         with open(path, "r", encoding="utf-8") as fh:
             if imports.search(fh.read()):
                 offenders.append(os.path.basename(path))
@@ -329,7 +335,8 @@ def test_no_source_file_still_reaches_for_the_removed_engine():
     """
     import glob
     offenders = []
-    for path in (glob.glob(os.path.join(ROOT, "*.py"))
+    for path in ((glob.glob(os.path.join(ROOT, "src", "*.py"))
+                 + glob.glob(os.path.join(ROOT, "*.py")))
                  + glob.glob(os.path.join(ROOT, "tools", "*.py"))):
         with open(path, "r", encoding="utf-8") as fh:
             body = fh.read()
@@ -527,7 +534,7 @@ def test_selftest_is_bundled(tmp_path):
     """
     spec = _read("macronaut.spec")
     assert '"selftest"' in spec or "'selftest'" in spec
-    main = _read("main.py")
+    main = _read(os.path.join("src", "main.py"))
     assert "--selftest" in main and "import selftest" in main
 
 
@@ -627,7 +634,8 @@ def test_no_module_uses_a_name_it_never_defines():
     import ast
     import builtins
 
-    targets = (sorted(glob.glob(os.path.join(ROOT, "*.py")))
+    targets = (sorted((glob.glob(os.path.join(ROOT, "src", "*.py"))
+                 + glob.glob(os.path.join(ROOT, "*.py"))))
                + sorted(glob.glob(os.path.join(ROOT, "tests", "*.py")))
                + sorted(glob.glob(os.path.join(ROOT, "tools", "*.py"))))
     assert targets, "found no modules to check"
@@ -700,7 +708,8 @@ def test_no_setting_exists_that_nothing_reads():
 
     names = [f.name for f in dataclasses.fields(_settings.AppSettings)]
     reads = collections.Counter()
-    for path in (sorted(glob.glob(os.path.join(ROOT, "*.py")))
+    for path in (sorted((glob.glob(os.path.join(ROOT, "src", "*.py"))
+                 + glob.glob(os.path.join(ROOT, "*.py"))))
                  + sorted(glob.glob(os.path.join(ROOT, "tools", "*.py")))):
         with open(path, encoding="utf-8") as fh:
             src = fh.read()
@@ -747,7 +756,7 @@ def test_both_quit_paths_disarm_the_crash_reporter_and_save_state():
     """
     import ast
 
-    with open(os.path.join(ROOT, "main.py"), encoding="utf-8") as fh:
+    with open(os.path.join(ROOT, "src", "main.py"), encoding="utf-8") as fh:
         tree = ast.parse(fh.read())
 
     wanted = {"crashreport.disarm", "self._shutdown", "self._save_state"}
@@ -794,7 +803,7 @@ def test_startup_harvests_before_it_arms_the_crash_reporter():
     """
     import ast
 
-    with open(os.path.join(ROOT, "main.py"), encoding="utf-8") as fh:
+    with open(os.path.join(ROOT, "src", "main.py"), encoding="utf-8") as fh:
         tree = ast.parse(fh.read())
 
     fn = next((n for n in ast.walk(tree)

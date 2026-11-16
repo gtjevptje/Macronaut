@@ -5,7 +5,7 @@ blank_issues_enabled: true
 
 contact_links:
   - name: Security vulnerability
-    url: https://github.com/gtjevptje/Macronaut/blob/main/SECURITY.md
+    url: https://github.com/gtjevptje/Macronaut/blob/main/.github/SECURITY.md
     about: >
       Please report these by email rather than in public. Nothing exploitable
       should sit in an open issue while it is being fixed.

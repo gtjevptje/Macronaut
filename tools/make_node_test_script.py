@@ -23,7 +23,13 @@ over a throwaway window (e.g. Notepad), not over anything that matters.
 """
 import os
 import shutil
-import flow
+import sys
+
+# The app's modules live in src/, one level up from this file's folder.
+sys.path.insert(0, os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src"))
+
+import flow  # noqa: E402
 from settings import scripts_dir
 
 g = flow.FlowGraph()
@@ -251,7 +257,7 @@ g.save(str(out_lib))
 # where a generated artefact with a space in its name sat beside the generator
 # that makes it -- which is a confusing thing to meet first in a public source
 # repository. examples/ is where the other flows already live.
-local = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+local = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                      "examples", "Node feature test.json")
 shutil.copy(str(out_lib), local)
 

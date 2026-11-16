@@ -237,7 +237,7 @@ Windows 10 or 11 and Python 3.12.
 git clone https://github.com/gtjevptje/Macronaut
 cd Macronaut
 pip install -r requirements.txt
-python main.py                      # run it
+python src/main.py                  # run it
 
 pip install pytest
 python -m pytest -q                 # the test suite
@@ -247,9 +247,9 @@ pyinstaller macronaut.spec          # builds dist\Macronaut.exe
 ```
 
 Issues and pull requests are welcome. It is a one-person project, so replies
-are not instant. [CONTRIBUTING.md](CONTRIBUTING.md) covers getting set up,
+are not instant. [CONTRIBUTING.md](.github/CONTRIBUTING.md) covers getting set up,
 running the suite, and the traps that have actually caught people. Security
-bugs go to email rather than the issue tracker — [SECURITY.md](SECURITY.md)
+bugs go to email rather than the issue tracker — [SECURITY.md](.github/SECURITY.md)
 says what is in scope and, just as usefully, what is not.
 
 The website is served from this repository's

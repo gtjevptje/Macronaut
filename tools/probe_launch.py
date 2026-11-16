@@ -188,8 +188,8 @@ def clear_session_files(pids: set) -> int:
     the legacy-directory fallback cannot drift out of sync.
     """
     try:
-        if str(ROOT) not in sys.path:
-            sys.path.insert(0, str(ROOT))
+        if str(ROOT / "src") not in sys.path:
+            sys.path.insert(0, str(ROOT / "src"))
         import crashreport
         d = crashreport.crash_dir()
     except Exception as exc:                      # not fatal: this is tidying

@@ -88,7 +88,7 @@ def test_the_recorder_does_not_time_anything_with_the_coarse_clock():
     uses the clock for multi-second timeouts, where a 15 ms tick is nothing.
     """
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    with open(os.path.join(root, "recorder.py"), encoding="utf-8") as fh:
+    with open(os.path.join(root, "src", "recorder.py"), encoding="utf-8") as fh:
         tree = ast.parse(fh.read())
 
     cls = next(n for n in tree.body

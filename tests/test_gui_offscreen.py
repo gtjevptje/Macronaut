@@ -246,7 +246,7 @@ def test_closing_the_main_window_is_wired_to_a_hard_exit():
     """
     import os
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    with open(os.path.join(root, "main.py"), "r", encoding="utf-8") as fh:
+    with open(os.path.join(root, "src", "main.py"), "r", encoding="utf-8") as fh:
         src = code_only(fh.read())
     close_body = src.split("def closeEvent(self, event):", 1)[1][:600]
     assert "_save_state()" in close_body, "state must be saved before exiting"
@@ -382,7 +382,7 @@ def test_the_orb_is_still_an_orphan(qapp):
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     for name in ("main.py", "compact.py", "flow_canvas.py", "flow_dialogs.py",
                  "settings.py"):
-        with open(os.path.join(root, name), encoding="utf-8") as fh:
+        with open(os.path.join(root, "src", name), encoding="utf-8") as fh:
             src = code_only(fh.read())
         for bad in ("import orb", "from orb"):
             assert bad not in src, "%s has '%s'" % (name, bad)
@@ -1367,7 +1367,8 @@ def test_no_pyqt5_only_indexed_signal_overloads():
     import re
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     offenders = []
-    for path in glob.glob(os.path.join(root, "*.py")):
+    for path in (glob.glob(os.path.join(root, "src", "*.py"))
+                 + glob.glob(os.path.join(root, "*.py"))):
         with open(path, "r", encoding="utf-8") as fh:
             src = code_only(fh.read())
         for m in re.finditer(r"(\w+)\[(?:int|str|object)\]\s*\.connect", src):
@@ -1392,7 +1393,7 @@ def test_new_nodes_get_no_automatic_pre_delay():
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     offenders = []
     for name in ("main.py", "flow_canvas.py", "flow.py"):
-        with open(os.path.join(root, name), "r", encoding="utf-8") as fh:
+        with open(os.path.join(root, "src", name), "r", encoding="utf-8") as fh:
             src = code_only(fh.read())
         for m in re.finditer(r"delay_before_ms\"?\s*,\s*(\d+)", src):
             if m.group(1) != "0":
@@ -1426,7 +1427,7 @@ def test_high_dpi_rounding_policy_is_passthrough():
     """
     import os
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    with open(os.path.join(root, "main.py"), "r", encoding="utf-8") as fh:
+    with open(os.path.join(root, "src", "main.py"), "r", encoding="utf-8") as fh:
         src = fh.read()
     assert re.search(r"setHighDpiScaleFactorRoundingPolicy\(\s*\n?\s*"
                      r"Qt\.HighDpiScaleFactorRoundingPolicy\.PassThrough", src), \
@@ -1444,7 +1445,7 @@ def test_no_overlay_uses_primary_screen_geometry():
     """
     import os
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    with open(os.path.join(root, "main.py"), "r", encoding="utf-8") as fh:
+    with open(os.path.join(root, "src", "main.py"), "r", encoding="utf-8") as fh:
         lines = fh.read().splitlines()
     offenders = [f"main.py:{i}" for i, ln in enumerate(lines, 1)
                  if "primaryScreen().geometry()" in ln

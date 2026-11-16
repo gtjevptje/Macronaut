@@ -331,7 +331,9 @@ def _check_legal() -> str:
     """The licence has to be readable from inside the .exe, not just the
     repo — GPL §4 requires the licence to travel with the program, and
     Settings ▸ About opens this exact file."""
-    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    # Source checkout: this file is in src/, the legal files at the root.
+    base = getattr(sys, "_MEIPASS", os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__))))
     out = []
     for name, needle in (("LICENSE", "GNU GENERAL PUBLIC LICENSE"),
                          ("THIRD-PARTY-NOTICES.md", "elects LGPL-3.0-only")):

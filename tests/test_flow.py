@@ -2304,7 +2304,7 @@ def test_both_image_paths_warn_about_a_missing_template():
     """
     import ast
 
-    src = open(_here("flow_exec.py"), encoding="utf-8").read()
+    src = open(_here(os.path.join("src", "flow_exec.py")), encoding="utf-8").read()
     tree = ast.parse(src)
 
     callers = set()

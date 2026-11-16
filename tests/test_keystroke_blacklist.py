@@ -139,7 +139,7 @@ def test_the_running_flow_is_given_the_users_blacklist():
     import ast
 
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    with open(os.path.join(root, "main.py"), encoding="utf-8") as fh:
+    with open(os.path.join(root, "src", "main.py"), encoding="utf-8") as fh:
         tree = ast.parse(fh.read())
 
     passes_it = False

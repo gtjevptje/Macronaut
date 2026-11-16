@@ -6,7 +6,8 @@ import os
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(SPECPATH)))
+# The app's modules live in src/; assets and the legal files stay at the root.
+sys.path.insert(0, str(Path(SPECPATH) / "src"))
 import version as _v
 
 block_cipher = None
@@ -152,8 +153,8 @@ dead_ocr_excludes += ["winsdk"]
 # version resource was masking it by preventing any build at all.
 
 a = Analysis(
-    ["main.py"],
-    pathex=["."],
+    ["src/main.py"],
+    pathex=["src"],
     binaries=[],
     datas=datas,
     hiddenimports=hidden_imports,

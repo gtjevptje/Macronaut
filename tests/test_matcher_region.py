@@ -277,7 +277,7 @@ def test_the_running_flow_actually_passes_the_stop_callback():
     import os
 
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    with open(os.path.join(root, "flow_exec.py"), encoding="utf-8") as fh:
+    with open(os.path.join(root, "src", "flow_exec.py"), encoding="utf-8") as fh:
         tree = ast.parse(fh.read())
 
     missing = []

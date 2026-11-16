@@ -31,7 +31,7 @@ python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 pip install pytest
-python main.py
+python src/main.py
 ```
 
 `pytest` is deliberately not in `requirements.txt` — that file is what a *user*
@@ -90,7 +90,7 @@ contribution anyone is looking for — `requirements.txt` explains why at length
   change and passes after is the best possible version of that sentence.
 - **Match the surrounding code.** Including the comment density — this codebase
   explains itself more than most, and a patch that does not stands out.
-- **Do not bump the version or edit `RELEASE-NOTES-*.md`.** Releases are cut by
+- **Do not bump the version or edit `release-notes/`.** Releases are cut by
   `release.py` and version bumps in a PR just cause conflicts.
 - **New dependencies are a hard sell.** Every one is +MB on a download that
   already makes people hesitate, and one was removed for exactly that reason

@@ -9,7 +9,7 @@ and cannot disagree.
 
 Typical flow:
 
-    1. Write RELEASE-NOTES-<new version>.md, then
+    1. Write release-notes/RELEASE-NOTES-<new version>.md, then
        python release.py --bump patch
          (the notes file is found by name — --notes / --notes-file override it)
          → bumps version.py, builds dist/Macronaut.exe, writes dist/update.json
@@ -51,7 +51,9 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-sys.path.insert(0, str(ROOT))
+# The app's modules live in src/.
+SRC = ROOT / "src"
+sys.path.insert(0, str(SRC))
 
 import version as _v  # noqa: E402  (after sys.path setup)
 
@@ -67,7 +69,7 @@ def setup_exe(ver: str) -> Path:
     downloaded and then swapped over the .exe as if it were one."""
     import updater
     return DIST / f"{updater.SETUP_PREFIX}{ver}.exe"
-VERSION_FILE = ROOT / "version.py"
+VERSION_FILE = SRC / "version.py"
 
 
 def _run(cmd: list, **kw) -> subprocess.CompletedProcess:
@@ -202,7 +204,7 @@ def sign(exe: Path) -> None:
     if r.returncode != 0:
         raise SystemExit("error: signtool failed")
 
-    sys.path.insert(0, str(ROOT))
+    sys.path.insert(0, str(SRC))
     import updater
     trusted, reason = updater.signature_status(exe)
     if not trusted:
@@ -290,8 +292,14 @@ def write_manifest(ver: str, notes: str = "") -> Path:
 
 
 # ── Publish ───────────────────────────────────────────────────────────────────
+# Every version's notes live in one folder, so the repository's front page is
+# the README and not a list of twenty files that all start the same way.
+NOTES_DIR = ROOT / "release-notes"
+
+
 def notes_file_for(ver: str) -> Path:
-    """The conventional notes file for a version: `RELEASE-NOTES-<ver>.md`.
+    """The conventional notes file for a version:
+    `release-notes/RELEASE-NOTES-<ver>.md`.
 
     ⚠ This exists because the warning below was not enough. Eight of the first
     twenty-six releases went out with a body of `Macronaut 2.0.14` and nothing
@@ -303,7 +311,7 @@ def notes_file_for(ver: str) -> Path:
     has written one under this name; looking for it costs nothing and removes
     the only step in the flow that had to be remembered.
     """
-    return ROOT / f"RELEASE-NOTES-{ver}.md"
+    return NOTES_DIR / f"RELEASE-NOTES-{ver}.md"
 
 
 def publish(ver: str, notes: str = "") -> None:
@@ -345,7 +353,7 @@ def publish(ver: str, notes: str = "") -> None:
     # Say it out loud at the one moment it matters. An unsigned release makes
     # SmartScreen warn every new user, and that reputation resets with each
     # unsigned build — so it compounds for an app that updates often.
-    sys.path.insert(0, str(ROOT))
+    sys.path.insert(0, str(SRC))
     import updater
     trusted, reason = updater.signature_status(EXE)
     if not trusted:
@@ -393,10 +401,10 @@ def publish(ver: str, notes: str = "") -> None:
             print(f"  · no --notes given; using {conventional.name}")
     if not notes:
         print("  ⚠ publishing with NO release notes. The release page will be "
-              f"empty — write {notes_file_for(ver).name}, pass --notes-file, "
+              f"empty — write release-notes/{notes_file_for(ver).name}, pass --notes-file, "
               "or fix it afterwards with\n"
               f"      gh release edit v{ver} --repo {_v.UPDATE_REPO} "
-              f"--notes-file {notes_file_for(ver).name}")
+              f"--notes-file release-notes/{notes_file_for(ver).name}")
 
     tag = f"v{ver}"
     setup_assets = [str(setup)] if setup.exists() else []

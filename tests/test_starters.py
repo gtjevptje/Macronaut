@@ -343,7 +343,7 @@ def test_the_app_seeds_on_startup():
     """The wiring, not the module: `starters` importing cleanly proves nothing
     if nobody calls it."""
     import ast
-    src = (Path(__file__).resolve().parent.parent / "main.py").read_text(
+    src = (Path(__file__).resolve().parent.parent / "src" / "main.py").read_text(
         encoding="utf-8")
     tree = ast.parse(src)
     calls = [n for n in ast.walk(tree)
@@ -378,7 +378,7 @@ def test_every_node_in_a_starter_can_be_opened(name, tmp_path):
     import re
 
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    with open(os.path.join(root, "main.py"), encoding="utf-8") as fh:
+    with open(os.path.join(root, "src", "main.py"), encoding="utf-8") as fh:
         src = fh.read()
     body = src.split("def _edit_node", 1)[1].split("\n    def ", 1)[0]
     editable = {getattr(flow, m) for m in re.findall(r"flow\.(N_[A-Z_]+)", body)

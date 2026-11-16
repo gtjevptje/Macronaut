@@ -378,7 +378,7 @@ def test_a_breadcrumb_cannot_quietly_start_carrying_user_content():
 
     def env_keys():
         """The keys `_env()` returns, read out of its source."""
-        src = open(os.path.join(root, "crashreport.py"), encoding="utf-8").read()
+        src = open(os.path.join(root, "src", "crashreport.py"), encoding="utf-8").read()
         tree = ast.parse(src)
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef) and node.name == "_env":
@@ -389,11 +389,16 @@ def test_a_breadcrumb_cannot_quietly_start_carrying_user_content():
         return set()
 
     found, unresolved = {}, []
-    for name in sorted(os.listdir(root)):
+    # The app's modules are in src/; release.py is still at the root.
+    files = [(n, os.path.join(d, n))
+             for d in (os.path.join(root, "src"), root)
+             for n in sorted(os.listdir(d))]
+    assert any(n == "main.py" for n, _ in files), "src/ was not swept"
+    for name, path in files:
         if not name.endswith(".py"):
             continue
         try:
-            tree = ast.parse(open(os.path.join(root, name),
+            tree = ast.parse(open(path,
                                   encoding="utf-8").read())
         except SyntaxError:                                 # pragma: no cover
             continue
@@ -446,7 +451,7 @@ def test_the_uploader_still_forwards_breadcrumb_fields():
     """
     src = open(os.path.join(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        "crashsend.py"), encoding="utf-8").read()
+        "src", "crashsend.py"), encoding="utf-8").read()
     assert 'for k, v in c.items() if k not in ("t", "kind")' in src, (
         "crashsend.to_event no longer forwards breadcrumb fields wholesale. "
         "That is an improvement, but the allowlist above now guards nothing — "

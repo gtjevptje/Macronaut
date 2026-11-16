@@ -275,9 +275,15 @@ from tray       import SystemTray
 import os as _os
 
 
+# In a source checkout the modules live in `src/`, and `assets/`, LICENSE and
+# the notices sit one level up, at the repository root. The frozen build has
+# all of them together under `_MEIPASS` and never reads this.
+_SOURCE_ROOT = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+
+
 def _asset(name: str) -> str:
     """Resolve a bundled asset path (works both in dev and PyInstaller)."""
-    base = getattr(sys, "_MEIPASS", _os.path.dirname(_os.path.abspath(__file__)))
+    base = getattr(sys, "_MEIPASS", _SOURCE_ROOT)
     return _os.path.join(base, "assets", name)
 
 
@@ -287,7 +293,7 @@ def _legal_text(name: str) -> str:
     macronaut.spec ships these at the bundle root so a user who only ever has
     Macronaut.exe still has the terms they agreed to.
     """
-    base = getattr(sys, "_MEIPASS", _os.path.dirname(_os.path.abspath(__file__)))
+    base = getattr(sys, "_MEIPASS", _SOURCE_ROOT)
     try:
         with open(_os.path.join(base, name), "r", encoding="utf-8") as fh:
             return fh.read()

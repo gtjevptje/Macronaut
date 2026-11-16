@@ -22,6 +22,9 @@ import os
 import pytest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# The app's modules. Tools and the release script live elsewhere and are not
+# candidates for "part of the app" at all.
+SRC = os.path.join(ROOT, "src")
 
 # What the program is built from. `macronaut.spec` passes Analysis(["main.py"]).
 ENTRY = "main"
@@ -35,14 +38,11 @@ _NOT_PART_OF_THE_APP = {
     "orb": "⚰ dead — the compact/orb faces were removed in the one-window "
            "rewrite; kept because the mount refuses deletes.",
     "recorder": None,          # resolved below: it IS imported by main
-    "release": "a release tool, run by hand; never imported by the app.",
     # ⚠ `selftest` was on this list when it was written, described as "reached
     # only through --selftest". Wrong: main() imports it, lazily but really, and
     # it ships — test_selftest_is_bundled asserts the .exe carries it. The
     # anti-rot test below caught that on its first run, which is the entire
     # point of asserting an allowlist is still true rather than trusting it.
-    "create_shortcut": "a one-off desktop-shortcut helper, run by hand.",
-    "make_node_test_script": "a developer script that writes a sample flow.",
 }
 _NOT_PART_OF_THE_APP = {k: v for k, v in _NOT_PART_OF_THE_APP.items()
                         if v is not None}
@@ -55,7 +55,7 @@ def _imports_of(module: str) -> set:
     are deliberately inside functions (`interception_backend` is loaded lazily,
     `selftest` only under --selftest), and those are still real edges.
     """
-    path = os.path.join(ROOT, module + ".py")
+    path = os.path.join(SRC, module + ".py")
     if not os.path.isfile(path):
         return set()
     with open(path, encoding="utf-8") as fh:
@@ -72,7 +72,7 @@ def _imports_of(module: str) -> set:
 
 
 def _local_modules() -> set:
-    return {f[:-3] for f in os.listdir(ROOT)
+    return {f[:-3] for f in os.listdir(SRC)
             if f.endswith(".py") and not f.startswith("_")}
 
 
@@ -139,7 +139,7 @@ def test_the_dead_clicker_is_still_dead():
     anyone installs this.
     """
     assert "clicker" not in _reachable_from(ENTRY)
-    with open(os.path.join(ROOT, "clicker.py"), encoding="utf-8") as fh:
+    with open(os.path.join(ROOT, "src", "clicker.py"), encoding="utf-8") as fh:
         head = fh.read(200)
     assert "DEAD CODE" in head, (
         "clicker.py lost the banner that says it is dead — that banner is the "

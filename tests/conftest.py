@@ -11,7 +11,10 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 import pytest
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, _ROOT)
+# The app's modules live in src/ and import each other by bare name.
+sys.path.insert(0, os.path.join(_ROOT, "src"))
 
 
 # ── The suite must not edit the developer's own installation ─────────────────

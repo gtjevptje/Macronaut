@@ -35,5 +35,5 @@
 
 <!-- By opening this PR you agree your contribution is licensed GPL-3.0-or-later,
      the same as the rest of Macronaut. There is no CLA and you keep your
-     copyright. Please don't bump the version or edit RELEASE-NOTES-*.md —
+     copyright. Please don't bump the version or edit release-notes/ —
      releases are cut by release.py and version bumps only cause conflicts. -->
