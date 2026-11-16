@@ -331,13 +331,15 @@ def _check_legal() -> str:
     """The licence has to be readable from inside the .exe, not just the
     repo — GPL §4 requires the licence to travel with the program, and
     Settings ▸ About opens this exact file."""
-    # Source checkout: this file is in src/, the legal files at the root.
-    base = getattr(sys, "_MEIPASS", os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__))))
+    # Source checkout: this file is in src/, LICENSE at the root and the
+    # notices in docs/. The frozen build has both at the bundle root.
+    frozen = getattr(sys, "_MEIPASS", None)
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     out = []
-    for name, needle in (("LICENSE", "GNU GENERAL PUBLIC LICENSE"),
-                         ("THIRD-PARTY-NOTICES.md", "elects LGPL-3.0-only")):
-        path = os.path.join(base, name)
+    for name, needle, where in (
+            ("LICENSE", "GNU GENERAL PUBLIC LICENSE", ""),
+            ("THIRD-PARTY-NOTICES.md", "elects LGPL-3.0-only", "docs")):
+        path = os.path.join(frozen or os.path.join(root, where), name)
         with open(path, "r", encoding="utf-8") as fh:
             text = fh.read()
         if needle not in text:

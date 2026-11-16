@@ -4,7 +4,7 @@ type and every setting, for manual feature/QA testing.
 
 Run:  python make_node_test_script.py
 Output: <scripts_dir>/Node feature test.json  (loadable from the compact
-        script dropdown or Advanced ▸ Load), plus a copy in examples/.
+        script dropdown or Advanced ▸ Load), plus a copy in docs/examples/.
 
 Coverage:
   • Auto-Click node (full Basic-clicker config)
@@ -253,12 +253,12 @@ g.meta["note"] = ("Exercises every node type + setting. Safe to RUN over a "
 # ── save ─────────────────────────────────────────────────────────────────────
 out_lib = scripts_dir() / "Node feature test.json"
 g.save(str(out_lib))
-# ⚠ examples/, not next to this file. The copy used to land in the repo root,
+# ⚠ docs/examples/, not next to this file. The copy used to land in the repo root,
 # where a generated artefact with a space in its name sat beside the generator
 # that makes it -- which is a confusing thing to meet first in a public source
-# repository. examples/ is where the other flows already live.
+# repository. docs/examples/ is where the other flows already live.
 local = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                     "examples", "Node feature test.json")
+                     "docs", "examples", "Node feature test.json")
 shutil.copy(str(out_lib), local)
 
 # sanity: reload + count

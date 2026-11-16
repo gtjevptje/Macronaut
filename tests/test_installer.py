@@ -31,7 +31,7 @@ import pytest
 import updater
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ISS = os.path.join(ROOT, "packaging", "inno", "macronaut.iss.in")
+ISS = os.path.join(ROOT, "tools", "packaging", "inno", "macronaut.iss.in")
 
 
 def _read(path):
@@ -442,19 +442,19 @@ def _exec_spec(tmp_path, onedir):
     os.environ.update(env)
     try:
         ns = {
-            "__file__": os.path.join(ROOT, "macronaut.spec"),
+            "__file__": os.path.join(ROOT, "src", "macronaut.spec"),
             "DISTPATH": str(tmp_path / "dist"),
             "HOMEPATH": str(tmp_path),
-            "SPEC": os.path.join(ROOT, "macronaut.spec"),
+            "SPEC": os.path.join(ROOT, "src", "macronaut.spec"),
             "specnm": "macronaut",
-            "SPECPATH": ROOT,
+            "SPECPATH": os.path.join(ROOT, "src"),
             "WARNFILE": str(tmp_path / "warn.txt"),
             "workpath": str(tmp_path / "build"),
             "Analysis": _Stub, "PYZ": _Stub, "EXE": _Stub, "COLLECT": _Collect,
             "BUNDLE": _Stub, "MERGE": _Stub, "Tree": _Stub, "Splash": _Stub,
             "TOC": _Stub,
         }
-        exec(compile(_read(os.path.join(ROOT, "macronaut.spec")),
+        exec(compile(_read(os.path.join(ROOT, "src", "macronaut.spec")),
                      "macronaut.spec", "exec"), ns)
     finally:
         os.environ.clear()
@@ -484,7 +484,7 @@ def test_both_shapes_are_built_from_the_same_spec():
     """One spec, so a trim, an exclude or a hidden import cannot apply to one
     download and not the other — which would be invisible until somebody ran the
     shape nobody tests."""
-    text = _read(os.path.join(ROOT, "macronaut.spec"))
+    text = _read(os.path.join(ROOT, "src", "macronaut.spec"))
     assert text.count("a = Analysis(") == 1
     assert "MACRONAUT_ONEDIR" in text
 

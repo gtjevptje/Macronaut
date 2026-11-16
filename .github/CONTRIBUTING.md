@@ -19,7 +19,7 @@ say so in the PR — a comment that lies is a bug.
 and a PR adding one is a bigger conversation than a PR.
 
 **Every line that goes into the `.exe` is here**, and
-`pyinstaller macronaut.spec` builds it. A clean clone runs the test suite
+`pyinstaller src/macronaut.spec` builds it. A clean clone runs the test suite
 green.
 
 ## Getting set up
@@ -90,8 +90,8 @@ contribution anyone is looking for — `requirements.txt` explains why at length
   change and passes after is the best possible version of that sentence.
 - **Match the surrounding code.** Including the comment density — this codebase
   explains itself more than most, and a patch that does not stands out.
-- **Do not bump the version or edit `release-notes/`.** Releases are cut by
-  `release.py` and version bumps in a PR just cause conflicts.
+- **Do not bump the version or edit `docs/release-notes/`.** Releases are cut by
+  `tools/release.py` and version bumps in a PR just cause conflicts.
 - **New dependencies are a hard sell.** Every one is +MB on a download that
   already makes people hesitate, and one was removed for exactly that reason
   (see the OCR note in `requirements.txt`). If you need one, say why in the PR

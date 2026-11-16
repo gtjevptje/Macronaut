@@ -4,20 +4,20 @@ The whole point is that the version in `version.py`, the version baked into the
 built .exe, and the version the updater advertises are produced by one command
 and cannot disagree.
 
-    python release.py --bump patch --notes "Fixed the thing"
-    python release.py --publish            # after checking dist/ looks right
+    python tools/release.py --bump patch --notes "Fixed the thing"
+    python tools/release.py --publish            # after checking dist/ looks right
 
 Typical flow:
 
-    1. Write release-notes/RELEASE-NOTES-<new version>.md, then
-       python release.py --bump patch
+    1. Write docs/release-notes/RELEASE-NOTES-<new version>.md, then
+       python tools/release.py --bump patch
          (the notes file is found by name — --notes / --notes-file override it)
          → bumps version.py, builds dist/Macronaut.exe, writes dist/update.json
          (add --sign once a code-signing certificate exists; it must run before
          the manifest, because signing changes the bytes the hash describes)
     2. Test dist/Macronaut.exe by hand, and rehearse the swap:
          python tools/rehearse_swap.py --new dist/Macronaut.exe --old <previous>
-    3. python release.py --publish
+    3. python tools/release.py --publish
          → git tag + `gh release create`, uploading the .exe and the manifest to
            the PUBLIC releases repo (version.UPDATE_REPO).
 
@@ -50,7 +50,7 @@ import sys
 import time
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 # The app's modules live in src/.
 SRC = ROOT / "src"
 sys.path.insert(0, str(SRC))
@@ -118,7 +118,7 @@ def build() -> Path:
     for stale in (DIST / "Macronaut.exe",):
         if stale.exists():
             stale.unlink()
-    r = _run([sys.executable, "-m", "PyInstaller", "macronaut.spec", "--noconfirm"])
+    r = _run([sys.executable, "-m", "PyInstaller", "src/macronaut.spec", "--noconfirm"])
     if r.returncode != 0:
         raise SystemExit("error: PyInstaller failed")
     if not EXE.exists():
@@ -294,12 +294,12 @@ def write_manifest(ver: str, notes: str = "") -> Path:
 # ── Publish ───────────────────────────────────────────────────────────────────
 # Every version's notes live in one folder, so the repository's front page is
 # the README and not a list of twenty files that all start the same way.
-NOTES_DIR = ROOT / "release-notes"
+NOTES_DIR = ROOT / "docs" / "release-notes"
 
 
 def notes_file_for(ver: str) -> Path:
     """The conventional notes file for a version:
-    `release-notes/RELEASE-NOTES-<ver>.md`.
+    `docs/release-notes/RELEASE-NOTES-<ver>.md`.
 
     ⚠ This exists because the warning below was not enough. Eight of the first
     twenty-six releases went out with a body of `Macronaut 2.0.14` and nothing
@@ -362,7 +362,7 @@ def publish(ver: str, notes: str = "") -> None:
 
     # The terms travel with the download, so somebody who has only the release
     # page still has the licence in front of them.
-    legal = [p for p in (ROOT / "LICENSE", ROOT / "THIRD-PARTY-NOTICES.md")
+    legal = [p for p in (ROOT / "LICENSE", ROOT / "docs" / "THIRD-PARTY-NOTICES.md")
              if p.exists()]
     # Also fatal. Macronaut is GPL-3.0-or-later, and conveying the work means
     # conveying the licence with it — that is §4, not a preference. The .exe
@@ -401,10 +401,10 @@ def publish(ver: str, notes: str = "") -> None:
             print(f"  · no --notes given; using {conventional.name}")
     if not notes:
         print("  ⚠ publishing with NO release notes. The release page will be "
-              f"empty — write release-notes/{notes_file_for(ver).name}, pass --notes-file, "
+              f"empty — write docs/release-notes/{notes_file_for(ver).name}, pass --notes-file, "
               "or fix it afterwards with\n"
               f"      gh release edit v{ver} --repo {_v.UPDATE_REPO} "
-              f"--notes-file release-notes/{notes_file_for(ver).name}")
+              f"--notes-file docs/release-notes/{notes_file_for(ver).name}")
 
     tag = f"v{ver}"
     setup_assets = [str(setup)] if setup.exists() else []
@@ -552,7 +552,7 @@ def main(argv: list) -> int:
 
     if args.build or args.manifest:
         print(f"\nReady: Macronaut {ver}")
-        print("  Test dist/Macronaut.exe, then: python release.py --publish")
+        print("  Test dist/Macronaut.exe, then: python tools/release.py --publish")
     return 0
 
 

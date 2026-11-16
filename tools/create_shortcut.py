@@ -186,7 +186,7 @@ def _set_shortcut_appid(lnk_path, app_id):
 def main():
     print("Macronaut — shortcut installer\n")
 
-    assets = Path(__file__).resolve().parent.parent / "assets"
+    assets = Path(__file__).resolve().parent.parent / "src" / "assets"
     assets.mkdir(exist_ok=True)
     icon   = assets / "macronaut.ico"
 

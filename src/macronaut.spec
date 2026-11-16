@@ -1,13 +1,17 @@
 # -*- mode: python ; coding: utf-8 -*-
 # PyInstaller spec for Macronaut
-# Build: pyinstaller macronaut.spec
+# Build, from the repository root: pyinstaller src/macronaut.spec
 
 import os
 import sys
 from pathlib import Path
 
-# The app's modules live in src/; assets and the legal files stay at the root.
-sys.path.insert(0, str(Path(SPECPATH) / "src"))
+# This file sits in src/, beside the program it builds. Every path below is
+# built from where this file is, so the build does not depend on the directory
+# it is started from. LICENSE is one level up; the notices are in docs/.
+SRC = Path(SPECPATH).resolve()
+ROOT = SRC.parent
+sys.path.insert(0, str(SRC))
 import version as _v
 
 block_cipher = None
@@ -88,15 +92,15 @@ _version_res.write_text(f"""VSVersionInfo(
 
 # Data files (assets folder)
 datas = []
-assets = Path("assets")
+assets = SRC / "assets"
 if assets.exists():
     datas.append((str(assets), "assets"))
 
 # Legal text ships inside the .exe so a downloaded build always carries its own
 # licence — a user who only ever sees Macronaut.exe still has the terms.
-for _legal in ("LICENSE", "THIRD-PARTY-NOTICES.md"):
-    if (Path(SPECPATH) / _legal).exists():
-        datas.append((str(Path(SPECPATH) / _legal), "."))
+for _legal in (ROOT / "LICENSE", ROOT / "docs" / "THIRD-PARTY-NOTICES.md"):
+    if _legal.exists():
+        datas.append((str(_legal), "."))
 
 # `mouseinfo` is GPLv3 and is pulled in transitively by `import pyautogui`.
 # Macronaut never calls it (it backs pyautogui's mouseInfo() developer window),
@@ -153,8 +157,8 @@ dead_ocr_excludes += ["winsdk"]
 # version resource was masking it by preventing any build at all.
 
 a = Analysis(
-    ["src/main.py"],
-    pathex=["src"],
+    [str(SRC / "main.py")],
+    pathex=[str(SRC)],
     binaries=[],
     datas=datas,
     hiddenimports=hidden_imports,
@@ -295,7 +299,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon="assets/macronaut.ico",
+    icon=str(SRC / "assets" / "macronaut.ico"),
     # `version=`, NOT `version_file=`. `--version-file` is the COMMAND LINE flag;
     # the EXE() spec API reads `version`. EXE takes **kwargs, so a wrong key is
     # swallowed with no warning and the build silently produces an .exe with no

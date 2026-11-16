@@ -36,7 +36,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 import version as _v  # noqa: E402
 
-TEMPLATE = ROOT / "packaging" / "inno" / "macronaut.iss.in"
+TEMPLATE = ROOT / "tools" / "packaging" / "inno" / "macronaut.iss.in"
 RENDERED = ROOT / "build" / "inno" / "macronaut.iss"
 ONEDIR = ROOT / "dist" / "Macronaut"
 DIST = ROOT / "dist"
@@ -70,7 +70,7 @@ def build_folder() -> Path:
     if ONEDIR.exists():
         shutil.rmtree(ONEDIR, ignore_errors=True)
     env = dict(os.environ, MACRONAUT_ONEDIR="1")
-    r = subprocess.run([sys.executable, "-m", "PyInstaller", "macronaut.spec",
+    r = subprocess.run([sys.executable, "-m", "PyInstaller", "src/macronaut.spec",
                         "--noconfirm", "--distpath", str(DIST)],
                        cwd=ROOT, env=env)
     if r.returncode != 0:

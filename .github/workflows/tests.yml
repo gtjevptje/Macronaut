@@ -111,7 +111,7 @@ jobs:
           '```'                       | Tee-Object -Append $env:GITHUB_STEP_SUMMARY
 
       - name: Build the executable
-        run: pyinstaller macronaut.spec
+        run: pyinstaller src/macronaut.spec
 
       # The same gate release.py runs first. "It compiled" is not the claim
       # worth making; "the binary this pipeline produced starts and passes its

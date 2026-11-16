@@ -13,7 +13,9 @@ import pytest
 
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _ROOT)
-# The app's modules live in src/ and import each other by bare name.
+# The app's modules live in src/ and import each other by bare name; the
+# release script and the other tools are in tools/.
+sys.path.insert(0, os.path.join(_ROOT, "tools"))
 sys.path.insert(0, os.path.join(_ROOT, "src"))
 
 

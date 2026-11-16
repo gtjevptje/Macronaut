@@ -61,7 +61,7 @@ The LGPL relinking right used to be honoured by an *offer of source*, because
 Macronaut ships as a PyInstaller one-file executable and its own source was
 closed. It is now honoured the direct way: Macronaut's complete source is
 published, so anyone can rebuild the executable against a modified PySide6 with
-`pyinstaller macronaut.spec`. The upstream links above are the unmodified
+`pyinstaller src/macronaut.spec`. The upstream links above are the unmodified
 source of the components themselves.
 
 The **Interception** kernel driver is *not* distributed with Macronaut. Users

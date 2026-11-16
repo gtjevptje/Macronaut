@@ -137,7 +137,7 @@ def test_release_notes_are_found_by_name_and_every_release_has_them():
 
     # The resolver agrees with the convention the files on disk use.
     names = os.listdir(release.NOTES_DIR)
-    assert names, "release-notes/ is empty"
+    assert names, "docs/release-notes/ is empty"
     # ⚠ None may be left behind at the top level: the resolver would not find
     # it, and the release would go out with an empty page.
     assert not [n for n in os.listdir(ROOT) if n.startswith("RELEASE-NOTES-")]
@@ -181,7 +181,7 @@ def test_the_scoop_and_winget_manifests_describe_the_same_download():
     Parsed with a regex rather than PyYAML, which is not in requirements.txt
     and so is not guaranteed on a clean clone or on the CI runner.
     """
-    scoop_file = os.path.join(ROOT, "packaging", "scoop", "macronaut.json")
+    scoop_file = os.path.join(ROOT, "tools", "packaging", "scoop", "macronaut.json")
     if not os.path.isfile(scoop_file):
         pytest.skip("packaging/ is not in this checkout")
 
@@ -189,7 +189,7 @@ def test_the_scoop_and_winget_manifests_describe_the_same_download():
         scoop = json.load(fh)
     s_arch = scoop["architecture"]["64bit"]
 
-    pattern = os.path.join(ROOT, "packaging", "winget", "**", "*.installer.yaml")
+    pattern = os.path.join(ROOT, "tools", "packaging", "winget", "**", "*.installer.yaml")
     wingets = sorted(glob.glob(pattern, recursive=True))
     assert wingets, "there is no winget installer manifest at all"
 
@@ -233,7 +233,7 @@ def test_the_scoop_and_winget_manifests_describe_the_same_download():
 
 
 def test_third_party_notices_record_the_lgpl_election():
-    text = _read("THIRD-PARTY-NOTICES.md")
+    text = _read("docs/THIRD-PARTY-NOTICES.md")
     assert "mouseinfo" in text
     # PySide6 is offered as "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only".
     # Any branch is clean now that Macronaut is GPL-3.0-or-later, but a
@@ -272,14 +272,14 @@ def test_no_gpl_qt_binding_anywhere_in_the_app():
     assert not [r for r in reqs if r.lower().startswith("pyqt5")]
     assert any(r.lower().startswith("pyside6") for r in reqs)
 
-    spec = _read("macronaut.spec")
+    spec = _read("src/macronaut.spec")
     assert '"PyQt5' not in spec and "'PyQt5" not in spec
     assert "PySide6" in spec
 
 
 # ── packaging ─────────────────────────────────────────────────────────────────
 def test_spec_excludes_the_gpl_component():
-    spec = _read("macronaut.spec")
+    spec = _read("src/macronaut.spec")
     assert "mouseinfo" in spec, "GPLv3 mouseinfo must stay out of the build"
     assert "gpl_excludes" in spec.split("excludes=")[1][:120], \
         "gpl_excludes is defined but no longer wired into Analysis(excludes=)"
@@ -293,7 +293,7 @@ def test_spec_does_not_exclude_numpy():
     ImportError and degrades to a fallback that needs cv2 too. Nothing crashes;
     the features just stop working in the frozen app and nowhere else.
     """
-    spec = _read("macronaut.spec")
+    spec = _read("src/macronaut.spec")
     excl = spec.split("excludes=", 1)[1][:400]
     assert '"numpy"' not in excl and "'numpy'" not in excl
 
@@ -302,7 +302,7 @@ def test_spec_keeps_the_ml_toolchain_out():
     # onnxruntime.transformers imports torch, and PyInstaller follows it into
     # 300+ MB of ML tooling that never runs. Excluding the root cause is what
     # keeps the download reasonable for a self-updating app.
-    spec = _read("macronaut.spec")
+    spec = _read("src/macronaut.spec")
     assert "onnxruntime.transformers" in spec
     assert "ml_excludes" in spec.split("excludes=")[1][:200]
 
@@ -316,7 +316,7 @@ def test_spec_keeps_the_dead_ocr_fallback_out():
     The hazard now is the reverse of the old one: a transitive import quietly
     puts 13 MB back and nothing looks any different.
     """
-    spec = _read("macronaut.spec")
+    spec = _read("src/macronaut.spec")
     assert "dead_ocr_excludes" in spec.split("excludes=")[1][:200], \
         "dead_ocr_excludes is defined but no longer wired into Analysis(excludes=)"
     for mod in ("rapidocr_onnxruntime", "onnxruntime", "shapely", "pyclipper"):
@@ -396,7 +396,7 @@ def test_the_trim_filters_data_files_and_not_only_binaries(tmp_path):
     assert keep(("assets\\macronaut.ico", "/x", "DATA"))
     assert not keep(("PySide6\\translations\\qtbase_de.qm", "/x", "DATA"))
 
-    spec = _read("macronaut.spec")
+    spec = _read("src/macronaut.spec")
     assert 'for _name in ("binaries", "datas")' in spec, \
         "the trim no longer walks a.datas — Qt translations would come back"
 
@@ -430,12 +430,12 @@ def test_the_trim_leaves_the_things_that_only_look_unused(tmp_path):
 def test_spec_does_not_upx_pack():
     # UPX + unsigned + one-file PyInstaller is a reliable antivirus false
     # positive, and a quarantined .exe also breaks the self-updater.
-    spec = _read("macronaut.spec")
+    spec = _read("src/macronaut.spec")
     assert re.search(r"^\s*upx=False,", spec, re.MULTILINE)
 
 
 def test_spec_bundles_the_legal_files():
-    spec = _read("macronaut.spec")
+    spec = _read("src/macronaut.spec")
     assert "LICENSE" in spec and "THIRD-PARTY-NOTICES.md" in spec, \
         "a downloaded .exe must carry its own terms"
 
@@ -450,7 +450,7 @@ def test_readme_tells_a_visitor_the_licence_and_how_to_build_it():
     """
     readme = _read("README.md")
     assert "GNU General Public License" in readme
-    assert "pyinstaller macronaut.spec" in readme
+    assert "pyinstaller src/macronaut.spec" in readme
     assert "Proprietary" not in readme
 
 
@@ -475,19 +475,19 @@ def _exec_spec(tmp_path):
                 setattr(self, name, [])
 
     ns = {
-        "__file__": os.path.join(ROOT, "macronaut.spec"),
+        "__file__": os.path.join(ROOT, "src", "macronaut.spec"),
         "DISTPATH": str(tmp_path / "dist"),
         "HOMEPATH": str(tmp_path),
-        "SPEC": os.path.join(ROOT, "macronaut.spec"),
+        "SPEC": os.path.join(ROOT, "src", "macronaut.spec"),
         "specnm": "macronaut",
-        "SPECPATH": ROOT,
+        "SPECPATH": os.path.join(ROOT, "src"),
         "WARNFILE": str(tmp_path / "warn.txt"),
         "workpath": str(tmp_path / "build"),
         "Analysis": _Stub, "PYZ": _Stub, "EXE": _Stub, "COLLECT": _Stub,
         "BUNDLE": _Stub, "MERGE": _Stub, "Tree": _Stub, "Splash": _Stub,
         "TOC": _Stub,
     }
-    exec(compile(_read("macronaut.spec"), "macronaut.spec", "exec"), ns)
+    exec(compile(_read("src/macronaut.spec"), "macronaut.spec", "exec"), ns)
     return ns
 
 
@@ -510,7 +510,7 @@ def test_exe_receives_the_version_resource_under_the_key_pyinstaller_reads():
     file properties read 0.0.0.0 and nothing anywhere reports an error. That is
     only ever caught by inspecting a built binary, so pin it here instead.
     """
-    spec = _read("macronaut.spec")
+    spec = _read("src/macronaut.spec")
     # An actual keyword argument, not the comment that explains why it is wrong.
     assert not re.search(r"^\s*version_file=", spec, re.MULTILINE), (
         "EXE(version_file=...) is silently ignored by PyInstaller; use version=")
@@ -532,7 +532,7 @@ def test_selftest_is_bundled(tmp_path):
     It is imported lazily inside main(), so if it ever stops being collected the
     flag fails at runtime in the .exe and nowhere else.
     """
-    spec = _read("macronaut.spec")
+    spec = _read("src/macronaut.spec")
     assert '"selftest"' in spec or "'selftest'" in spec
     main = _read(os.path.join("src", "main.py"))
     assert "--selftest" in main and "import selftest" in main
@@ -889,7 +889,7 @@ def test_the_notices_name_every_dependency_that_is_actually_bundled():
             if dep and norm(dep) not in seen:
                 queue.append(dep)
 
-    text = _read("THIRD-PARTY-NOTICES.md")
+    text = _read("docs/THIRD-PARTY-NOTICES.md")
     flat = norm(text).replace("-", "")
     # Prefixes the document covers with a wildcard, e.g. "winrt-Windows.*".
     wildcards = [norm(p).replace("-", "")
@@ -975,7 +975,7 @@ def test_the_publish_step_actually_calls_the_url_check():
     in the publish path at all: the function was written first and wired in
     second, and that is exactly the order in which a wiring step gets skipped.
     """
-    src = _read("release.py")
+    src = _read("tools/release.py")
     assert "_prove_the_published_url_resolves(ver)" in src, (
         "release.py defines the post-publish URL check but never calls it")
     # It has to run after the release exists, or it is checking for something

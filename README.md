@@ -214,7 +214,7 @@ Windows 10 or 11, 64-bit. Nothing else — everything is inside the `.exe`.
 > SmartScreen shows *"Windows protected your PC"* for new downloads. Click
 > **More info → Run anyway**. You do not have to take my word for what is in
 > the file:
-> [the source is public](https://github.com/gtjevptje/Macronaut), and `pyinstaller macronaut.spec`
+> [the source is public](https://github.com/gtjevptje/Macronaut), and `pyinstaller src/macronaut.spec`
 > builds the program from it. Your build will not have the same SHA-256 as the
 > download — PyInstaller stamps timestamps into its output, so no two builds
 > match byte for byte, not even two of mine. What you can check is that nothing
@@ -243,7 +243,7 @@ pip install pytest
 python -m pytest -q                 # the test suite
 
 pip install pyinstaller
-pyinstaller macronaut.spec          # builds dist\Macronaut.exe
+pyinstaller src/macronaut.spec          # builds dist\Macronaut.exe
 ```
 
 Issues and pull requests are welcome. It is a one-person project, so replies
@@ -271,7 +271,7 @@ published under the same licence.
 until 30 August 2026, and the reason it is not any more is the paragraph above
 this one: an unsigned executable that installs a global keyboard hook is asking
 for a lot of trust, and publishing the code is the only answer to that which
-does not ask for more. `pyinstaller macronaut.spec` builds it from that source.
+does not ask for more. `pyinstaller src/macronaut.spec` builds it from that source.
 
 ⚠ **Which builds this covers.** Macronaut was proprietary until 30 August 2026.
 Releases from **2.3.3 onward are GPL**; builds published before that date remain
@@ -280,7 +280,7 @@ copies already downloaded. The `LICENSE` file in this repository is the licence
 of what is here now.
 
 The licence and the
-[third-party notices](https://github.com/gtjevptje/Macronaut/blob/main/THIRD-PARTY-NOTICES.md) also ship
+[third-party notices](https://github.com/gtjevptje/Macronaut/blob/main/docs/THIRD-PARTY-NOTICES.md) also ship
 inside the app, under **Settings → About & legal**, next to a link back to the
 source.
 
