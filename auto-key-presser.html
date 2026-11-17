@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Auto Key Presser for Windows: Repeat, Hold and Combine Keys</title>
+<meta name="description" content="Press a key over and over, hold one down while clicking, or press a combination like Ctrl+C on a timer. Macronaut is a free, open-source auto key presser for Windows, with input modes for games that ignore ordinary injected keys.">
+<link rel="canonical" href="https://gtjevptje.github.io/Macronaut/auto-key-presser.html">
+<meta name="theme-color" content="#0a0818">
+<link rel="icon" href="https://gtjevptje.github.io/Macronaut/favicon.ico" sizes="32x32">
+<link rel="icon" href="https://gtjevptje.github.io/Macronaut/icon-512.png" type="image/png" sizes="512x512">
+<link rel="apple-touch-icon" href="https://gtjevptje.github.io/Macronaut/apple-touch-icon.png">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Macronaut">
+<meta property="og:title" content="A free auto key presser for Windows">
+<meta property="og:description" content="Repeat a key, hold one down while clicking, press combinations on a timer. Free and open source.">
+<meta property="og:url" content="https://gtjevptje.github.io/Macronaut/auto-key-presser.html">
+<meta property="og:image" content="https://gtjevptje.github.io/Macronaut/assets/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "How do I make a key press automatically?",
+     "acceptedAnswer": {"@type": "Answer", "text": "In Macronaut, add a Key step, choose the key, and set how many times it repeats. To press it on a schedule, put the Key step and a Wait step inside a Loop. The app also arrives with a ready-made script that presses a key 50 times, which you can open and change."}},
+    {"@type": "Question", "name": "Can it hold a key down?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. A Key step can tap a key, hold it for a set time, or press it down and leave it down until a later step releases it. That last one is how you hold W to move forward while other steps click. Any key still held when a script ends or is stopped is released automatically."}},
+    {"@type": "Question", "name": "Does an auto key presser work in games?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Often, but many games ignore ordinary injected keys, and many online games ban automation outright, so check the rules first. Macronaut has three input modes; the lowest uses the Interception driver and looks like a real keyboard to the game."}},
+    {"@type": "Question", "name": "Is it free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Macronaut is free and open source under the GNU GPL v3, with no advertising and no account."}}
+  ]
+}
+</script>
+<style>
+:root{
+  --bg:#0a0818; --panel:#15122c; --panel2:#1d1840; --hover:#272052;
+  --border:#3a2f7a; --text:#ece9fb; --muted:#a79fd4;
+  --accent:#8b5cf6; --accent-hover:#a279f8; --green:#2fd3a4; --amber:#f5b14b;
+  --max:1080px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font:16px/1.65 "Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+/* A very faint starfield, the same idea as the app's top bar. Pure CSS so the
+   page stays one file and one request. */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
+  background:
+    radial-gradient(1px 1px at 12% 18%, #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 68% 9%,  #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 34% 42%, #bfa9f0 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 33%, #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 52% 66%, #a98fe0 50%, transparent 51%),
+    radial-gradient(1px 1px at 22% 78%, #ded6ff 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 88%, #bfa9f0 50%, transparent 51%);
+}
+main,header,footer{position:relative; z-index:1}
+.wrap{max-width:var(--max); margin:0 auto; padding:0 24px}
+a{color:var(--accent-hover); text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3{line-height:1.2; margin:0 0 .5em}
+h1{font-size:clamp(34px,5.2vw,56px); font-weight:800; letter-spacing:-.02em}
+h2{font-size:clamp(25px,3.2vw,34px); font-weight:800; letter-spacing:-.01em}
+h3{font-size:19px; font-weight:700}
+p{margin:0 0 1em}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+
+/* ── Nav ─────────────────────────────────────────────────────────── */
+header{border-bottom:1px solid var(--border); background:rgba(10,8,24,.85);
+  backdrop-filter:blur(10px); position:sticky; top:0; z-index:20}
+.nav{display:flex; align-items:center; gap:24px; height:62px}
+.brand{font-weight:800; font-size:18px; letter-spacing:-.01em; color:var(--text)}
+.brand:hover{text-decoration:none}
+.tag{background:var(--accent); color:#fff; border-radius:7px; padding:2px 8px;
+  font-size:11px; font-weight:800; margin-left:8px; vertical-align:2px}
+.nav nav{display:flex; gap:22px; margin-left:auto; font-size:15px}
+.nav nav a{color:var(--muted)}
+.nav nav a:hover{color:var(--text); text-decoration:none}
+@media(max-width:720px){.nav nav{display:none}}
+
+/* ── Buttons ─────────────────────────────────────────────────────── */
+.btn{display:inline-block; padding:13px 22px; border-radius:12px; font-weight:700;
+  font-size:16px; border:1px solid var(--border); background:var(--panel2);
+  color:var(--text); cursor:pointer; transition:.15s}
+.btn:hover{background:var(--hover); text-decoration:none}
+.btn-primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn-primary:hover{background:var(--accent-hover); border-color:var(--accent-hover)}
+.btn-lg{padding:16px 30px; font-size:17px}
+.btn[aria-disabled="true"]{opacity:.55; cursor:not-allowed}
+.cta{display:flex; gap:14px; flex-wrap:wrap; align-items:center}
+
+/* ── Hero ────────────────────────────────────────────────────────── */
+.hero{padding:76px 0 56px; text-align:center}
+.hero p.lead{font-size:clamp(17px,2.1vw,21px); color:var(--muted);
+  max-width:640px; margin:0 auto 30px}
+.hero .cta{justify-content:center}
+.under{margin-top:18px; font-size:14px; color:var(--muted)}
+/* Collapsed by default: the people who check a hash go looking for it, and
+   everyone else is trying to reach the button above it. */
+.checksum{max-width:620px; margin-left:auto; margin-right:auto; text-align:left;
+  border:1px solid var(--border); border-radius:10px; padding:12px 16px;
+  background:var(--panel)}
+.checksum summary{cursor:pointer; font-size:14px; color:var(--muted)}
+.checksum p{margin:10px 0 0}
+/* ⚠ A 64-character digest must wrap, or it forces the page wider than the
+   viewport on a phone and takes the whole layout sideways with it. */
+.checksum .digest{display:block; word-break:break-all; line-height:1.6;
+  font-size:12.5px; color:var(--text)}
+/* Quieter and narrower than the spec line above it: this is a thing to know
+   before leaving, not a second sales point, and a scare-sized paragraph under
+   a Download button argues against the button. */
+.heads-up{margin-top:10px; font-size:13px; max-width:52ch;
+          margin-left:auto; margin-right:auto; line-height:1.5;
+          opacity:.85}
+.heads-up b{color:var(--text); font-weight:600}
+
+/* ── banner ──────────────────────────────────────────────────────── */
+.freenow{border:1px solid var(--accent); border-radius:14px;
+         padding:16px 20px; margin:0 0 26px; text-align:center;
+         background:color-mix(in srgb, var(--accent) 8%, transparent)}
+.freenow b{color:var(--text)}
+.freenow .lead2{font-size:17px; font-weight:600; color:var(--text);
+                display:block; margin-bottom:4px}
+.was{text-decoration:line-through; opacity:.5; font-weight:600}
+.price .now{color:var(--accent)}
+.price .was{font-size:.62em; margin-right:10px}
+/* ⚠ Every <table> on this site goes inside one of these. A table wider than
+   the viewport does not scroll by itself — it drags the whole document, so
+   every heading and paragraph sits off-centre and the reader pans sideways to
+   read prose. Measured 3 September 2026: the TinyTask comparison pushed a
+   375px phone to 439px, invisible at any desk-sized window. Lives here rather
+   than in a page's own <style> because SHARED_CSS is lifted from this file,
+   and two copies of a rule diverge the first time one is edited. */
+.tblwrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
+
+/* A restriction that is not in force yet: dimming reads as "not active". */
+li.later{opacity:.65}
+li.later em{font-style:normal; opacity:.8}
+/* ⚠ A benefit the visitor has RIGHT NOW, which is the opposite polarity and
+   must not be dimmed — a greyed row in a feature list scans as "you do not
+   get this". Same weight as the rest of the list, with the qualifier in the
+   accent so it reads as good news rather than small print. */
+li.nowfree em{font-style:normal; color:var(--green)}
+/* ⚠ `height:auto` is load-bearing, not tidiness. The width/height attributes
+   on the <img> are there to reserve the right space before the image arrives
+   (no layout shift) — but with `max-width:100%` and no `height:auto` the
+   browser honours the height attribute literally, so on any viewport narrower
+   than the image the picture is squashed to a fixed 1000px box. Caught by
+   previewing the page, which nothing about the markup would have shown. */
+.shot{margin:52px auto 0; max-width:100%; height:auto; border:1px solid var(--border);
+  border-radius:16px; display:block; box-shadow:0 24px 70px rgba(0,0,0,.55);
+  background:var(--panel)}
+/* A shot sitting inside a card rather than under the hero: it is illustrating
+   the paragraph beside it, so it wants a shadow that does not fight the card's
+   own edge. Capped in height because the Basic face is a tall, narrow window
+   and at full width it would tower over everything around it. */
+.shot-inline{margin:0; border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,.35);
+  max-height:340px; width:auto}
+/* The one card carrying a screenshot spans the grid. Left in a normal cell it
+   made its own row twice as tall as the card beside it, which then sat mostly
+   empty — grid rows match heights, so a tall cell is paid for by its
+   neighbour. */
+.card-wide{grid-column:1/-1; display:flex; gap:26px; align-items:center}
+.card-wide > div{flex:1 1 340px; min-width:0}
+@media (max-width:700px){
+  .card-wide{flex-direction:column; align-items:stretch}
+  .shot-inline{max-height:none; width:100%}
+}
+
+/* ── Sections ────────────────────────────────────────────────────── */
+section{padding:66px 0; border-top:1px solid var(--border)}
+section > .wrap > h2{text-align:center}
+.sub{text-align:center; color:var(--muted); max-width:620px; margin:0 auto 42px}
+
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:18px}
+.card{background:var(--panel); border:1px solid var(--border); border-radius:16px;
+  padding:24px}
+.card h3{margin-bottom:.35em}
+.card p{margin:0; color:var(--muted); font-size:15px}
+.card .ico{font-size:22px; display:block; margin-bottom:12px}
+
+/* ── Pricing ─────────────────────────────────────────────────────── */
+.plans{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px; max-width:800px; margin:0 auto; align-items:start}
+.plan{background:var(--panel); border:1px solid var(--border); border-radius:18px;
+  padding:30px}
+.plan.best{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent),
+  0 20px 60px rgba(139,92,246,.16)}
+.plan .name{font-size:14px; font-weight:800; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted)}
+.plan.best .name{color:var(--accent-hover)}
+.price{font-size:42px; font-weight:800; letter-spacing:-.02em; margin:10px 0 2px}
+.price span{font-size:15px; font-weight:600; color:var(--muted); letter-spacing:0}
+.plan ul{list-style:none; padding:0; margin:22px 0 26px}
+.plan li{padding:7px 0 7px 28px; position:relative; font-size:15px; color:var(--muted)}
+.plan li::before{content:"✓"; position:absolute; left:0; top:7px;
+  color:var(--green); font-weight:800}
+.plan li.no::before{content:"—"; color:var(--border)}
+.plan .btn{width:100%; text-align:center}
+.pending{margin-top:14px; font-size:13px; color:var(--amber)}
+
+/* ── FAQ ─────────────────────────────────────────────────────────── */
+.faq{max-width:760px; margin:0 auto}
+details{background:var(--panel); border:1px solid var(--border);
+  border-radius:14px; padding:0 22px; margin-bottom:12px}
+details[open]{background:var(--panel2)}
+summary{cursor:pointer; font-weight:700; padding:18px 0; list-style:none;
+  display:flex; justify-content:space-between; gap:16px; align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+"; color:var(--muted); font-weight:800; font-size:20px}
+details[open] summary::after{content:"−"}
+details .body{padding:0 0 20px; color:var(--muted); font-size:15px}
+details .body p:last-child{margin-bottom:0}
+
+/* ── Warning + footer ────────────────────────────────────────────── */
+.warn{background:var(--panel); border:1px solid var(--border);
+  border-left:3px solid var(--amber); border-radius:14px; padding:22px 24px;
+  max-width:760px; margin:0 auto; color:var(--muted); font-size:15px}
+.warn b{color:var(--text)}
+footer{border-top:1px solid var(--border); padding:38px 0 52px;
+  color:var(--muted); font-size:14px}
+footer .row{display:flex; gap:22px; flex-wrap:wrap; align-items:center}
+footer .row nav{margin-left:auto; display:flex; gap:20px; flex-wrap:wrap}
+</style>
+<style>
+.verdict{border-left:3px solid var(--accent); padding:2px 0 2px 18px;
+         margin:26px 0; font-size:17px}
+article h2{margin-top:44px}
+article p, article li{max-width:70ch}
+.crumb{font-size:14px; color:var(--muted); margin-bottom:8px}
+.crumb a{color:var(--muted)}
+ol.steps li{margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="https://gtjevptje.github.io/Macronaut/">Macronaut</a>
+    <nav>
+      <a href="https://gtjevptje.github.io/Macronaut/#features">Features</a>
+      <a href="https://gtjevptje.github.io/Macronaut/auto-clicker.html">Auto clicker</a>
+      <a href="https://gtjevptje.github.io/Macronaut/#faq">FAQ</a>
+      <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section>
+  <div class="wrap">
+    <article>
+    <p class="crumb"><a href="https://gtjevptje.github.io/Macronaut/">Macronaut</a> &rarr; Auto key presser</p>
+    <h1>A free auto key presser for Windows</h1>
+    <p class="lead">Pressing the same key a few hundred times is the kind of
+    job a computer should do for you: arrowing down a long list, skipping
+    through a form, keeping a game character walking. Macronaut presses keys
+    for you, on a count or on a timer, and can hold one down while it does
+    something else.</p>
+
+    <div class="verdict">
+      <b>The quickest start.</b> Macronaut arrives with a script called
+      <b>Press a key 50 times</b> already in its library. Open it, double-click
+      the key step to pick your key and the count, press Play.
+    </div>
+
+    <h2>What it can do with a key</h2>
+    <ul>
+      <li><b>Tap</b> a key, as many times as you like in one step.</li>
+      <li><b>Hold</b> a key for a set time, then let go.</li>
+      <li><b>Hold down</b> a key and leave it down, so later steps can click or
+      type while it is held, and <b>release</b> it when you are done. That is
+      how you keep W held to run forward while clicking.</li>
+      <li><b>Combinations</b> like Ctrl+C or Shift+Tab, pressed in the right
+      order with the modifier first.</li>
+      <li><b>Type a whole block of text</b>, at a speed you choose, for the
+      reply or address you send twenty times a day.</li>
+    </ul>
+    <p>A key held down when a script finishes, or when you press Stop, is
+    released automatically. A stuck key is the worst thing an auto key presser
+    can leave behind, so that path is built in rather than left to the
+    script.</p>
+
+    <h2>Press a key every few seconds</h2>
+    <p>Repeating a key on a schedule is three steps on the canvas:</p>
+    <ol class="steps">
+      <li>Add a <b>Loop</b>, set to repeat forever or a number of times.</li>
+      <li>Inside it, add a <b>Key</b> step with your key.</li>
+      <li>After it, add a <b>Wait</b> step with the gap you want, from a few
+      milliseconds to hours.</li>
+    </ol>
+    <p>Press <b>F8</b> to start and stop it, or <b>Esc</b> to stop anything at
+    any time. You can also give each saved script its own key, so one key
+    starts your key presser and another starts something else.</p>
+
+    <h2>Keys in games</h2>
+    <p>Plenty of games ignore keys sent the ordinary way, which is why a lot of
+    key pressers work in Notepad and do nothing in the game. Macronaut has
+    three input modes, chosen in Settings:</p>
+    <ul>
+      <li><b>Standard</b>, which works in ordinary windows.</li>
+      <li><b>SendInput scancodes</b>, which press real key positions rather than
+      characters.</li>
+      <li><b>Interception</b>, a kernel driver that looks like a real keyboard
+      to the game. You install the driver separately.</li>
+    </ul>
+    <p>If one does not work in your game, try the next. And read the game&rsquo;s
+    rules first: many online games ban automation, and can ban the account that
+    uses it.</p>
+
+    <h2>Clicking too</h2>
+    <p>The window Macronaut opens on is a plain
+    <a href="https://gtjevptje.github.io/Macronaut/auto-clicker.html">auto clicker</a>: interval, button,
+    repeat, Start. Keys and clicks live in the same script, so a key presser
+    can click, and a clicker can press keys. It can also
+    <a href="https://gtjevptje.github.io/Macronaut/image-recognition-auto-clicker.html">wait for something
+    to appear on screen</a> before it presses anything.</p>
+
+    <h2>Trying it</h2>
+    <p>One 78 MB file for Windows 10 and 11, with no installer
+    needed, no account and no advertising. The source is public under the GPL
+    v3.</p>
+    <div class="cta" style="margin:22px 0">
+      <a class="btn btn-primary btn-lg" href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">Download free for Windows</a>
+      <a class="btn btn-lg" href="https://gtjevptje.github.io/Macronaut/">What else it does</a>
+    </div>
+    <p class="under heads-up" style="margin-left:0;text-align:left">Windows will
+    say <b>&ldquo;Windows protected your PC&rdquo;</b> on first run. It says that
+    for any app without a signing certificate. Click <b>More info</b>, then
+    <b>Run anyway</b>.</p>
+    </article>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap row">
+    <div>Macronaut 2.3.6 &middot; &copy; 2026 Gerben van Poucke &middot;
+      <a href="mailto:gerbenvanpoucke0@gmail.com">gerbenvanpoucke0@gmail.com</a></div>
+    <nav>
+      <a href="https://gtjevptje.github.io/Macronaut/">Home</a>
+      <a href="https://gtjevptje.github.io/Macronaut/auto-clicker.html">Auto clicker</a>
+      <a href="https://gtjevptje.github.io/Macronaut/image-recognition-auto-clicker.html">Click on an image</a>
+      <a href="https://gtjevptje.github.io/Macronaut/op-auto-clicker-alternative.html">vs OP Auto Clicker</a>
+      <a href="https://gtjevptje.github.io/Macronaut/privacy.html">Privacy</a>
+      <a href="https://github.com/gtjevptje/Macronaut">Source code</a>
+      <a href="https://github.com/gtjevptje/Macronaut/releases">Release notes</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
