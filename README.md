@@ -293,3 +293,5 @@ source.
 <p align="center">
   <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe"><b>⬇&nbsp;&nbsp;Download Macronaut for Windows</b></a>
 </p>
+
+<sub>Guides: <a href="docs/guides/op-auto-clicker-alternative.md">OP Auto Clicker alternative</a> · <a href="docs/guides/auto-key-presser.md">auto key presser</a> · <a href="docs/guides/image-recognition-auto-clicker.md">auto clicker with image recognition</a></sub>
