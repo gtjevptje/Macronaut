@@ -746,6 +746,33 @@ def test_the_window_chrome_follows_the_theme(window, main_mod):
         main_mod.CURRENT_THEME = was_theme
         app.setStyleSheet(was_sheet)
 
+def test_the_canvas_and_timeline_follow_the_theme(window, main_mod):
+    """⚠ The canvas and the timeline strip paint themselves, so the application
+    stylesheet never reaches them. They were one hardcoded dark palette in every
+    theme — grey-blue cards on purple Cosmic, a near-black canvas in Daylight."""
+    from PySide6.QtWidgets import QApplication
+    import flow_canvas, flow_timeline
+    app = QApplication.instance()
+    was_sheet, was_theme = app.styleSheet(), main_mod.CURRENT_THEME
+    canvas = window._sequence_tab._canvas
+    try:
+        for name in ("daylight", "cosmic"):
+            window._apply_theme(name)
+            pal = main_mod.PALETTES[name]
+            assert flow_canvas.CANVAS_BG.name() == pal["canvas"].lower(), name
+            assert flow_canvas.NODE_BG.name() == pal["panel"].lower(), name
+            assert flow_canvas.TEXT_COL.name() == pal["text"].lower(), name
+            assert flow_timeline.BG.name() == pal["canvas"].lower(), name
+            assert pal["canvas"].lower() in canvas.viewport().styleSheet().lower(), \
+                "%s: the canvas viewport kept its old fill" % name
+    finally:
+        # ⚠ Restore the sheet LAST and never via _apply_theme: other tests
+        # share this window and measure widgets against the sheet they set.
+        main_mod.CURRENT_THEME = was_theme
+        main_mod._apply_painted_palette()
+        app.setStyleSheet(was_sheet)
+
+
 # ── system tray ───────────────────────────────────────────────────────────────
 def test_tray_menu_has_its_actions(qapp):
     """QAction moved modules in Qt6, making this a likely silent breakage.
@@ -5889,3 +5916,85 @@ def test_the_about_card_offers_the_star_and_the_report(window):
     tab._about_feedback.click()
     assert opened == [version.REPO_URL, version.ISSUES_URL]
     opened.clear()
+
+
+# ── Three papercuts: dialog width, click-away focus, wire loops ───────────────
+@pytest.mark.parametrize("family,modes", [("click", 4), ("type", 2), ("detect", 3)])
+def test_an_add_node_dialog_keeps_one_width_across_its_modes(main_mod, family, modes):
+    """Flipping the segmented toggle inside one family must not resize the
+    window. Scroll came out ~60 px narrower than Click/Move/Drag, so the whole
+    dialog jumped every time you picked it."""
+    app = main_mod.QApplication.instance()
+    d = main_mod.StepDialog(family=family)
+    d.show()
+    app.processEvents()
+    widths = []
+    try:
+        for i in list(range(modes)) + [0]:
+            d._fam_group.button(i).click()
+            app.processEvents()
+            widths.append(d.width())
+    finally:
+        d.hide()
+    assert len(set(widths)) == 1, f"{family}: {widths}"
+
+
+def test_clicking_elsewhere_takes_focus_off_the_speed_field(window, main_mod):
+    """After typing a custom speed, a click on the canvas background (or any
+    panel, which takes no focus itself) must defocus the field — it used to
+    keep its caret and keep eating the arrow keys."""
+    from PySide6.QtCore import QEvent, QPointF
+    from PySide6.QtGui import QMouseEvent
+    app = main_mod.QApplication.instance()
+    tab = window._sequence_tab
+    spin = tab._speed
+    window.show()
+    window.activateWindow()
+    try:
+        main_mod.QApplication.setActiveWindow(window)
+    except Exception:
+        pass
+    spin.setFocus()
+    app.processEvents()
+    if main_mod.QApplication.focusWidget() is not spin:
+        pytest.skip("offscreen platform did not hand out focus")
+    target = tab._log_toggle.parentWidget()        # the empty rail beside the canvas
+    ev = QMouseEvent(QEvent.MouseButtonPress, QPointF(2, 2), QPointF(2, 2),
+                     Qt.LeftButton, Qt.LeftButton, Qt.NoModifier)
+    app.sendEvent(target, ev)
+    app.processEvents()
+    assert not spin.hasFocus()
+
+
+def test_a_wire_takes_the_short_way_round_not_a_loop(qapp):
+    """Measured layout where the router used to pick the first clear lane near
+    the midline and reach it through a column 390 px past the far node:
+    (834,664) -> out to x=1228 -> back to x=468 -> up to (494,40). The shortest
+    clear route turns right by the ports."""
+    from PySide6.QtCore import QPointF, QRectF
+    import flow_canvas as fc
+    nodes = [(208, 234), (858, 546), (650, 624), (1014, 390), (858, 234), (494, 0)]
+    rects = [QRectF(x, y, fc.NODE_W, fc.NODE_H) for x, y in nodes]
+    s, d = 2, 5
+    p1 = QPointF(rects[s].right(), rects[s].top() + 40)
+    p2 = QPointF(rects[d].left(), rects[d].top() + 40)
+    obs = [r.adjusted(-6, -6, 6, 6) for i, r in enumerate(rects) if i not in (s, d)]
+    pts = fc._route_points(p1, p2, obs)
+    xs = [p.x() for p in pts]
+    assert max(xs) <= max(p1.x(), p2.x()) + 2 * fc.STUB, pts
+    assert min(xs) >= min(p1.x(), p2.x()) - 2 * fc.STUB, pts
+    assert fc._polyline_clear(pts, obs)
+
+
+@pytest.mark.parametrize("gap", [10, 38, 51])
+def test_close_nodes_get_one_s_bend_not_a_zigzag(qapp, gap):
+    """Two nodes closer than two stubs apart: the wire used to be routed as a
+    backward wire — out past its own turn-in and back — a double bend across a
+    38 px gap. It must only ever move rightwards."""
+    from PySide6.QtCore import QPointF
+    import flow_canvas as fc
+    p1, p2 = QPointF(350, 258), QPointF(350 + gap, 243)
+    for pts in (fc._route_points(p1, p2, []), fc._quick_route(p1, p2)):
+        xs = [p.x() for p in pts]
+        assert xs == sorted(xs), pts
+        assert len(pts) <= 4, pts

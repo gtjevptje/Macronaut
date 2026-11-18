@@ -602,6 +602,14 @@ def test_starting_the_app_makes_the_offer_without_being_asked(fresh_window,
     # isolation and failed in the file, which is the signature of exactly this.
     for _ in range(8):
         QApplication.processEvents()
+    # ⚠ Same family of trap, on a 20 s fuse: every older window's autosave
+    # timer is still running, and in a long run one of them lands inside the
+    # event turns below and writes ITS canvas over the retired payload. That
+    # failed only in the full suite, only when the clock lined up.
+    for wdg in QApplication.allWidgets():
+        t = getattr(wdg, "_recovery_timer", None)
+        if t is not None:
+            t.stop()
 
     recovery.write(_worked_graph("offer me unprompted"), "")
     monkeypatch.setattr(main.QMessageBox, "question",

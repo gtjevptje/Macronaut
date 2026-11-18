@@ -18,7 +18,7 @@ from PySide6.QtCore import (Qt, QRect, QRectF, QPointF, Signal, QObject,
                             QTimer)
 from PySide6.QtGui import (QColor, QPen, QBrush, QPainter, QPainterPath, QFont,
                          QFontMetrics, QPainterPathStroker, QGuiApplication,
-                         QPixmap, QIcon, QPolygonF, QTransform)
+                         QPixmap, QIcon, QPolygonF, QTransform, QLinearGradient)
 from PySide6.QtWidgets import (QGraphicsView, QGraphicsScene, QGraphicsItem,
                              QGraphicsObject, QGraphicsEllipseItem,
                              QGraphicsPathItem, QMenu, QLabel, QInputDialog,
@@ -228,14 +228,56 @@ def node_thumbnail(path: str) -> Optional[QPixmap]:
 
 
 PORT_COLORS = {
-    "out":   QColor("#9399b2"),
+    "out":   QColor(SUB_COL),
     "true":  QColor("#22c55e"),
     "false": QColor("#ef4444"),
     "body":  QColor("#a855f7"),
-    "done":  QColor("#9399b2"),
+    "done":  QColor(SUB_COL),
     "error": QColor("#ef4444"),
-    "in":    QColor("#cdd6f4"),
+    "in":    QColor(TEXT_COL),
 }
+
+
+def _mix(a: str, b: str, t: float) -> str:
+    """`a` blended toward `b` by t (0 = a, 1 = b), as #rrggbb."""
+    ca, cb = QColor(a), QColor(b)
+    return QColor(round(ca.red() + (cb.red() - ca.red()) * t),
+                  round(ca.green() + (cb.green() - ca.green()) * t),
+                  round(ca.blue() + (cb.blue() - ca.blue()) * t)).name()
+
+
+def _set(col: QColor, hex_: str) -> None:
+    col.setRgba(QColor(hex_).rgba())
+
+
+def apply_palette(pal: dict, light: bool = False) -> None:
+    """Re-tint the canvas from an app palette (main.PALETTES entry).
+
+    ⚠ The colours above are module-level QColor objects that every paint call
+    reads, so they are changed IN PLACE rather than rebound — rebinding would
+    leave anything that imported or copied the object holding the old one.
+    Items that cached a QPen at construction (ports, wires) are re-penned by
+    `FlowCanvas.retheme()`.
+
+    The canvas used to be one hardcoded dark palette in every theme: grey-blue
+    cards on the purple Cosmic window and a near-black canvas inside Daylight.
+    """
+    canvas = pal.get("canvas", pal["inputBg"])
+    _set(CANVAS_BG, canvas)
+    _set(NODE_BG, pal["panel"])
+    _set(NODE_BORDER, pal["border"])
+    _set(NODE_SEL, pal["accent"])
+    _set(TEXT_COL, pal["text"])
+    _set(SUB_COL, pal["muted"])
+    _set(EDGE_COL, _mix(pal["muted"], canvas, 0.35))
+    _set(GRID_COL, _mix(pal["border"], canvas, 0.15 if light else 0.35))
+    _set(TROUGH_COL, _mix(pal["panel"], pal["text"], 0.10 if light else 0.06))
+    _set(THUMB_BG, pal["inputBg"] if not light else pal["panel2"])
+    _set(PORT_COLORS["out"], pal["muted"])
+    _set(PORT_COLORS["done"], pal["muted"])
+    _set(PORT_COLORS["in"], _mix(pal["text"], canvas, 0.25))
+    _set(HEADER_COLORS[flow.N_REROUTE], EDGE_COL.name())
+    WELL_SHADE.setRgb(0, 0, 0, 14 if light else 120)
 
 # What each output port is labelled on the node. The glyph carries the meaning
 # at a glance; the word is there for anyone who doesn't read glyphs.
@@ -408,6 +450,11 @@ PROGRESS_UNKNOWN = -1.0    # "running, no idea how long" -> a shimmer, not a fil
 # genuinely ends — a bar parked at 96% is usefully saying "this is running long".
 PROGRESS_CAP     = 0.96
 TROUGH_COL       = QColor("#12141d")
+THUMB_BG         = QColor("#1b1f2b")
+# The inner shadow along the top of the viewport that makes the canvas read as
+# set INTO the window rather than laid on it. Alpha is the strength.
+WELL_SHADE       = QColor(0, 0, 0, 110)
+WELL_SHADE_PX    = 14
 # Held keys get their own colour, shared with the timeline strip, because "this
 # is still pressed" is one idea in two places.
 HELD_COL         = QColor("#f97316")
@@ -436,6 +483,19 @@ def _lane_route(p1: QPointF, p2: QPointF, lane: float,
             p2]
 
 
+def _close_forward(p1: QPointF, p2: QPointF):
+    """A forward wire between two nodes too close for two stubs: one S.
+
+    Under 2 x STUB of gap the lane router treated it as BACKWARD — out 26 px
+    right, back left past its own turn-out, 26 px in — a zigzag of a double
+    bend across a gap you could cover with one. The destination is still to
+    the right, so turn once, in the middle of the gap."""
+    if abs(p2.y() - p1.y()) < 1.0:
+        return [p1, p2]
+    xm = (p1.x() + p2.x()) / 2.0
+    return [p1, QPointF(xm, p1.y()), QPointF(xm, p2.y()), p2]
+
+
 def _quick_route(p1: QPointF, p2: QPointF):
     """A route that costs nothing, for while a node is being dragged.
 
@@ -446,6 +506,8 @@ def _quick_route(p1: QPointF, p2: QPointF):
     """
     if p2.x() >= p1.x() + 2 * STUB:
         return [p1, p2]
+    if p2.x() > p1.x():
+        return _close_forward(p1, p2)
     lane = max(p1.y(), p2.y()) + 70.0
     return _lane_route(p1, p2, lane, p1.x() + STUB, p2.x() - STUB)
 
@@ -478,6 +540,10 @@ def _route_points(p1: QPointF, p2: QPointF, obstacles, gap: float = 24.0):
     hits = [bo for bo in boxes if _seg_hits(ax, ay, bx, by, *bo)]
     if not backward and not hits:
         return [p1, p2]
+    if backward and bx > ax:
+        s_pts = _close_forward(p1, p2)
+        if _polyline_clear(s_pts, obstacles):
+            return s_pts
 
     if hits:
         s_l = min(bo[0] for bo in hits)
@@ -535,13 +601,35 @@ def _route_points(p1: QPointF, p2: QPointF, obstacles, gap: float = 24.0):
     #    business of finding one that is not. Testing it before the two short
     #    verticals fails most candidates on their first segment instead of
     #    their third.
+    #
+    # The SHORTEST clear candidate wins, not the first one found. Taking the
+    # first clear one in lane order drew long loops for no reason: a lane a few
+    # px nearer the midline, reached through a turn-out column on the far side
+    # of some unrelated node, beat a slightly farther lane with columns right
+    # by the ports — so the wire swung hundreds of px past both ends and back.
+    # Still cheap: the vertical cost of a lane only grows with its distance from
+    # the midline (the order `lanes` is in), so once even the best-case columns
+    # cannot beat what is in hand, no later lane can either and the search stops.
+    lo_y, hi_y = (ay, by) if ay <= by else (by, ay)
+    h0 = (abs(out_x - ax) + abs(in_x - out_x) + abs(bx - in_x)
+          if out_cols and in_cols else 0.0)
+    best = None
+    best_cost = float("inf")
     for lane in lanes:
+        vert = (hi_y - lo_y) + 2.0 * max(0.0, lane - hi_y, lo_y - lane)
+        if h0 + vert >= best_cost:
+            break
         for ox in out_cols:
             for ix in in_cols:
+                cost = vert + (ox - ax) + abs(ix - ox) + (bx - ix)
+                if cost >= best_cost:
+                    continue
                 if (_run_clear(ox, lane, ix, lane, boxes)
                         and _run_clear(ox, ay, ox, lane, boxes)
                         and _run_clear(ix, lane, ix, by, boxes)):
-                    return _lane_route(p1, p2, lane, ox, ix)
+                    best, best_cost = (lane, ox, ix), cost
+    if best is not None:
+        return _lane_route(p1, p2, *best)
 
     # Nothing clean exists — nodes stacked across every way round. Take the
     # widest bow rather than the straight line, so the wire is at least
@@ -852,7 +940,7 @@ class NodeItem(QGraphicsObject):
         if self.thumb_path:
             well = QRectF(THUMB_LEFT, THUMB_TOP, THUMB_W, THUMB_H)
             painter.setPen(QPen(NODE_BORDER, 1))
-            painter.setBrush(QBrush(QColor("#1b1f2b")))
+            painter.setBrush(QBrush(THUMB_BG))
             painter.drawRoundedRect(well, 4, 4)
             painter.setBrush(Qt.NoBrush)
             px = node_thumbnail(self.thumb_path)
@@ -1683,6 +1771,51 @@ class FlowScene(QGraphicsScene):
 #  View
 # ==============================================================================
 class FlowCanvas(QGraphicsView):
+    def _apply_bg(self):
+        """Viewport fill from the live CANVAS_BG (see `apply_palette`)."""
+        bg = CANVAS_BG.name()
+        self.setBackgroundBrush(QBrush(CANVAS_BG))
+        self._scene.setBackgroundBrush(QBrush(CANVAS_BG))
+        # The scrollbars float on the canvas colour: thin, no track, a handle
+        # in the node-border tone — not a grey band along two edges.
+        self.setStyleSheet(
+            "QGraphicsView{background:%(bg)s;border:none;}"
+            "QScrollBar:vertical{background:%(bg)s;width:10px;margin:2px 2px 2px 0;}"
+            "QScrollBar:horizontal{background:%(bg)s;height:10px;margin:0 2px 2px 2px;}"
+            "QScrollBar::handle{background:%(h)s;border-radius:3px;}"
+            "QScrollBar::handle:vertical{min-height:30px;}"
+            "QScrollBar::handle:horizontal{min-width:30px;}"
+            "QScrollBar::handle:hover{background:%(hh)s;}"
+            "QScrollBar::add-line,QScrollBar::sub-line{width:0;height:0;}"
+            "QScrollBar::add-page,QScrollBar::sub-page{background:transparent;}"
+            "QAbstractScrollArea::corner{background:%(bg)s;border:none;}"
+            % {"bg": bg, "h": NODE_BORDER.name(), "hh": SUB_COL.name()})
+        self.viewport().setStyleSheet("background:%s;" % bg)
+
+    def paintEvent(self, e):
+        super().paintEvent(e)
+        # Sunken-well shading, painted over everything in viewport space so it
+        # stays put while the scene pans and zooms underneath it.
+        p = QPainter(self.viewport())
+        w = self.viewport().width()
+        g = QLinearGradient(0, 0, 0, WELL_SHADE_PX)
+        clear = QColor(WELL_SHADE); clear.setAlpha(0)
+        g.setColorAt(0.0, WELL_SHADE); g.setColorAt(1.0, clear)
+        p.fillRect(QRectF(0, 0, w, WELL_SHADE_PX), QBrush(g))
+        p.end()
+
+    def retheme(self):
+        """Pick up a palette change: re-fill, re-pen what cached a pen, repaint."""
+        self._apply_bg()
+        for it in self._scene.items():
+            if isinstance(it, PortItem):
+                it.setBrush(QBrush(PORT_COLORS.get(it.name, SUB_COL)))
+                it.setPen(QPen(NODE_BG, 2))
+            elif isinstance(it, EdgeItem):
+                it._apply_pen()
+        self._scene.update()
+        self.viewport().update()
+
     node_edit_requested  = Signal(str)   # node id (double-click / context)
     node_error_requested = Signal(str)   # node id (action: error handling)
     add_node_requested   = Signal(str, float, float)  # type(:kind), x, y
@@ -1700,9 +1833,7 @@ class FlowCanvas(QGraphicsView):
         # Force the cosmic dark viewport (the global app stylesheet otherwise
         # leaves the QGraphicsView viewport painting the default Qt grey).
         self.setFrameShape(QFrame.NoFrame)
-        self.setBackgroundBrush(QBrush(CANVAS_BG))
-        self.setStyleSheet("QGraphicsView{background:#0d0c20;border:none;}")
-        self.viewport().setStyleSheet("background:#0d0c20;")
+        self._apply_bg()
 
         self._connecting: Optional[PortItem] = None
         self._temp_edge: Optional[QGraphicsPathItem] = None

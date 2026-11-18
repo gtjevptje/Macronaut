@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from typing import Optional, Tuple
 
-__version__ = "2.3.6"
+__version__ = "2.3.7"
 
 APP_NAME = "Macronaut"
 

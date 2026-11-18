@@ -22,9 +22,10 @@ from PySide6.QtWidgets import (
     QStackedWidget,
 )
 from PySide6.QtCore  import (Qt, QTimer, QThread, Signal, QObject, QSize,
-                            QRect, QPoint, QPointF, QTime, QMimeData,
+                            QRect, QRectF, QPoint, QPointF, QTime, QMimeData,
                             QPropertyAnimation, QUrl, QEvent)
 from PySide6.QtGui   import (QFont, QColor, QPalette, QPainter, QPen, QBrush,
+                            QPainterPath,
                             QPixmap, QIcon, QCursor, QKeySequence, QDrag,
                             QDesktopServices,
                             QAction)   # QAction moved QtWidgets -> QtGui in Qt6
@@ -383,6 +384,14 @@ QPushButton#palette_btn { background: $panel2; border: 1px solid $border; color:
 QPushButton#palette_btn:hover { background: $hover; border-color: $accent; }
 QPushButton#palette_btn:disabled { background: $panel; color: $muted; }
 
+/* ── The node builder as ONE surface ─────────────────────────────────────
+   Header, toolbar, sidebar and footer share the panel tone with no lines
+   between them; the canvas is the one thing set into it — a sunken well with
+   the timeline and the run-log tab attached to it rather than beside it. */
+QWidget#seqTab { background: $panel; }
+QWidget#canvasWell { background: $canvas; border: 1px solid $wellEdge; border-radius: 10px; }
+QWidget#wellRail { background: transparent; }
+
 QPushButton#speedPreset { background: $panel2; border: 1px solid $border; color: $muted;
     padding: 4px 4px; border-radius: 7px; font-weight: 600; }
 QPushButton#speedPreset:hover { border-color: $accent; color: $text; }
@@ -507,7 +516,7 @@ _MISSION_PALETTE = {
     "bg": "#070b16", "panel": "#0f1830", "panel2": "#152144", "hover": "#1c2950",
     "border": "#26345a", "text": "#e8edf8", "muted": "#8694b8",
     "accent": "#6c7cff", "accentHover": "#8a96ff", "accentPress": "#5462e0",
-    "accentText": "#ffffff", "inputBg": "#0a1124",
+    "accentText": "#ffffff", "inputBg": "#0a1124", "canvas": "#0a1124", "wellEdge": "#1f2b4d",
     "green": "#2fd3a4", "greenHover": "#49ddb4", "red": "#ff5a6a", "redHover": "#ff7682",
     "amber": "#f5b14b", "amberHover": "#ffc266", "selBg": "#22306a", "handle": "#33406a",
 }
@@ -517,7 +526,7 @@ _GRAPHITE_PALETTE = {
     "bg": "#15171c", "panel": "#1e2128", "panel2": "#262a33", "hover": "#2e333d",
     "border": "#333845", "text": "#edeff3", "muted": "#99a1b0",
     "accent": "#4f8cff", "accentHover": "#6fa0ff", "accentPress": "#3d77e6",
-    "accentText": "#ffffff", "inputBg": "#121419",
+    "accentText": "#ffffff", "inputBg": "#121419", "canvas": "#121419", "wellEdge": "#2a2e38",
     "green": "#3ecf8e", "greenHover": "#52d99c", "red": "#f0566a", "redHover": "#f47082",
     "amber": "#e0a13a", "amberHover": "#eeb152", "selBg": "#243049", "handle": "#39404d",
 }
@@ -527,7 +536,7 @@ _DAYLIGHT_PALETTE = {
     "bg": "#eef1f7", "panel": "#ffffff", "panel2": "#f4f6fb", "hover": "#e9edf6",
     "border": "#dfe4ee", "text": "#1b2233", "muted": "#5f6981",
     "accent": "#6366f1", "accentHover": "#5559e8", "accentPress": "#4548c9",
-    "accentText": "#ffffff", "inputBg": "#ffffff",
+    "accentText": "#ffffff", "inputBg": "#ffffff", "canvas": "#f5f7fb", "wellEdge": "#dde2ec",
     "green": "#16a34a", "greenHover": "#138a3f", "red": "#e11d48", "redHover": "#c01840",
     "amber": "#d97706", "amberHover": "#c46a05", "selBg": "#e3e4fb", "handle": "#c4c9d6",
 }
@@ -553,7 +562,7 @@ _COSMIC_PALETTE = {
     "bg": "#0a0818", "panel": "#15122c", "panel2": "#1d1840", "hover": "#272052",
     "border": "#3a2f7a", "text": "#ece9fb", "muted": "#a79fd4",
     "accent": "#8b5cf6", "accentHover": "#a279f8", "accentPress": "#7548e0",
-    "accentText": "#ffffff", "inputBg": "#100d24",
+    "accentText": "#ffffff", "inputBg": "#100d24", "canvas": "#0c0a1e", "wellEdge": "#2a2357",
     "green": "#2fd3a4", "greenHover": "#49ddb4", "red": "#ff5a6a", "redHover": "#ff7682",
     "amber": "#f5b14b", "amberHover": "#ffc266", "selBg": "#2e2566", "handle": "#443a86",
 }
@@ -591,6 +600,20 @@ CURRENT_THEME = DEFAULT_THEME
 # of — anything that draws itself needs the palette instead.
 PALETTES = {"cosmic": _COSMIC_PALETTE, "mission": _MISSION_PALETTE,
             "graphite": _GRAPHITE_PALETTE, "daylight": _DAYLIGHT_PALETTE}
+
+
+def _apply_painted_palette() -> None:
+    """Hand the live palette to the widgets that paint themselves.
+
+    ⚠ The canvas and the timeline strip draw with QPainter, so the application
+    stylesheet never reaches them. Their colours were hardcoded to one dark
+    palette — grey-blue nodes on the purple Cosmic window, and a black canvas
+    inside the light Daylight one.
+    """
+    pal = PALETTES.get(CURRENT_THEME, _COSMIC_PALETTE)
+    light = CURRENT_THEME == "daylight"
+    flow_canvas.apply_palette(pal, light=light)
+    flow_timeline.apply_palette(pal, light=light)
 
 
 def theme_color(key: str) -> str:
@@ -684,6 +707,52 @@ def _card(title: str, description: str = ""):
     if description:
         v.addWidget(_hint(description))
     return gb, v
+
+
+class _RailTab(QPushButton):
+    """The run-log toggle, drawn as a vertical tab on the canvas well's edge.
+
+    Square on the right (it meets the well's border), rounded on the left, the
+    text running bottom-to-top. Its sizeHint is the rotated text's, so a font
+    change still fits.
+    """
+
+    def sizeHint(self):
+        fm = self.fontMetrics()
+        return QSize(fm.height() + 10, fm.horizontalAdvance(self.text()) + 22)
+
+    minimumSizeHint = sizeHint
+
+    def paintEvent(self, _e):
+        pal = PALETTES.get(CURRENT_THEME, _COSMIC_PALETTE)
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+        r = QRectF(self.rect()).adjusted(0.5, 0.5, 0.5, -0.5)
+        path = QPainterPath()
+        rad = 7.0
+        path.moveTo(r.right(), r.top())
+        path.lineTo(r.left() + rad, r.top())
+        path.quadTo(r.left(), r.top(), r.left(), r.top() + rad)
+        path.lineTo(r.left(), r.bottom() - rad)
+        path.quadTo(r.left(), r.bottom(), r.left() + rad, r.bottom())
+        path.lineTo(r.right(), r.bottom())
+        hot = self.underMouse() or self.isChecked()
+        p.fillPath(path, QColor(pal["panel2"] if hot else pal["panel"]))
+        p.setPen(QPen(QColor(pal["accent"] if self.isChecked() else pal["wellEdge"]), 1))
+        p.drawPath(path)
+        p.setPen(QColor(pal["text"] if hot else pal["muted"]))
+        f = self.font(); f.setPixelSize(11); f.setBold(True); p.setFont(f)
+        p.translate(self.width() / 2, self.height() / 2)
+        p.rotate(-90)
+        p.drawText(QRectF(-self.height() / 2, -self.width() / 2,
+                          self.height(), self.width()), Qt.AlignCenter, self.text())
+        p.end()
+
+    def enterEvent(self, e):
+        self.update(); super().enterEvent(e)
+
+    def leaveEvent(self, e):
+        self.update(); super().leaveEvent(e)
 
 
 def _pane(layout=None) -> QWidget:
@@ -849,6 +918,37 @@ class _WheelGuard(QObject):
         if area is not None:
             QApplication.sendEvent(area.viewport(), ev)
         return True
+
+
+class _ClickAwayDefocus(QObject):
+    """A click anywhere else in the window takes focus off a text field.
+
+    Qt only moves focus to a widget that accepts it, and most of this window
+    does not: the canvas background, the panels, the footer. So after typing a
+    custom speed the field stayed focused — caret blinking, the arrow keys still
+    editing it — however many times you clicked elsewhere. On the press, before
+    the target sees it, an edit field that is not under the pointer gives its
+    focus up (which also commits what was typed). A click on another field
+    still focuses that one, because that field takes focus itself afterwards.
+    Scoped to `win`: dialogs and popups keep their own focus rules.
+    """
+
+    def __init__(self, win: QWidget):
+        super().__init__(win)
+        self._win = win
+
+    def eventFilter(self, obj, ev):
+        if ev.type() != QEvent.MouseButtonPress or not isinstance(obj, QWidget):
+            return False
+        fw = QApplication.focusWidget()
+        if fw is None or not isinstance(fw, (QAbstractSpinBox, QLineEdit)):
+            return False
+        if obj.window() is not self._win or fw.window() is not self._win:
+            return False
+        if obj is fw or fw.isAncestorOf(obj):
+            return False
+        fw.clearFocus()
+        return False
 
 
 def _guard_wheel(root: QWidget) -> None:
@@ -2398,14 +2498,38 @@ class StepDialog(QDialog):
                     btn.setChecked(True)
 
     def _on_type_change(self, idx: int):
-        panels = [self._stack_click, self._stack_key,
-                  self._stack_text, self._stack_wait,
-                  self._stack_imgwait, self._stack_textwait,
-                  self._stack_pixwait, self._stack_scroll,
-                  self._stack_drag, self._stack_move]
-        for i, p in enumerate(panels):
+        for i, p in enumerate(self._panels()):
             p.setVisible(i == idx)
         self._refit()
+
+    def _panels(self):
+        return [self._stack_click, self._stack_key,
+                self._stack_text, self._stack_wait,
+                self._stack_imgwait, self._stack_textwait,
+                self._stack_pixwait, self._stack_scroll,
+                self._stack_drag, self._stack_move]
+
+    def _family_hint_width(self) -> int:
+        """The width of the WIDEST mode in this dialog's family.
+
+        A family's modes share one segmented toggle, so the window must not
+        change width when you flip between them: Scroll came out 60 px
+        narrower than Click/Move/Drag and the whole dialog jumped. Read off
+        the hidden siblings' own hints — ⚠ never by showing each in turn,
+        which left the layout's cached height stale and clipped the last row.
+        ensurePolished() first: a panel never shown has not had the stylesheet
+        applied, and would answer in Qt's default font."""
+        cur = self.sizeHint().width()
+        if (not self._fam_indices or len(self._fam_indices) < 2
+                or not hasattr(self, "_stack_move")):   # still being built
+            return cur
+        m = self.layout().contentsMargins()
+        panels = self._panels()
+        widest = 0
+        for i in self._fam_indices:
+            panels[i].ensurePolished()
+            widest = max(widest, panels[i].sizeHint().width())
+        return max(cur, widest + m.left() + m.right())
 
     def _refit(self):
         """Resize to exactly what is showing now.
@@ -2423,7 +2547,7 @@ class StepDialog(QDialog):
         # Capped: a wrapped hint line reports its *unwrapped* width as its size
         # hint, so one long sentence could otherwise stretch the dialog across
         # the screen. Past the cap the text wraps instead, which is the point.
-        w = max(self.minimumWidth(), min(self.sizeHint().width(), self.MAX_WIDTH))
+        w = max(self.minimumWidth(), min(self._family_hint_width(), self.MAX_WIDTH))
         h = lay.heightForWidth(w) if lay.hasHeightForWidth() else self.sizeHint().height()
         self.setMinimumHeight(0)
         h = max(h, lay.minimumSize().height())
@@ -3536,10 +3660,20 @@ class SequenceTab(QWidget):
         return g
 
     # ── UI ─────────────────────────────────────────────────────────
+    def retheme(self):
+        """Re-tint what the stylesheet cannot reach after a theme change."""
+        self._canvas.retheme()
+        self._timeline.update()
+
     def _setup_ui(self):
+        _apply_painted_palette()
+        self.setObjectName("seqTab")
+        self.setAttribute(Qt.WA_StyledBackground, True)
         root = QVBoxLayout(self)
-        root.setContentsMargins(14, 12, 14, 12)
-        root.setSpacing(10)
+        # One 16 px gutter on every side and 12 px between the three rows, so
+        # the toolbar, the sidebar, the canvas and the footer share edges.
+        root.setContentsMargins(16, 12, 16, 12)
+        root.setSpacing(12)
 
         # Compact action row — the cosmic header above carries the breadcrumb,
         # so we only need Record / Play here (right-aligned).
@@ -3560,9 +3694,10 @@ class SequenceTab(QWidget):
         root.addLayout(header)
 
         # -- Body: left palette sidebar · canvas · run-log panel (the mockup) --
-        body = QHBoxLayout(); body.setSpacing(8)
+        body = QHBoxLayout(); body.setSpacing(12)
 
         side = QVBoxLayout(); side.setSpacing(6)
+        side.setContentsMargins(0, 0, 0, 0)
         add_lbl = QLabel("ADD NODE"); add_lbl.setObjectName("seq_section")
         side.addWidget(add_lbl)
         palette_btns = []
@@ -3595,7 +3730,7 @@ class SequenceTab(QWidget):
             side.addWidget(b)
             palette_btns.append(b)
         side.addStretch(1)
-        sidew = QWidget(); sidew.setLayout(side)
+        sidew = _pane(side)
         # ⚠ Measured, not written down. This was a fixed 132 px, which fitted the
         # eight labels that existed when it was chosen and clipped the ninth the
         # day one was added — "Comment" lost its last letters. A label is text in
@@ -3647,22 +3782,33 @@ class SequenceTab(QWidget):
         # is "let me look at this run", which is a thing you do, not a
         # preference you hold.
         self._timeline.set_collapsed(True)
-        canvas_col = _pane()
-        cc = QVBoxLayout(canvas_col)
-        cc.setContentsMargins(0, 0, 0, 0); cc.setSpacing(0)
-        cc.addWidget(self._canvas, 1)
-        cc.addWidget(self._timeline)
-        body.addWidget(canvas_col, 1)
+        # The well. Inset by 3 px so the canvas's square corners stay inside
+        # its 10 px rounded border instead of painting over the curve.
+        canvas_col = QWidget(); canvas_col.setObjectName("canvasWell")
+        canvas_col.setAttribute(Qt.WA_StyledBackground, True)
+        well = QHBoxLayout(canvas_col)
+        well.setContentsMargins(3, 3, 3, 3); well.setSpacing(0)
+        inner = QVBoxLayout(); inner.setContentsMargins(0, 0, 0, 0); inner.setSpacing(0)
+        inner.addWidget(self._canvas, 1)
+        inner.addWidget(self._timeline)
+        well.addLayout(inner, 1)
 
-        self._log_toggle = QPushButton("RUN LOG  ◂")
-        self._log_toggle.setObjectName("speedPreset")
+        # ⚠ Attached to the well's right edge, not standing beside it: as a
+        # separate pill out in the gutter it read as a stray button stuck to
+        # the canvas. It is a vertical tab now, part of the well's own rail.
+        self._log_toggle = _RailTab("RUN LOG  ◂")
+        self._log_toggle.setObjectName("railTab")
         self._log_toggle.setCheckable(True)
         self._log_toggle.setCursor(Qt.PointingHandCursor)
         self._log_toggle.setToolTip("Show / hide the run log")
         self._log_toggle.clicked.connect(self._toggle_log)
-        body.addWidget(self._log_toggle)
+        rail = QWidget(); rail.setObjectName("wellRail")
+        rl = QVBoxLayout(rail); rl.setContentsMargins(0, 0, 0, 0); rl.setSpacing(0)
+        rl.addStretch(1); rl.addWidget(self._log_toggle); rl.addStretch(1)
+        well.addWidget(rail)
+        body.addWidget(canvas_col, 1)
 
-        self._log_panel = QWidget()
+        self._log_panel = _pane()
         lp = QVBoxLayout(self._log_panel); lp.setContentsMargins(0, 0, 0, 0); lp.setSpacing(6)
         log_head = QHBoxLayout()
         lh = QLabel("RUN LOG"); lh.setObjectName("seq_section")
@@ -3701,6 +3847,7 @@ class SequenceTab(QWidget):
         # widest value ("50,0×") in ~102 px instead of 120.
         self._speed.setDecimals(1)
         _fit_spin(self._speed, "50.0×", pad=0)
+        self._speed.setFixedHeight(34)   # the footer buttons' height, not taller
         self._speed.setToolTip("Custom playback speed (2× = twice as fast). "
                                "Use the arrows to fine-tune.")
         footer.addWidget(self._speed)
@@ -5464,6 +5611,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(f"Macronaut · {version.__version__}")
         self.setWindowIcon(app_icon())
         self.setMinimumSize(0, 0)
+        self._click_away = _ClickAwayDefocus(self)
+        QApplication.instance().installEventFilter(self._click_away)
 
         # Core managers
         self._settings = SettingsManager()
@@ -5727,6 +5876,12 @@ class MainWindow(QMainWindow):
         drawer = getattr(self, "_drawer_panel", None)
         if drawer is not None:
             drawer.setStyleSheet(self._drawer_qss())
+        # The canvas and the timeline paint themselves, so they read the
+        # palette rather than the stylesheet — same rule, painted widgets.
+        _apply_painted_palette()
+        tab = getattr(self, "_sequence_tab", None)
+        if tab is not None:
+            tab.retheme()
 
     def _on_hotkey_changed(self, hk: str):
         self._refresh_hotkeys()
@@ -5832,15 +5987,18 @@ class MainWindow(QMainWindow):
     # theme changes; `_apply_theme` re-applies it to the bar it kept a handle on.
     def _hdr_qss(self) -> str:
         p = PALETTES.get(CURRENT_THEME, _MISSION_PALETTE)
-        return ("#advHeader{background:%(panel2)s;"
-                "border-bottom:1px solid %(border)s;}"
-                "#advHeader QLabel{color:%(text)s;}"
+        # The bar is the same panel surface as the node builder below it, with
+        # no line between them: one window, not a band stacked on a page.
+        # Links and icons only take a surface (panel2) under the pointer.
+        return ("#advHeader{background:%(panel)s;border:none;}"
+                "#advHeader QLabel{color:%(text)s;background:transparent;}"
+                "#advHeader QLabel#hdrSep{background:%(border)s;}"
                 "#hdrLink{color:%(muted)s;background:transparent;border:none;"
-                "font-size:13px;padding:3px 6px;border-radius:6px;}"
-                "#hdrLink:hover{color:%(text)s;background:%(hover)s;}"
+                "font-size:13px;padding:4px 8px;border-radius:6px;}"
+                "#hdrLink:hover{color:%(text)s;background:%(panel2)s;}"
                 "#hdrIcon{color:%(muted)s;background:transparent;border:none;"
                 "font-size:14px;padding:0;border-radius:6px;}"
-                "#hdrIcon:hover{color:%(text)s;background:%(hover)s;}" % p)
+                "#hdrIcon:hover{color:%(text)s;background:%(panel2)s;}" % p)
 
     def _drawer_qss(self) -> str:
         p = PALETTES.get(CURRENT_THEME, _MISSION_PALETTE)
@@ -5849,14 +6007,15 @@ class MainWindow(QMainWindow):
 
     def _grip_qss(self) -> str:
         p = PALETTES.get(CURRENT_THEME, _MISSION_PALETTE)
-        return ("background:%(panel2)s;border-top:1px solid %(border)s;" % p)
+        # Blends into the window: it exists only to hold the resize grip.
+        return ("background:%(panel)s;border:none;" % p)
 
     def _header(self, title: str) -> tuple:
         """A draggable title bar. Returns (bar, layout) to add controls."""
-        bar = _DragBar(self); bar.setObjectName("advHeader"); bar.setFixedHeight(38)
+        bar = _DragBar(self); bar.setObjectName("advHeader"); bar.setFixedHeight(40)
         bar.setStyleSheet(self._hdr_qss())
         self._adv_bar = bar          # so _apply_theme can re-colour it
-        hb = QHBoxLayout(bar); hb.setContentsMargins(10, 0, 8, 0); hb.setSpacing(6)
+        hb = QHBoxLayout(bar); hb.setContentsMargins(8, 0, 8, 0); hb.setSpacing(4)
         return bar, hb
 
     def _build_advanced(self) -> QWidget:
@@ -5865,7 +6024,7 @@ class MainWindow(QMainWindow):
 
         bar, hb = self._header("Macronaut")
         self._adv_title = QLabel("Macronaut — node builder")
-        self._adv_title.setStyleSheet("font-size:12px;font-weight:600;")
+        self._adv_title.setStyleSheet("font-size:13px;font-weight:600;")
         # ⚠ No pin here. Always-on-top came across when the compact face was
         # removed and was given a 📌 in this bar, which put a piece of *setup* in
         # the title bar of a window that has a Settings screen — it is set once
@@ -5886,7 +6045,11 @@ class MainWindow(QMainWindow):
         mn.clicked.connect(self._minimize)
         cl = TitleButton("close", bar); cl.setToolTip("Quit")
         cl.clicked.connect(self.close)
+        sep = QLabel(); sep.setObjectName("hdrSep"); sep.setFixedSize(1, 16)
         hb.addWidget(back)
+        hb.addSpacing(4)
+        hb.addWidget(sep, 0, Qt.AlignVCenter)
+        hb.addSpacing(8)
         hb.addWidget(self._adv_title)
         hb.addStretch(1)
         hb.addWidget(gear2); hb.addWidget(mn); hb.addWidget(cl)

@@ -85,6 +85,26 @@ ACCENT      = QColor("#7F77DD")
 HELD        = fc.HELD_COL
 WARN        = QColor("#ef4444")
 CUR         = QColor("#89b4fa")
+ON_ACCENT   = QColor("#ffffff")     # text on the selected axis segment
+NOTE_PT     = 8                     # header / fold-row text
+
+
+def apply_palette(pal: dict, light: bool = False) -> None:
+    """Re-tint the strip from an app palette, IN PLACE (see flow_canvas).
+
+    The strip continues the canvas inside one framed well, so its fill is the
+    canvas colour and its top edge a hairline of the theme border.
+    """
+    set_ = fc._set
+    canvas = pal.get("canvas", pal["inputBg"])
+    set_(BG, canvas)
+    set_(TROUGH, pal["panel2"])
+    set_(LINE, pal["border"])
+    set_(TXT, pal["text"])
+    set_(MUTED, pal["muted"])
+    set_(ACCENT, pal["accent"])
+    set_(CUR, pal["accentHover"] if not light else pal["accentPress"])
+    set_(ON_ACCENT, pal["accentText"])
 
 
 def _seg_color(node) -> QColor:
@@ -423,10 +443,10 @@ class TimelineStrip(QWidget):
         p.restore()
 
     def _paint_collapsed(self, p: QPainter):
-        f = QFont(); f.setPointSize(7); p.setFont(f)
+        f = QFont(); f.setPointSize(NOTE_PT); p.setFont(f)
         self._chevron(p, False)
         n = len(self._order)
-        note = f"TIMELINE — {n} node{'' if n == 1 else 's'}"
+        note = f"Timeline  ·  {n} node{'' if n == 1 else 's'}"
         if self._held:
             note += f" · {len(self._held)} key held"
         p.setPen(MUTED)
@@ -434,19 +454,19 @@ class TimelineStrip(QWidget):
                    Qt.AlignLeft | Qt.AlignVCenter, note)
 
     def _paint_header(self, p: QPainter, est: Dict[str, "flow.Estimate"]):
-        f = QFont(); f.setPointSize(7); p.setFont(f)
+        f = QFont(); f.setPointSize(NOTE_PT); p.setFont(f)
         self._chevron(p, True)
         p.setPen(MUTED)
         y = PAD_TOP + 1
         if self._mode == self.ORDER:
-            note = "NODE ORDER — not time"
+            note = "Node order  ·  not time"
         else:
             n = sum(1 for e in est.values() if e.source == flow.MEASURED)
             total = sum(e.ms for e in est.values())
             unknown = any(e.source == flow.UNKNOWN for e in est.values())
             # "+" is doing real work here: with an unbounded node in the flow,
             # the total is a lower bound and saying "4.3 s" flat would be a lie.
-            note = (f"TIME — {total / 1000:.1f} s"
+            note = (f"Time  ·  {total / 1000:.1f} s"
                     + ("+ (unbounded)" if unknown else "")
                     + (f" · {n} measured" if n else " · no runs yet"))
         p.drawText(QRectF(PAD_X + CHEV_W + 4, y, 380, 14),
@@ -457,15 +477,15 @@ class TimelineStrip(QWidget):
         self._toggle_rect = QRectF(self.width() - PAD_X - tw, y - 1, tw, th)
         path = QPainterPath()
         path.addRoundedRect(self._toggle_rect, 7, 7)
-        p.fillPath(path, QBrush(QColor("#1b1940")))
+        p.fillPath(path, QBrush(TROUGH))
         p.setPen(QPen(LINE, 1)); p.drawPath(path)
         half = tw / 2
         sel = QRectF(self._toggle_rect.left() + (0 if self._mode == self.ORDER else half),
                      self._toggle_rect.top(), half, th)
         selp = QPainterPath(); selp.addRoundedRect(sel, 7, 7)
-        p.fillPath(selp, QBrush(QColor("#7F77DD")))
+        p.fillPath(selp, QBrush(ACCENT))
         for i, (label, m) in enumerate((("Order", self.ORDER), ("Time", self.TIME))):
-            p.setPen(QColor("#0d0c20") if self._mode == m else MUTED)
+            p.setPen(ON_ACCENT if self._mode == m else MUTED)
             p.drawText(QRectF(self._toggle_rect.left() + i * half,
                               self._toggle_rect.top(), half, th),
                        Qt.AlignCenter, label)
