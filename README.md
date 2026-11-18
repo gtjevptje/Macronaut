@@ -1,6 +1,6 @@
-<h1 align="center">Macronaut: free auto clicker and visual macro recorder for Windows</h1>
+<h1 align="center">Macronaut: free auto clicker and macro recorder for Windows</h1>
 
-<p align="center"><b>An open-source auto clicker that watches the screen and decides what to do.</b><br>
+<p align="center"><b>An open-source auto clicker that reacts to the screen.</b><br>
 Record your clicks and keystrokes, or draw a script: wait for something to
 appear, click it where it actually is, and keep going when it doesn't. In any
 Windows app, without writing code.</p>
@@ -18,7 +18,7 @@ Windows app, without writing code.</p>
 
 <h3 align="center">
   <a href="https://github.com/gtjevptje/Macronaut/releases/latest/download/Macronaut.exe">⬇&nbsp;&nbsp;Download Macronaut for Windows</a>
-  <br><sub>Windows shows <b>“Windows protected your PC”</b> on first run —
+  <br><sub>Windows shows <b>“Windows protected your PC”</b> —
   click <b>More info → Run anyway</b>. It does that for any unsigned app.</sub>
 </h3>
 
@@ -210,7 +210,7 @@ to have one deleted.
 
 Windows 10 or 11, 64-bit. Nothing else — everything is inside the `.exe`.
 
-> **On first run, Windows may warn you.** Macronaut is not code-signed yet, so
+> **Windows may warn you.** Macronaut is not code-signed yet, so
 > SmartScreen shows *"Windows protected your PC"* for new downloads. Click
 > **More info → Run anyway**. You do not have to take my word for what is in
 > the file:
