@@ -1,6 +1,6 @@
-<h1 align="center">Macronaut: free auto clicker and visual macro recorder for Windows</h1>
+<h1 align="center">Macronaut: free auto clicker and macro recorder for Windows</h1>
 
-<p align="center"><b>An open-source auto clicker that watches the screen and decides what to do.</b><br>
+<p align="center"><b>An open-source auto clicker that reacts to the screen and decides what to do.</b><br>
 Record your clicks and keystrokes, or draw a script: wait for something to
 appear, click it where it actually is, and keep going when it doesn't. In any
 Windows app, without writing code.</p>
